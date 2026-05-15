@@ -810,6 +810,73 @@ section.card > p:first-of-type {
   }
 }
 
+
+/* Desktop width tuning v6: wider canvas and less-condensed workspace */
+main {
+  width: min(calc(100% - 40px), 1800px);
+  max-width: 1800px;
+}
+
+@media (min-width: 1500px) {
+  main {
+    width: min(calc(100% - 56px), 1800px);
+    max-width: 1800px;
+  }
+
+  .workspace-grid {
+    grid-template-columns: minmax(880px, 1.25fr) minmax(520px, 0.75fr);
+    gap: 22px;
+  }
+
+  .prompt-builder-grid {
+    grid-template-columns: minmax(360px, 0.9fr) minmax(520px, 1.1fr);
+    gap: 20px;
+  }
+
+  .api-grid {
+    grid-template-columns: minmax(360px, 1fr) minmax(360px, 1fr);
+    gap: 18px;
+  }
+}
+
+@media (min-width: 1800px) {
+  .workspace-grid {
+    grid-template-columns: minmax(1020px, 1.3fr) minmax(620px, 0.7fr);
+    gap: 24px;
+  }
+
+  #builderMasterPreview {
+    min-height: 340px;
+  }
+
+  #builderOutput {
+    min-height: 620px;
+  }
+}
+
+/* At 1400px-ish widths, stack the two major work windows so neither feels cramped. */
+@media (max-width: 1499px) {
+  .workspace-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .prompt-builder-grid,
+  .api-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  #builderOutput {
+    min-height: 520px;
+  }
+}
+
+@media (max-width: 920px) {
+  .prompt-builder-grid,
+  .api-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 </style>
 </head>
 <body>
