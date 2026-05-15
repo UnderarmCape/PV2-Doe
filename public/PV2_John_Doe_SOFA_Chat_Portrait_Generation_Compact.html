@@ -2126,6 +2126,55 @@ Do not create a different face when the patrol cap is worn.</pre>
     }
   }
 
+
+  async function readErrorResponseForDiagnostics(response, contentType) {
+    var bodyText = '';
+    var parsed = null;
+    try {
+      bodyText = await response.text();
+    } catch (readError) {
+      bodyText = '[unable to read error response body: ' + (readError.message || String(readError)) + ']';
+    }
+
+    if (bodyText && contentType.indexOf('application/json') !== -1) {
+      try {
+        parsed = JSON.parse(bodyText);
+      } catch (parseError) {
+        parsed = null;
+      }
+    }
+
+    return {
+      bodyText: bodyText,
+      parsed: parsed,
+      bodyPreview: truncateDiagnosticString(bodyText, 4000)
+    };
+  }
+
+  function flattenBackendErrorDetails(value) {
+    if (!value) return '';
+    if (typeof value === 'string') return value;
+    if (typeof value.message === 'string') return value.message;
+    if (typeof value.error === 'string') return value.error;
+    if (value.error && typeof value.error.message === 'string') return value.error.message;
+    if (value.details) return flattenBackendErrorDetails(value.details);
+    try {
+      return JSON.stringify(value);
+    } catch (error) {
+      return String(value);
+    }
+  }
+
+  function buildBackendHttpErrorMessage(response, errorInfo) {
+    var parsed = errorInfo && errorInfo.parsed ? errorInfo.parsed : null;
+    var message = parsed ? flattenBackendErrorDetails(parsed) : (errorInfo && errorInfo.bodyText ? errorInfo.bodyText : '');
+    var requestId = parsed && parsed.requestId ? ' Request ID: ' + parsed.requestId + '.' : '';
+    if (message) {
+      return 'Backend returned HTTP ' + response.status + ': ' + truncateDiagnosticString(message, 900) + requestId;
+    }
+    return 'Backend returned HTTP ' + response.status + '.' + requestId;
+  }
+
   async function testBackendHealth() {
     if (isApiBusy) return;
     setBusy(true);
@@ -2214,7 +2263,15 @@ Do not create a different face when the patrol cap is worn.</pre>
       });
 
       if (!response.ok) {
-        throw new Error('Backend returned HTTP ' + response.status + '.');
+        var chatErrorInfo = await readErrorResponseForDiagnostics(response, contentType);
+        recordDiagnostic('chat_error_response_body', {
+          endpoint: API_ENDPOINTS.chat,
+          status: response.status,
+          contentType: contentType,
+          parsed: chatErrorInfo.parsed,
+          bodyPreview: chatErrorInfo.bodyPreview
+        });
+        throw new Error(buildBackendHttpErrorMessage(response, chatErrorInfo));
       }
 
       addActivity('Building response…');
@@ -2388,7 +2445,15 @@ Do not create a different face when the patrol cap is worn.</pre>
       });
 
       if (!response.ok) {
-        throw new Error('Backend returned HTTP ' + response.status + '.');
+        var imageErrorInfo = await readErrorResponseForDiagnostics(response, contentType);
+        recordDiagnostic('image_error_response_body', {
+          endpoint: API_ENDPOINTS.image,
+          status: response.status,
+          contentType: contentType,
+          parsed: imageErrorInfo.parsed,
+          bodyPreview: imageErrorInfo.bodyPreview
+        });
+        throw new Error(buildBackendHttpErrorMessage(response, imageErrorInfo));
       }
 
       var data = await response.json();

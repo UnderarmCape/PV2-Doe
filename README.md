@@ -114,3 +114,27 @@ Check that your selected image model is available to your account. You can chang
 ## Security note
 
 Do not paste your OpenAI API key into the HTML file. Do not share your `.env` file. The HTML should only talk to this backend.
+
+## 2026-05-15 v2 troubleshooting update
+
+This package includes a backend fetch timeout fix and improved diagnostics.
+
+What changed:
+- Removed the request-close abort signal that could stop outbound OpenAI requests too early on hosted Express deployments.
+- Added `backendVersion` to `/api/health`.
+- Added backend-side request IDs and Render log messages for `/api/chat` and `/api/generate-image`.
+- Improved browser diagnostics so HTTP error responses include the backend JSON body, request ID, and OpenAI error details when available.
+
+After deploying this update, check:
+
+```text
+https://pv2-doe.onrender.com/api/health
+```
+
+You should see:
+
+```json
+"backendVersion": "2026-05-15-v2-openai-fetch-timeout-fix"
+```
+
+If `/api/chat` or `/api/generate-image` still fails, download the diagnostics log again and check the Render logs using the requestId shown in the error response.

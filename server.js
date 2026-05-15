@@ -69,12 +69,50 @@ function extractTextFromResponsesApi(data) {
   return parts.join('');
 }
 
-function getAbortSignalForRequest(req) {
+function createRequestId(prefix) {
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
+function logBackendEvent(eventType, details) {
+  const safeDetails = Object.assign({}, details || {});
+  delete safeDetails.apiKey;
+  delete safeDetails.authorization;
+  console.log(JSON.stringify({
+    time: new Date().toISOString(),
+    eventType,
+    details: safeDetails
+  }));
+}
+
+function logBackendError(eventType, error, details) {
+  const safeDetails = Object.assign({}, details || {});
+  delete safeDetails.apiKey;
+  delete safeDetails.authorization;
+  console.error(JSON.stringify({
+    time: new Date().toISOString(),
+    eventType,
+    error: {
+      name: error && error.name ? error.name : 'Error',
+      message: error && error.message ? error.message : String(error),
+      stack: error && error.stack ? safeErrorText(error.stack) : ''
+    },
+    details: safeDetails
+  }));
+}
+
+async function fetchOpenAI(url, options, timeoutMs) {
+  /*
+    Do not attach this to req.on('close'). In Node/Express, request close can
+    fire after the inbound body is read, which can accidentally abort the
+    outbound OpenAI request and cause fast HTTP 500 failures.
+  */
   const controller = new AbortController();
-  req.on('close', () => {
-    if (!controller.signal.aborted) controller.abort();
-  });
-  return controller.signal;
+  const timer = setTimeout(() => controller.abort(), timeoutMs || 240000);
+  try {
+    return await fetch(url, Object.assign({}, options || {}, { signal: controller.signal }));
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 app.get('/api/health', (req, res) => {
@@ -87,11 +125,14 @@ app.get('/api/health', (req, res) => {
     imageModel: OPENAI_IMAGE_MODEL,
     imageSize: OPENAI_IMAGE_SIZE,
     imageQuality: OPENAI_IMAGE_QUALITY,
-    imageFormat: OPENAI_IMAGE_FORMAT
+    imageFormat: OPENAI_IMAGE_FORMAT,
+    backendVersion: '2026-05-15-v2-openai-fetch-timeout-fix',
+    nodeVersion: process.version
   });
 });
 
 app.post('/api/chat', async (req, res) => {
+  const requestId = createRequestId('chat');
   if (!requireApiKey(res)) return;
 
   const prompt = String(req.body && req.body.prompt ? req.body.prompt : '').trim();
@@ -103,6 +144,8 @@ app.post('/api/chat', async (req, res) => {
   const reasoningEffort = normalizeReasoningEffort(req.body.reasoningEffort);
   const stream = req.body.stream !== false;
 
+  logBackendEvent('chat_request_received', { requestId, model: OPENAI_TEXT_MODEL, promptLength: prompt.length, reasoningEffort });
+
   const requestBody = {
     model: OPENAI_TEXT_MODEL,
     input: prompt,
@@ -113,20 +156,21 @@ app.post('/api/chat', async (req, res) => {
   };
 
   try {
-    const openaiResponse = await fetch('https://api.openai.com/v1/responses', {
+    const openaiResponse = await fetchOpenAI('https://api.openai.com/v1/responses', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(requestBody),
-      signal: getAbortSignalForRequest(req)
-    });
+      body: JSON.stringify(requestBody)
+    }, 240000);
 
     if (!openaiResponse.ok) {
       const errorText = await openaiResponse.text();
+      logBackendEvent('chat_openai_error_response', { requestId, status: openaiResponse.status, details: safeErrorText(errorText) });
       res.status(openaiResponse.status).json({
         error: 'OpenAI text request failed.',
+        requestId,
         status: openaiResponse.status,
         details: safeErrorText(errorText)
       });
@@ -135,7 +179,8 @@ app.post('/api/chat', async (req, res) => {
 
     if (!stream) {
       const data = await openaiResponse.json();
-      res.json({ text: extractTextFromResponsesApi(data), rawType: data && data.object ? data.object : 'response' });
+      logBackendEvent('chat_response_completed', { requestId, stream: false });
+      res.json({ text: extractTextFromResponsesApi(data), rawType: data && data.object ? data.object : 'response', requestId });
       return;
     }
 
@@ -152,6 +197,7 @@ app.post('/api/chat', async (req, res) => {
         res.write(Buffer.from(value));
       }
       res.end();
+      logBackendEvent('chat_stream_completed', { requestId });
     } finally {
       reader.releaseLock();
     }
@@ -161,14 +207,18 @@ app.post('/api/chat', async (req, res) => {
       res.end();
       return;
     }
+    logBackendError('chat_route_failed', error, { requestId, model: OPENAI_TEXT_MODEL });
     res.status(500).json({
       error: 'Backend chat route failed.',
-      message: error.message || String(error)
+      requestId,
+      message: error.message || String(error),
+      hint: 'Check Render logs for this requestId. If the message mentions abort, update server.js to the timeout-fix version.'
     });
   }
 });
 
 app.post('/api/generate-image', async (req, res) => {
+  const requestId = createRequestId('image');
   if (!requireApiKey(res)) return;
 
   const prompt = String(req.body && req.body.prompt ? req.body.prompt : '').trim();
@@ -176,6 +226,8 @@ app.post('/api/generate-image', async (req, res) => {
     res.status(400).json({ error: 'Missing prompt.' });
     return;
   }
+
+  logBackendEvent('image_request_received', { requestId, model: OPENAI_IMAGE_MODEL, promptLength: prompt.length, size: OPENAI_IMAGE_SIZE, quality: OPENAI_IMAGE_QUALITY, format: OPENAI_IMAGE_FORMAT });
 
   const requestBody = {
     model: OPENAI_IMAGE_MODEL,
@@ -186,21 +238,22 @@ app.post('/api/generate-image', async (req, res) => {
   };
 
   try {
-    const openaiResponse = await fetch('https://api.openai.com/v1/images/generations', {
+    const openaiResponse = await fetchOpenAI('https://api.openai.com/v1/images/generations', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(requestBody),
-      signal: getAbortSignalForRequest(req)
-    });
+      body: JSON.stringify(requestBody)
+    }, 240000);
 
     const data = await openaiResponse.json().catch(async () => ({ raw: await openaiResponse.text() }));
 
     if (!openaiResponse.ok) {
+      logBackendEvent('image_openai_error_response', { requestId, status: openaiResponse.status, details: safeErrorText(JSON.stringify(data)) });
       res.status(openaiResponse.status).json({
         error: 'OpenAI image request failed.',
+        requestId,
         status: openaiResponse.status,
         details: data
       });
@@ -209,12 +262,13 @@ app.post('/api/generate-image', async (req, res) => {
 
     const first = data && Array.isArray(data.data) ? data.data[0] : null;
     if (!first) {
-      res.status(502).json({ error: 'OpenAI image response did not include image data.', details: data });
+      res.status(502).json({ error: 'OpenAI image response did not include image data.', requestId, details: data });
       return;
     }
 
     if (first.b64_json) {
       res.json({
+        requestId,
         imageBase64: `data:image/${OPENAI_IMAGE_FORMAT};base64,${first.b64_json}`,
         revisedPrompt: first.revised_prompt || '',
         model: OPENAI_IMAGE_MODEL,
@@ -227,6 +281,7 @@ app.post('/api/generate-image', async (req, res) => {
 
     if (first.url) {
       res.json({
+        requestId,
         imageUrl: first.url,
         revisedPrompt: first.revised_prompt || '',
         model: OPENAI_IMAGE_MODEL,
@@ -239,12 +294,16 @@ app.post('/api/generate-image', async (req, res) => {
 
     res.status(502).json({
       error: 'OpenAI image response did not include b64_json or url.',
+      requestId,
       details: data
     });
   } catch (error) {
+    logBackendError('image_route_failed', error, { requestId, model: OPENAI_IMAGE_MODEL, size: OPENAI_IMAGE_SIZE });
     res.status(500).json({
       error: 'Backend image route failed.',
-      message: error.message || String(error)
+      requestId,
+      message: error.message || String(error),
+      hint: 'Check Render logs for this requestId. If the message mentions abort, update server.js to the timeout-fix version.'
     });
   }
 });
