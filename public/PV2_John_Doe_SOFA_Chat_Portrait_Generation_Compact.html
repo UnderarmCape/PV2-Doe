@@ -1172,6 +1172,223 @@ nav a {
     width: 100%;
   }
 }
+
+
+/* v9: collapse large sections by default */
+.collapsible-section-card {
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.collapsible-section-card > details.section-collapse-shell {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  border-radius: var(--card-radius) !important;
+}
+
+.section-collapse-shell > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: var(--card-padding);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  color: var(--text);
+  font-size: 1.08rem;
+  font-weight: 900;
+}
+
+.section-collapse-shell > summary::-webkit-details-marker {
+  display: none;
+}
+
+.section-collapse-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-collapse-title::before {
+  content: "▶";
+  color: var(--accent);
+  font-size: .9rem;
+  line-height: 1;
+}
+
+.section-collapse-shell[open] > summary .section-collapse-title::before {
+  content: "▼";
+}
+
+.section-collapse-note {
+  color: var(--muted);
+  font-size: .85rem;
+  font-weight: 800;
+  text-align: right;
+}
+
+.section-collapse-body {
+  padding: 0 var(--card-padding) var(--card-padding);
+}
+
+.section-collapse-body > h2:first-child {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .section-collapse-shell > summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .section-collapse-note {
+    margin-left: 1.45rem;
+    text-align: left;
+  }
+}
+
+
+/* v10 Scene Outputs upload manager */
+.scene-output-current {
+  background: rgba(214, 180, 93, .10);
+  border: 1px solid rgba(214, 180, 93, .35);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin: 10px 0 14px;
+  color: var(--text);
+}
+
+.scene-output-upload-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(220px, 1fr) minmax(220px, 1fr) minmax(180px, .7fr);
+  gap: 12px;
+  align-items: end;
+}
+
+.scene-output-check {
+  color: var(--text);
+  font-weight: 800;
+  padding-bottom: 10px;
+}
+
+.scene-output-check label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.scene-outputs-master {
+  margin-top: 18px !important;
+}
+
+.scene-output-groups {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.scene-output-scene details,
+.scene-output-scene {
+  width: 100%;
+}
+
+.scene-output-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.scene-output-card {
+  background: rgba(2, 6, 23, .34);
+  border: 1px solid var(--line);
+  border-radius: calc(var(--card-radius) - 2px);
+  padding: 10px;
+  min-width: 0;
+}
+
+.scene-output-card.is-final {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px rgba(214, 180, 93, .35);
+}
+
+.scene-output-card img {
+  width: 100%;
+  max-height: 260px;
+  object-fit: contain;
+  background: var(--code);
+  margin-bottom: 10px;
+}
+
+.scene-output-card h4 {
+  margin: 6px 0;
+  overflow-wrap: anywhere;
+}
+
+.scene-output-meta {
+  color: var(--muted);
+  font-size: .82rem;
+  overflow-wrap: anywhere;
+}
+
+.scene-output-notes {
+  white-space: pre-wrap;
+  color: var(--text);
+  font-size: .86rem;
+  margin: 8px 0;
+  max-height: 140px;
+  overflow: auto;
+}
+
+.scene-output-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(214, 180, 93, .6);
+  color: #111827;
+  background: var(--accent);
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: .72rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.scene-output-empty {
+  color: var(--muted);
+  font-size: .9rem;
+  padding: 8px 0;
+}
+
+.scene-output-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.scene-output-actions .api-button {
+  padding: 7px 10px;
+  font-size: .75rem;
+}
+
+@media (max-width: 1100px) {
+  .scene-output-upload-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .scene-output-upload-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .scene-output-list {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
 </head>
 <body>
@@ -1450,7 +1667,7 @@ NEGATIVE INSTRUCTIONS:
 Do not change his identity, face, age, haircut, rank, uniform layout, patch placement, or sleeve placement. Do not make any panel look like a different Soldier. Do not create inconsistent face shapes or patch placement between panels. Do not add extra badges, weapons, tactical gear, helmet, body armor, or wrong camouflage.</pre>
 </details>
 </section>
-<section class="card" id="portrait-generation">
+<section class="card collapsible-section-card" id="portrait-generation"><details class="section-collapse-shell"><summary><span class="section-collapse-title">Image B Prompt - Close-Up Portrait Generation Prompt</span><span class="section-collapse-note">Open to view the portrait reference, F/G/H references, and full prompt.</span></summary><div class="section-collapse-body">
 <h2>Image B Prompt - Close-Up Portrait Generation Prompt</h2>
 <p class="small">Use this section to generate the finished PV2 John Doe close-up portrait from scratch as closely as possible. The portrait below is the target look. The patch, rank, and flag references are included in a closed dropdown so they are available without taking over the page.</p>
 <div class="two-column">
@@ -1525,7 +1742,7 @@ Only render readable text if it can be clean and accurate. The only visible unif
 NEGATIVE INSTRUCTIONS:
 clean-shaven appearance, rank, uniform layout, shoulder patch placement, or overall junior-enlisted appearance. Do not make him older, more muscular, heroic, tactical, or special operations. Do not add weapons, body armor, helmet, sunglasses, gloves, beard, tattoos, ribbons, medals, qualification badges, airborne tabs, combat patches, extra shoulder patches, or awards. Do not use UCP, woodland camouflage, MARPAT, ABU, black boots, or incorrect camouflage. Do not tilt, rotate, shrink, distort, or move the 19th ESC patch. Do not replace the PV2 chevron with another rank. Do not create the incorrect vertical chest pocket/flap shapes below the name tapes.</pre>
 </details>
-</section>
+</div></details></section>
 <section class="card" id="master">
 <h2>Final 3-Image Scene Generation Master Prompt</h2>
 <pre>IMAGE GENERATION TASK — GENERATE THE IMAGE NOW.
@@ -1826,7 +2043,7 @@ Do not create a different face when the patrol cap is worn.</pre>
 <div aria-live="polite" class="builder-status" id="builderStatus"></div>
 </div>
 </div>
-</section><section class="card api-generation-card" id="chatgpt-workflow">
+</section><section class="card api-generation-card collapsible-section-card" id="chatgpt-workflow"><details class="section-collapse-shell"><summary><span class="section-collapse-title">ChatGPT Plus Manual Workflow</span><span class="section-collapse-note">Open to copy prompts, launch ChatGPT, and use the manual workflow tools.</span></summary><div class="section-collapse-body">
 <h2>ChatGPT Plus Manual Workflow</h2>
 <p class="small">Use this section when you want to use your normal ChatGPT account instead of the OpenAI API. This page does not send requests to OpenAI, does not use API billing, and does not store any API keys. It prepares the prompt, checklist, and scene package so you can copy them into ChatGPT manually.</p>
 <div class="api-grid">
@@ -1862,23 +2079,52 @@ Do not create a different face when the patrol cap is worn.</pre>
 <button class="api-button secondary" id="manualCopyInstructionsButton" type="button">Copy Manual Instructions</button>
 </div>
 </div>
-<div class="api-panel" style="grid-column: 1 / -1;">
-<h3>3. Scene Tracking Notes</h3>
-<p class="api-note">Track what you generated in ChatGPT. These notes stay in your browser unless you copy or download them.</p>
-<label class="api-label" for="manualResultFilename">Result Filename / Scene Label</label>
-<input class="api-input" id="manualResultFilename" placeholder="Example: scene-18-closing-stay-safe-v01.png"/>
-<label class="api-label" for="manualResultNotes">Result Notes</label>
-<textarea class="api-textarea" id="manualResultNotes" placeholder="Paste notes about the ChatGPT result here, such as what worked, what failed, which references were uploaded, or what needs to be regenerated."></textarea>
+<div class="api-panel" id="scene-output-manager-panel" style="grid-column: 1 / -1;">
+<h3>3. Scene Outputs / Generated Outputs</h3>
+<p class="api-note">Upload images that ChatGPT created manually. The selected scene in the Prompt Builder determines which Scene Result bucket receives the uploaded image. The filename auto-populates from the selected file, but you can edit the display title and stored filename before uploading.</p>
+<div class="scene-output-current">
+<strong>Current target scene:</strong>
+<span id="sceneOutputSelectedScene">Select a Scene Preset in the Prompt Builder.</span>
+</div>
+<div class="scene-output-upload-grid">
+<div>
+<label class="api-label" for="sceneOutputImageFile">Generated Image File</label>
+<input accept="image/*" class="api-input" id="sceneOutputImageFile" type="file"/>
+</div>
+<div>
+<label class="api-label" for="manualResultFilename">Stored Filename</label>
+<input class="api-input" id="manualResultFilename" placeholder="Auto-filled from uploaded file, still editable."/>
+</div>
+<div>
+<label class="api-label" for="sceneOutputDisplayTitle">Custom Display Title</label>
+<input class="api-input" id="sceneOutputDisplayTitle" placeholder="Example: Scene 04 - subpoena handoff - final"/>
+</div>
+<div class="scene-output-check">
+<label>
+<input id="sceneOutputFinalFlag" type="checkbox"/>
+        Mark as primary/final for this scene
+      </label>
+</div>
+</div>
+<label class="api-label" for="manualResultNotes">Output Notes</label>
+<textarea class="api-textarea" id="manualResultNotes" placeholder="Notes about the uploaded result: what worked, what failed, references used, or regeneration notes."></textarea>
 <div class="api-row">
+<button class="api-button" id="sceneOutputUploadButton" type="button">Upload Result Image</button>
+<button class="api-button secondary" id="sceneOutputRefreshButton" type="button">Refresh Scene Outputs</button>
 <button class="api-button secondary" id="manualCopyNotesButton" type="button">Copy Notes</button>
 <button class="api-button secondary" id="manualDownloadNotesButton" type="button">Download Notes .txt</button>
 <button class="api-button secondary" id="manualDownloadLogButton" type="button">Download Workflow Log</button>
-<button class="api-button danger" id="manualClearNotesButton" type="button">Clear Notes</button>
+<button class="api-button danger" id="manualClearNotesButton" type="button">Clear Form</button>
 </div>
-<p class="api-note">No image is generated inside this page in manual mode. After ChatGPT creates an image, save the image from ChatGPT and record the filename or notes here.</p>
+<div aria-live="polite" class="api-status" id="sceneOutputStatus"></div>
+<p class="api-note">Uploaded files are sent to this site’s backend and listed below. For permanent storage on Render, use a persistent disk or external storage; otherwise uploaded runtime files can disappear after redeploys/restarts.</p>
+<details class="scene-outputs-master">
+<summary>Scene Outputs Library — 18 scenes</summary>
+<div class="scene-output-groups" id="sceneOutputGroups"></div>
+</details>
 </div>
 </div>
-</section></div>
+</div></details></section></div>
 <section class="card" id="notes">
 <h2>Key Workflow Decisions</h2>
 <ul>
@@ -2949,6 +3195,367 @@ Do not create a different face when the patrol cap is worn.</pre>
     document.addEventListener('DOMContentLoaded', initThemeStudio);
   } else {
     initThemeStudio();
+  }
+})();
+</script><script>
+(function () {
+  var sceneOutputs = [];
+  var sceneOutputTitles = {};
+
+  function soById(id) { return document.getElementById(id); }
+
+  function setSceneOutputStatus(message, isError) {
+    var el = soById('sceneOutputStatus');
+    if (!el) return;
+    el.textContent = message || '';
+    el.classList.toggle('error', !!isError);
+    if (message) {
+      setTimeout(function () {
+        if (el.textContent === message) el.textContent = '';
+      }, 4500);
+    }
+  }
+
+  function addSceneOutputActivity(message, isError) {
+    var log = soById('manualActivityLog');
+    if (!log) return;
+    var row = document.createElement('div');
+    row.textContent = message;
+    if (isError) row.style.color = '#fecaca';
+    if (!isError && /uploaded|refreshed|updated|deleted|final/i.test(message)) row.className = 'success';
+    log.appendChild(row);
+    while (log.children.length > 16) log.removeChild(log.firstElementChild);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function selectedSceneInfo() {
+    var select = soById('builderSceneSelect');
+    var titleEl = soById('builderSceneTitle');
+    var sceneNumber = 1;
+    var sceneTitle = 'Scene 1';
+
+    if (select && select.value !== '') {
+      var selected = Number(select.value);
+      if (!Number.isNaN(selected)) sceneNumber = selected + 1;
+      if (select.options && select.selectedIndex >= 0) {
+        sceneTitle = select.options[select.selectedIndex].textContent || sceneTitle;
+      }
+    }
+
+    if (titleEl && titleEl.value.trim()) {
+      sceneTitle = titleEl.value.trim();
+    }
+
+    return {
+      sceneNumber: Math.min(18, Math.max(1, sceneNumber)),
+      sceneTitle: sceneTitle
+    };
+  }
+
+  function updateSelectedSceneDisplay() {
+    var info = selectedSceneInfo();
+    var el = soById('sceneOutputSelectedScene');
+    if (el) el.textContent = 'Scene ' + info.sceneNumber + ' — ' + info.sceneTitle;
+  }
+
+  function basenameWithoutExt(name) {
+    return String(name || '').replace(/\.[^.]+$/, '');
+  }
+
+  function sanitizeDownloadName(name) {
+    return (name || 'scene-output')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 90) || 'scene-output';
+  }
+
+  function getBuiltPromptForOutput() {
+    var output = soById('builderOutput');
+    if (output && output.value.trim()) return output.value.trim();
+    return '';
+  }
+
+  async function fetchJson(url, options) {
+    var response = await fetch(url, options || {});
+    var text = await response.text();
+    var parsed = null;
+    try { parsed = text ? JSON.parse(text) : null; } catch (err) {}
+    if (!response.ok) {
+      var message = parsed && parsed.error ? parsed.error : 'Request failed with HTTP ' + response.status + '.';
+      if (parsed && parsed.details) message += ' ' + parsed.details;
+      throw new Error(message);
+    }
+    return parsed || {};
+  }
+
+  async function loadSceneOutputs() {
+    try {
+      var data = await fetchJson('/api/scene-outputs');
+      sceneOutputs = Array.isArray(data.outputs) ? data.outputs : [];
+      renderSceneOutputs();
+      setSceneOutputStatus('Scene outputs refreshed.');
+      addSceneOutputActivity('Scene outputs refreshed.');
+    } catch (err) {
+      setSceneOutputStatus('Unable to load scene outputs: ' + err.message, true);
+      addSceneOutputActivity('Unable to load scene outputs: ' + err.message, true);
+    }
+  }
+
+  async function uploadSceneOutput() {
+    var fileInput = soById('sceneOutputImageFile');
+    var fileNameInput = soById('manualResultFilename');
+    var titleInput = soById('sceneOutputDisplayTitle');
+    var notesInput = soById('manualResultNotes');
+    var finalInput = soById('sceneOutputFinalFlag');
+
+    if (!fileInput || !fileInput.files || !fileInput.files[0]) {
+      setSceneOutputStatus('Choose an image file first.', true);
+      return;
+    }
+
+    var info = selectedSceneInfo();
+    var file = fileInput.files[0];
+    var displayTitle = titleInput && titleInput.value.trim() ? titleInput.value.trim() : basenameWithoutExt(file.name);
+    var storedFilename = fileNameInput && fileNameInput.value.trim() ? fileNameInput.value.trim() : file.name;
+
+    var form = new FormData();
+    form.append('sceneNumber', String(info.sceneNumber));
+    form.append('sceneTitle', info.sceneTitle);
+    form.append('displayTitle', displayTitle);
+    form.append('fileName', storedFilename);
+    form.append('notes', notesInput ? notesInput.value : '');
+    form.append('promptUsed', getBuiltPromptForOutput());
+    form.append('isFinal', finalInput && finalInput.checked ? 'true' : 'false');
+    form.append('image', file);
+
+    var button = soById('sceneOutputUploadButton');
+    if (button) button.disabled = true;
+    setSceneOutputStatus('Uploading scene output...');
+    addSceneOutputActivity('Uploading image to Scene ' + info.sceneNumber + ' outputs...');
+
+    try {
+      var data = await fetchJson('/api/scene-outputs', { method: 'POST', body: form });
+      setSceneOutputStatus('Uploaded to Scene ' + info.sceneNumber + ' outputs.');
+      addSceneOutputActivity('Uploaded image to Scene ' + info.sceneNumber + ' outputs.');
+      if (fileInput) fileInput.value = '';
+      if (finalInput) finalInput.checked = false;
+      await loadSceneOutputs();
+      var master = document.querySelector('.scene-outputs-master');
+      if (master) master.open = true;
+      var sceneDetail = document.querySelector('[data-scene-output-detail="' + info.sceneNumber + '"]');
+      if (sceneDetail) sceneDetail.open = true;
+    } catch (err) {
+      setSceneOutputStatus('Upload failed: ' + err.message, true);
+      addSceneOutputActivity('Upload failed: ' + err.message, true);
+    } finally {
+      if (button) button.disabled = false;
+    }
+  }
+
+  function renderSceneOutputs() {
+    var container = soById('sceneOutputGroups');
+    if (!container) return;
+    container.innerHTML = '';
+
+    var titleMap = {};
+    var select = soById('builderSceneSelect');
+    if (select && select.options) {
+      Array.from(select.options).forEach(function (opt, index) {
+        titleMap[index + 1] = opt.textContent || ('Scene ' + (index + 1));
+      });
+    }
+
+    sceneOutputs.forEach(function (item) {
+      if (item.sceneTitle) titleMap[item.sceneNumber] = item.sceneTitle;
+    });
+    sceneOutputTitles = titleMap;
+
+    for (var i = 1; i <= 18; i++) {
+      var outputs = sceneOutputs.filter(function (item) { return Number(item.sceneNumber) === i; });
+      var detail = document.createElement('details');
+      detail.className = 'scene-output-scene';
+      detail.setAttribute('data-scene-output-detail', String(i));
+
+      var summary = document.createElement('summary');
+      summary.textContent = 'Scene ' + i + ': ' + (titleMap[i] || 'Untitled') + ' — ' + outputs.length + ' output' + (outputs.length === 1 ? '' : 's');
+      detail.appendChild(summary);
+
+      var list = document.createElement('div');
+      list.className = 'scene-output-list';
+
+      if (!outputs.length) {
+        var empty = document.createElement('div');
+        empty.className = 'scene-output-empty';
+        empty.textContent = 'No uploaded outputs yet.';
+        list.appendChild(empty);
+      } else {
+        outputs
+          .slice()
+          .sort(function (a, b) { return String(b.dateUploaded || '').localeCompare(String(a.dateUploaded || '')); })
+          .forEach(function (item) {
+            list.appendChild(createOutputCard(item));
+          });
+      }
+
+      detail.appendChild(list);
+      container.appendChild(detail);
+    }
+  }
+
+  function createOutputCard(item) {
+    var card = document.createElement('div');
+    card.className = 'scene-output-card' + (item.isFinal ? ' is-final' : '');
+
+    if (item.isFinal) {
+      var badge = document.createElement('div');
+      badge.className = 'scene-output-badge';
+      badge.textContent = 'Primary / Final';
+      card.appendChild(badge);
+    }
+
+    var img = document.createElement('img');
+    img.src = item.imageUrl;
+    img.alt = item.displayTitle || item.fileName || 'Scene output image';
+    img.loading = 'lazy';
+    card.appendChild(img);
+
+    var title = document.createElement('h4');
+    title.textContent = item.displayTitle || item.fileName || 'Scene output';
+    card.appendChild(title);
+
+    var meta = document.createElement('div');
+    meta.className = 'scene-output-meta';
+    meta.textContent = (item.fileName || '') + (item.dateUploaded ? ' · uploaded ' + new Date(item.dateUploaded).toLocaleString() : '');
+    card.appendChild(meta);
+
+    if (item.notes) {
+      var notes = document.createElement('div');
+      notes.className = 'scene-output-notes';
+      notes.textContent = item.notes;
+      card.appendChild(notes);
+    }
+
+    var actions = document.createElement('div');
+    actions.className = 'scene-output-actions';
+
+    var download = document.createElement('a');
+    download.className = 'api-button secondary';
+    download.href = item.imageUrl;
+    download.download = item.fileName || 'scene-output.png';
+    download.textContent = 'Download';
+    actions.appendChild(download);
+
+    if (!item.isFinal) {
+      var finalBtn = document.createElement('button');
+      finalBtn.className = 'api-button secondary';
+      finalBtn.type = 'button';
+      finalBtn.textContent = 'Mark Final';
+      finalBtn.addEventListener('click', function () { markSceneOutputFinal(item.id); });
+      actions.appendChild(finalBtn);
+    }
+
+    var editBtn = document.createElement('button');
+    editBtn.className = 'api-button secondary';
+    editBtn.type = 'button';
+    editBtn.textContent = 'Edit Metadata';
+    editBtn.addEventListener('click', function () { editSceneOutput(item); });
+    actions.appendChild(editBtn);
+
+    var deleteBtn = document.createElement('button');
+    deleteBtn.className = 'api-button danger';
+    deleteBtn.type = 'button';
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.addEventListener('click', function () { deleteSceneOutput(item.id); });
+    actions.appendChild(deleteBtn);
+
+    card.appendChild(actions);
+    return card;
+  }
+
+  async function markSceneOutputFinal(id) {
+    try {
+      await fetchJson('/api/scene-outputs/' + encodeURIComponent(id), {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isFinal: true })
+      });
+      setSceneOutputStatus('Marked output as primary/final.');
+      addSceneOutputActivity('Marked output as primary/final.');
+      await loadSceneOutputs();
+    } catch (err) {
+      setSceneOutputStatus('Unable to mark final: ' + err.message, true);
+    }
+  }
+
+  async function editSceneOutput(item) {
+    var title = prompt('Edit display title:', item.displayTitle || '');
+    if (title === null) return;
+    var notes = prompt('Edit notes:', item.notes || '');
+    if (notes === null) return;
+
+    try {
+      await fetchJson('/api/scene-outputs/' + encodeURIComponent(item.id), {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ displayTitle: title, notes: notes })
+      });
+      setSceneOutputStatus('Scene output metadata updated.');
+      addSceneOutputActivity('Scene output metadata updated.');
+      await loadSceneOutputs();
+    } catch (err) {
+      setSceneOutputStatus('Unable to update metadata: ' + err.message, true);
+    }
+  }
+
+  async function deleteSceneOutput(id) {
+    if (!confirm('Delete this uploaded scene output? This removes the file from the server storage.')) return;
+    try {
+      await fetchJson('/api/scene-outputs/' + encodeURIComponent(id), { method: 'DELETE' });
+      setSceneOutputStatus('Scene output deleted.');
+      addSceneOutputActivity('Scene output deleted.');
+      await loadSceneOutputs();
+    } catch (err) {
+      setSceneOutputStatus('Unable to delete output: ' + err.message, true);
+    }
+  }
+
+  function initSceneOutputs() {
+    if (!soById('scene-output-manager-panel')) return;
+
+    updateSelectedSceneDisplay();
+
+    var select = soById('builderSceneSelect');
+    if (select) select.addEventListener('change', updateSelectedSceneDisplay);
+
+    var titleEl = soById('builderSceneTitle');
+    if (titleEl) titleEl.addEventListener('input', updateSelectedSceneDisplay);
+
+    var fileInput = soById('sceneOutputImageFile');
+    if (fileInput) {
+      fileInput.addEventListener('change', function () {
+        var file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+        var fileNameInput = soById('manualResultFilename');
+        var titleInput = soById('sceneOutputDisplayTitle');
+        if (fileNameInput) fileNameInput.value = file.name;
+        if (titleInput && !titleInput.value.trim()) titleInput.value = basenameWithoutExt(file.name);
+      });
+    }
+
+    var uploadBtn = soById('sceneOutputUploadButton');
+    var refreshBtn = soById('sceneOutputRefreshButton');
+
+    if (uploadBtn) uploadBtn.addEventListener('click', uploadSceneOutput);
+    if (refreshBtn) refreshBtn.addEventListener('click', loadSceneOutputs);
+
+    loadSceneOutputs();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSceneOutputs);
+  } else {
+    initSceneOutputs();
   }
 })();
 </script></body>

@@ -4,28 +4,25 @@ This package hosts the PV2 John Doe prompt builder as a web page and replaces th
 
 This version does **not** use the OpenAI API, does **not** require OpenAI Platform credits, and does **not** require an API key.
 
-## What changed in v4
+## What changed in v10
 
-- Removed the API-calling workflow from the HTML interface.
-- Removed the OpenAI API requirement from the backend.
-- Replaced the API panel with **ChatGPT Plus Manual Workflow**.
-- Added buttons to:
-  - Copy the final generated prompt
-  - Open ChatGPT
-  - Save/open an optional ChatGPT Project URL
-  - Copy the reference image upload checklist
-  - Copy manual generation instructions
-  - Copy/download a complete scene package
-  - Track result filenames and notes
-  - Download a manual workflow log
-- Kept the existing:
-  - PV2 John Doe reference content
-  - Scene Presets
-  - Prompt Builder
-  - Collapsible sections
-  - Copy buttons
-  - Reference image sections
-  - Mobile-friendly layout
+- Added a server-backed **Scene Outputs / Generated Outputs** manager.
+- The output manager lets you upload images that ChatGPT generated manually.
+- Uploads are assigned to the currently selected Prompt Builder scene.
+- Each scene supports multiple uploaded result images.
+- Each scene can have one image marked as **Primary / Final**.
+- Each uploaded output stores:
+  - scene number
+  - scene title
+  - stored filename
+  - original filename
+  - custom display title
+  - notes
+  - date uploaded
+  - prompt used
+  - primary/final flag
+- Added an 18-scene collapsed results library.
+- Added buttons to download, edit metadata, delete, and mark final.
 
 ## How to use
 
@@ -51,7 +48,9 @@ https://pv2-doe.onrender.com/
 
 9. Paste the copied prompt into ChatGPT and generate the image using your normal ChatGPT account.
 
-10. Save the generated image from ChatGPT and record notes or filenames in the Scene Tracking Notes area.
+10. Save the generated image from ChatGPT.
+
+11. Return to the hosted page, open **Scene Outputs / Generated Outputs**, upload the saved image, add notes, and optionally mark it as final.
 
 ## Local testing
 
@@ -73,15 +72,51 @@ Open:
 http://localhost:3000
 ```
 
-Optional health check:
+Optional health checks:
 
 ```text
 http://localhost:3000/health
+http://localhost:3000/api/health
 ```
 
-## Render deployment
+Scene outputs API:
 
-This package can still be deployed on Render as a Node Web Service.
+```text
+GET    /api/scene-outputs
+POST   /api/scene-outputs
+PUT    /api/scene-outputs/:id
+DELETE /api/scene-outputs/:id
+```
+
+## Storage behavior
+
+By default, uploaded images are saved to:
+
+```text
+public/scene-outputs/
+```
+
+Metadata is saved to:
+
+```text
+public/scene-outputs/scene-outputs.json
+```
+
+You can override the storage location with:
+
+```text
+SCENE_OUTPUTS_DIR=/absolute/path/to/scene-outputs
+```
+
+The site serves that folder at:
+
+```text
+/scene-outputs
+```
+
+## Render deployment and persistent storage
+
+This package can be deployed on Render as a Node Web Service.
 
 Use these settings:
 
@@ -91,6 +126,20 @@ Start Command: npm start
 ```
 
 No OpenAI API environment variables are needed for this manual workflow version.
+
+Important: Render web services use an ephemeral filesystem by default. Files written at runtime can disappear after redeploys or restarts unless you attach a persistent disk. For permanent uploaded scene outputs on Render, attach a persistent disk and set the environment variable:
+
+```text
+SCENE_OUTPUTS_DIR=/your/persistent/disk/mount/scene-outputs
+```
+
+Then redeploy and test:
+
+```text
+https://your-render-url.onrender.com/api/health
+```
+
+Confirm the returned `sceneOutputsDir` points to your persistent disk path.
 
 ## Important note
 
