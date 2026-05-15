@@ -654,6 +654,21 @@ nav a {
   pre { background: #f5f5f5; color: #000; border-color: #ddd; }
   nav { display: none; }
 }
+
+/* Manual ChatGPT workflow additions. This replaces the old API-calling panel. */
+#chatgpt-workflow .api-textarea ul,
+#chatgpt-workflow .api-textarea li {
+  color: var(--text);
+}
+#manualReferenceChecklist {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+#manualActivityLog .success {
+  color: #bbf7d0;
+}
+
 </style>
 </head>
 <body>
@@ -665,7 +680,7 @@ nav a {
     <a href="#master">Master</a>
     <a href="#scenes">Scenes</a>
     <a href="#prompt-builder">Builder</a>
-    <a href="#api-generation">API</a>
+    <a href="#chatgpt-workflow">ChatGPT Workflow</a>
     <a href="#image-prompts">Image Prompts</a>
     <a href="#portrait-generation">Portrait Prompt</a>
     <a href="#cap">Patrol Cap</a>
@@ -1233,86 +1248,67 @@ Do not create a different face when the patrol cap is worn.</pre>
     </div>
   </section>
 
-  <section id="api-generation" class="card api-generation-card">
-    <h2>API-Enabled Generation</h2>
-    <p class="small">Use the completed prompt from the Prompt Builder, send it to secure backend endpoints, and display returned ChatGPT text responses or generated images here. This page does not store or expose any API keys.</p>
+  <section id="chatgpt-workflow" class="card api-generation-card">
+    <h2>ChatGPT Plus Manual Workflow</h2>
+    <p class="small">Use this section when you want to use your normal ChatGPT account instead of the OpenAI API. This page does not send requests to OpenAI, does not use API billing, and does not store any API keys. It prepares the prompt, checklist, and scene package so you can copy them into ChatGPT manually.</p>
 
     <div class="api-grid">
       <div class="api-panel">
-        <h3>1. Send Built Prompt</h3>
-
-        <label class="api-label" for="apiBackendBaseUrl">Backend Base URL</label>
-        <input id="apiBackendBaseUrl" class="api-input" type="url" inputmode="url" placeholder="http://localhost:3000" autocomplete="off">
-        <p class="api-backend-help">Use <code>http://localhost:3000</code> when running the included local backend. No API key is stored in this page.</p>
-        <div class="api-row">
-          <button type="button" class="api-button secondary" id="apiSaveBackendButton">Save Backend URL</button>
-          <button type="button" class="api-button secondary" id="apiTestBackendButton">Test Backend</button>
-        </div>
-        <div class="api-endpoint-preview" id="apiEndpointPreview">Backend endpoints will appear here.</div>
-
-        <label class="api-label" for="apiReasoningMode">Reasoning Mode</label>
-        <select id="apiReasoningMode" class="api-select">
-          <option value="xhigh" selected>Extended / strongest available</option>
-          <option value="high">High</option>
-          <option value="medium">Medium</option>
-          <option value="low">Low</option>
-        </select>
-        <p class="api-note">The selected reasoning mode is sent as metadata to the backend. The backend decides which model/settings to use.</p>
+        <h3>1. Copy and Launch</h3>
+        <p class="api-note">Build the prompt in the Prompt Builder above, then copy it here and paste it into ChatGPT with the required reference images.</p>
 
         <div class="api-row">
-          <button type="button" class="api-button" id="apiChatButton">Send Prompt to ChatGPT</button>
-          <button type="button" class="api-button secondary" id="apiImageButton">Generate Image</button>
-          <button type="button" class="api-button danger" id="apiClearButton">Clear API Output</button>
+          <button type="button" class="api-button" id="manualCopyPromptButton">Copy Final Prompt</button>
+          <a class="api-button secondary" id="manualOpenChatGPTButton" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT</a>
+          <button type="button" class="api-button secondary" id="manualCopyScenePackageButton">Copy Scene Package</button>
+          <button type="button" class="api-button secondary" id="manualDownloadScenePackageButton">Download Scene Package .txt</button>
         </div>
 
-        <div class="api-status" id="apiStatus" aria-live="polite"></div>
-
-        <label class="api-label" for="apiActivityLog">Activity / Status</label>
-        <div id="apiActivityLog" class="api-activity-log" aria-live="polite">
-          <div>Ready. Build a prompt, then send it to the secure backend.</div>
+        <label class="api-label" for="manualProjectUrl">Optional ChatGPT Project URL</label>
+        <input id="manualProjectUrl" class="api-input" type="url" inputmode="url" placeholder="Paste your ChatGPT project link here, then save it." autocomplete="off">
+        <p class="api-backend-help">Optional. Save a direct link to your PV2 DOE ChatGPT Project so this page can open it quickly. The link is saved only in this browser.</p>
+        <div class="api-row">
+          <button type="button" class="api-button secondary" id="manualSaveProjectUrlButton">Save Project URL</button>
+          <button type="button" class="api-button secondary" id="manualOpenProjectButton">Open Saved Project</button>
+          <button type="button" class="api-button danger" id="manualClearProjectUrlButton">Clear Project URL</button>
         </div>
 
-        <div class="api-diagnostics">
-          <label class="api-label">Diagnostics Log</label>
-          <label class="api-checkline" for="apiIncludePromptInDiagnostics">
-            <input type="checkbox" id="apiIncludePromptInDiagnostics">
-            <span>Include full built prompt in diagnostics download/copy. Leave unchecked to log metadata only.</span>
-          </label>
-          <div class="api-row">
-            <button type="button" class="api-button secondary" id="apiDownloadDiagnosticsButton">Download Diagnostics Log</button>
-            <button type="button" class="api-button secondary" id="apiCopyDiagnosticsButton">Copy Diagnostics</button>
-            <button type="button" class="api-button danger" id="apiClearDiagnosticsButton">Clear Diagnostics</button>
-          </div>
-          <div class="api-diagnostic-count" id="apiDiagnosticCount">Diagnostics entries: 0</div>
-          <p class="api-note">Diagnostics are generated in this browser and include timestamps, endpoint paths, browser/page info, request metadata, response status, and error details. No API keys are stored here.</p>
-        </div>
+        <div class="api-status" id="manualStatus" aria-live="polite"></div>
 
-        <p class="api-note">Backend routes used by this page are built from the Backend Base URL plus <code>/api/chat</code> and <code>/api/generate-image</code>. The included local backend implements these routes and keeps the OpenAI API key in a server-side <code>.env</code> file.</p>
+        <label class="api-label" for="manualActivityLog">Activity / Status</label>
+        <div id="manualActivityLog" class="api-activity-log" aria-live="polite">
+          <div>Ready. Build a prompt, copy it, upload references in ChatGPT, then paste the prompt.</div>
+        </div>
       </div>
 
       <div class="api-panel">
-        <h3>2. ChatGPT Text Response</h3>
-        <label class="api-label" for="apiResponseOutput">Response Output</label>
-        <textarea id="apiResponseOutput" class="api-textarea" readonly placeholder="ChatGPT/OpenAI text responses from the backend will appear here."></textarea>
+        <h3>2. Reference Upload Checklist</h3>
+        <p class="api-note">Use this checklist before pasting a scene prompt into ChatGPT. Upload the images in the same chat where you paste the prompt.</p>
+        <div class="api-textarea" id="manualReferenceChecklist" style="min-height: 320px; overflow: auto; white-space: pre-wrap;" aria-label="Reference upload checklist"></div>
         <div class="api-row">
-          <button type="button" class="api-button" id="apiCopyResponseButton">Copy Response</button>
-          <button type="button" class="api-button secondary" id="apiDownloadResponseButton">Download Response .txt</button>
+          <button type="button" class="api-button" id="manualCopyChecklistButton">Copy Reference Checklist</button>
+          <button type="button" class="api-button secondary" id="manualCopyInstructionsButton">Copy Manual Instructions</button>
         </div>
       </div>
 
       <div class="api-panel" style="grid-column: 1 / -1;">
-        <h3>3. Generated Image Result</h3>
-        <div class="api-image-frame">
-          <div id="apiImagePlaceholder" class="api-image-placeholder">Generated image preview will appear here after the backend returns an image URL or base64 image data.</div>
-          <img id="apiImagePreview" class="api-image-preview" alt="Generated image result" hidden>
-        </div>
-        <div id="apiImageCaption" class="api-image-caption"></div>
+        <h3>3. Scene Tracking Notes</h3>
+        <p class="api-note">Track what you generated in ChatGPT. These notes stay in your browser unless you copy or download them.</p>
+
+        <label class="api-label" for="manualResultFilename">Result Filename / Scene Label</label>
+        <input id="manualResultFilename" class="api-input" placeholder="Example: scene-18-closing-stay-safe-v01.png">
+
+        <label class="api-label" for="manualResultNotes">Result Notes</label>
+        <textarea id="manualResultNotes" class="api-textarea" placeholder="Paste notes about the ChatGPT result here, such as what worked, what failed, which references were uploaded, or what needs to be regenerated."></textarea>
+
         <div class="api-row">
-          <a id="apiDownloadImageLink" class="api-button" href="#" download="pv2-john-doe-generated-image.png" hidden>Download Image</a>
-          <button type="button" class="api-button secondary" id="apiClearImageButton">Clear Image</button>
+          <button type="button" class="api-button secondary" id="manualCopyNotesButton">Copy Notes</button>
+          <button type="button" class="api-button secondary" id="manualDownloadNotesButton">Download Notes .txt</button>
+          <button type="button" class="api-button secondary" id="manualDownloadLogButton">Download Workflow Log</button>
+          <button type="button" class="api-button danger" id="manualClearNotesButton">Clear Notes</button>
         </div>
-        <label class="api-label" for="apiImageGallery">Recent Image Results</label>
-        <div id="apiImageGallery" class="api-gallery" aria-label="Recent generated image results"></div>
+
+        <p class="api-note">No image is generated inside this page in manual mode. After ChatGPT creates an image, save the image from ChatGPT and record the filename or notes here.</p>
       </div>
     </div>
   </section>
@@ -1329,6 +1325,7 @@ Do not create a different face when the patrol cap is worn.</pre>
       <li>For outdoor, transit, field, or appropriate military outdoor scenes, PV2 John Doe may wear the patrol cap.</li>
       <li>Generated text on uniforms is unreliable. Keep DOE and U.S. ARMY only if rendered cleanly; otherwise add manually in editing.</li>
       <li>For public release, treat AI-generated imagery as photo illustrations in the internal workflow and confirm local release guidance if needed.</li>
+      <li>The ChatGPT Workflow section is manual-mode only. It prepares prompts and checklists for ChatGPT Plus and does not call the OpenAI API.</li>
     </ul>
   </section>
 </main>
@@ -1710,310 +1707,8 @@ Do not create a different face when the patrol cap is worn.</pre>
 (function () {
   function byId(id) { return document.getElementById(id); }
 
-  /*
-    Backend endpoint configuration.
-    These are placeholder routes. They must be implemented on a secure backend server.
-    The backend, not this HTML file, should hold and use the OpenAI API key.
-  */
-  var API_ENDPOINT_PATHS = {
-    chat: '/api/chat',
-    image: '/api/generate-image',
-    health: '/api/health'
-  };
-  var BACKEND_BASE_STORAGE_KEY = 'pv2JohnDoeBackendBaseUrl';
-
-  function getDefaultBackendBaseUrl() {
-    if (window.location.protocol === 'file:') return 'http://localhost:3000';
-    return window.location.origin || 'http://localhost:3000';
-  }
-
-  function normalizeBackendBaseUrl(value) {
-    return (value || '').trim().replace(/\/+$/, '');
-  }
-
-  function getBackendBaseUrl() {
-    var input = byId('apiBackendBaseUrl');
-    var value = input ? input.value : '';
-    return normalizeBackendBaseUrl(value || getDefaultBackendBaseUrl());
-  }
-
-  function buildApiUrl(path) {
-    if (/^https?:\/\//i.test(path)) return path;
-    var base = getBackendBaseUrl();
-    var endpointPath = path.charAt(0) === '/' ? path : '/' + path;
-    return base ? base + endpointPath : endpointPath;
-  }
-
-  var API_ENDPOINTS = {};
-  Object.defineProperties(API_ENDPOINTS, {
-    chat: { enumerable: true, get: function () { return buildApiUrl(API_ENDPOINT_PATHS.chat); } },
-    image: { enumerable: true, get: function () { return buildApiUrl(API_ENDPOINT_PATHS.image); } },
-    health: { enumerable: true, get: function () { return buildApiUrl(API_ENDPOINT_PATHS.health); } }
-  });
-
-  function getEndpointSnapshot() {
-    return {
-      backendBaseUrl: getBackendBaseUrl(),
-      paths: API_ENDPOINT_PATHS,
-      resolved: {
-        chat: API_ENDPOINTS.chat,
-        image: API_ENDPOINTS.image,
-        health: API_ENDPOINTS.health
-      }
-    };
-  }
-
-  function updateEndpointPreview() {
-    var preview = byId('apiEndpointPreview');
-    if (!preview) return;
-    preview.textContent = 'Chat: ' + API_ENDPOINTS.chat + '\nImage: ' + API_ENDPOINTS.image + '\nHealth: ' + API_ENDPOINTS.health;
-  }
-
-  function saveBackendBaseUrl() {
-    var baseUrl = getBackendBaseUrl();
-    try {
-      localStorage.setItem(BACKEND_BASE_STORAGE_KEY, baseUrl);
-      recordDiagnostic('backend_base_url_saved', { backendBaseUrl: baseUrl });
-      addActivity('Backend URL saved: ' + baseUrl);
-    } catch (error) {
-      recordDiagnostic('backend_base_url_save_error', { error: errorToDiagnostic(error) });
-      addActivity('Error: backend URL could not be saved in this browser. ' + error.message, true);
-    }
-    updateEndpointPreview();
-  }
-
-  function initBackendBaseUrlControl() {
-    var input = byId('apiBackendBaseUrl');
-    if (!input) return;
-    var saved = '';
-    try { saved = localStorage.getItem(BACKEND_BASE_STORAGE_KEY) || ''; } catch (error) { saved = ''; }
-    input.value = saved || getDefaultBackendBaseUrl();
-    input.addEventListener('input', updateEndpointPreview);
-    input.addEventListener('change', updateEndpointPreview);
-    updateEndpointPreview();
-  }
-
-  var isApiBusy = false;
-  var currentImageSrc = '';
-  var diagnosticsLog = [];
-  var MAX_DIAGNOSTIC_ENTRIES = 250;
-  var diagnosticSessionId = 'pv2-doe-' + new Date().toISOString().replace(/[^0-9]/g, '').slice(0, 14) + '-' + Math.random().toString(36).slice(2, 8);
-
-  function diagnosticTimestamp() {
-    return new Date().toISOString();
-  }
-
-  function truncateDiagnosticString(value, maxLength) {
-    var limit = maxLength || 1200;
-    if (typeof value !== 'string') return value;
-    if (value.indexOf('data:image/') === 0) {
-      return '[image data URL omitted from diagnostics; length=' + value.length + ']';
-    }
-    if (value.length > limit) {
-      return value.slice(0, limit) + '… [truncated; original length=' + value.length + ']';
-    }
-    return value;
-  }
-
-  function sanitizeDiagnosticValue(value, depth) {
-    depth = depth || 0;
-    if (depth > 4) return '[max depth reached]';
-    if (value === null || value === undefined) return value;
-    if (typeof value === 'string') return truncateDiagnosticString(value);
-    if (typeof value === 'number' || typeof value === 'boolean') return value;
-    if (value instanceof Error) return errorToDiagnostic(value);
-    if (Array.isArray(value)) {
-      return value.slice(0, 25).map(function (item) { return sanitizeDiagnosticValue(item, depth + 1); });
-    }
-    if (typeof value === 'object') {
-      var output = {};
-      Object.keys(value).slice(0, 40).forEach(function (key) {
-        var lowered = key.toLowerCase();
-        if (lowered.indexOf('key') !== -1 || lowered.indexOf('token') !== -1 || lowered.indexOf('secret') !== -1 || lowered.indexOf('authorization') !== -1) {
-          output[key] = '[redacted]';
-        } else {
-          output[key] = sanitizeDiagnosticValue(value[key], depth + 1);
-        }
-      });
-      return output;
-    }
-    return String(value);
-  }
-
-  function errorToDiagnostic(error) {
-    if (!error) return {};
-    return {
-      name: error.name || 'Error',
-      message: error.message || String(error),
-      stack: error.stack ? truncateDiagnosticString(error.stack, 2000) : ''
-    };
-  }
-
-  function responseHeadersToObject(headers) {
-    var output = {};
-    if (!headers || !headers.forEach) return output;
-    headers.forEach(function (value, key) {
-      output[key] = value;
-    });
-    return output;
-  }
-
-  function updateDiagnosticCount() {
-    var count = byId('apiDiagnosticCount');
-    if (count) count.textContent = 'Diagnostics entries: ' + diagnosticsLog.length;
-  }
-
-  function recordDiagnostic(eventType, details) {
-    diagnosticsLog.push({
-      timestamp: diagnosticTimestamp(),
-      sessionId: diagnosticSessionId,
-      eventType: eventType,
-      details: sanitizeDiagnosticValue(details || {})
-    });
-    while (diagnosticsLog.length > MAX_DIAGNOSTIC_ENTRIES) diagnosticsLog.shift();
-    updateDiagnosticCount();
-  }
-
-  function collectBrowserDiagnostics() {
-    return {
-      generatedAt: diagnosticTimestamp(),
-      sessionId: diagnosticSessionId,
-      pageUrl: window.location.href,
-      pageProtocol: window.location.protocol,
-      pageOrigin: window.location.origin,
-      isSecureContext: !!window.isSecureContext,
-      online: navigator.onLine,
-      userAgent: navigator.userAgent,
-      language: navigator.language,
-      platform: navigator.platform,
-      viewport: {
-        width: window.innerWidth,
-        height: window.innerHeight,
-        devicePixelRatio: window.devicePixelRatio || 1
-      },
-      timezone: (Intl.DateTimeFormat && Intl.DateTimeFormat().resolvedOptions) ? Intl.DateTimeFormat().resolvedOptions().timeZone : '',
-      hasFetch: typeof window.fetch === 'function',
-      hasReadableStream: typeof window.ReadableStream !== 'undefined',
-      endpoints: getEndpointSnapshot()
-    };
-  }
-
-  function getPromptDiagnostics(includeFullPrompt) {
-    var output = byId('builderOutput');
-    var prompt = output && output.value ? output.value : '';
-    var sceneTitle = byId('builderSceneTitle') ? byId('builderSceneTitle').value : '';
-    var selectedPreset = byId('builderSceneSelect') ? byId('builderSceneSelect').value : '';
-    var summary = {
-      sceneTitle: sceneTitle,
-      selectedPresetValue: selectedPreset,
-      promptLength: prompt.length,
-      hasScenePlaceholder: prompt.indexOf('[INSERT SCENE DESCRIPTION HERE]') !== -1,
-      hasCompositionPlaceholder: prompt.indexOf('[INSERT COMPOSITION HERE]') !== -1
-    };
-    if (includeFullPrompt) summary.fullBuiltPrompt = prompt;
-    return summary;
-  }
-
-  function buildDiagnosticsPayload(includeFullPrompt) {
-    var response = byId('apiResponseOutput') ? byId('apiResponseOutput').value : '';
-    var activityRows = Array.prototype.slice.call((byId('apiActivityLog') || { children: [] }).children || []).map(function (node) {
-      return node.textContent || '';
-    });
-    return {
-      logType: 'PV2 John Doe HTML API Diagnostics',
-      note: 'This file is generated by the HTML front end for troubleshooting. It does not include API keys. Failed to fetch usually means the local/hosted backend is not running/reachable, the Backend Base URL is wrong, or CORS/origin settings are not configured on the backend.',
-      environment: collectBrowserDiagnostics(),
-      prompt: getPromptDiagnostics(includeFullPrompt),
-      apiState: {
-        isApiBusy: isApiBusy,
-        reasoningEffort: getReasoningEffort(),
-        responseLength: response.length,
-        responsePreview: truncateDiagnosticString(response, 1500),
-        hasCurrentImage: !!currentImageSrc,
-        currentImageSource: currentImageSrc ? truncateDiagnosticString(currentImageSrc, 300) : '',
-        activityVisibleRows: activityRows
-      },
-      events: diagnosticsLog
-    };
-  }
-
-  function downloadDiagnosticsLog() {
-    var includePrompt = !!(byId('apiIncludePromptInDiagnostics') && byId('apiIncludePromptInDiagnostics').checked);
-    var payload = buildDiagnosticsPayload(includePrompt);
-    var filename = 'pv2-john-doe-api-diagnostics-' + new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19) + '.json';
-    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-    recordDiagnostic('diagnostics_downloaded', { filename: filename, includeFullPrompt: includePrompt });
-    addActivity('Diagnostics log downloaded.');
-  }
-
-  function copyDiagnosticsLog() {
-    var includePrompt = !!(byId('apiIncludePromptInDiagnostics') && byId('apiIncludePromptInDiagnostics').checked);
-    var payload = buildDiagnosticsPayload(includePrompt);
-    copyText(JSON.stringify(payload, null, 2)).then(function () {
-      recordDiagnostic('diagnostics_copied', { includeFullPrompt: includePrompt });
-      addActivity('Diagnostics log copied.');
-    }).catch(function (error) {
-      recordDiagnostic('diagnostics_copy_error', { error: errorToDiagnostic(error) });
-      addActivity('Error: diagnostics copy failed. ' + error.message, true);
-    });
-  }
-
-  function clearDiagnosticsLog() {
-    diagnosticsLog = [];
-    updateDiagnosticCount();
-    addActivity('Diagnostics log cleared.');
-  }
-
-  function explainRequestError(error, endpoint, label) {
-    if (error && error.name === 'AbortError') {
-      return 'Error: ' + label + ' request timed out before the backend returned a response.';
-    }
-    var message = error && error.message ? error.message : String(error || 'Unknown error');
-    if (message.indexOf('Failed to fetch') !== -1 || message.indexOf('NetworkError') !== -1) {
-      return 'Error: unable to reach backend endpoint ' + endpoint + '. Confirm the included backend is running, the Backend Base URL is correct, the route exists, and CORS/origin settings allow this page. Browser message: ' + message;
-    }
-    return 'Error: unable to complete ' + label + ' request. ' + message;
-  }
-
-  function setApiStatus(message, isError) {
-    var status = byId('apiStatus');
-    if (!status) return;
-    status.textContent = message || '';
-    status.classList.toggle('error', !!isError);
-  }
-
-  function addActivity(message, isError) {
-    recordDiagnostic('activity', { message: message, isError: !!isError });
-    var log = byId('apiActivityLog');
-    if (!log) return;
-    var row = document.createElement('div');
-    row.textContent = message;
-    if (isError) row.className = 'error';
-    log.appendChild(row);
-    while (log.children.length > 12) log.removeChild(log.firstElementChild);
-    log.scrollTop = log.scrollHeight;
-    setApiStatus(message, isError);
-  }
-
-  function setBusy(busy) {
-    isApiBusy = busy;
-    ['apiChatButton', 'apiImageButton', 'apiSaveBackendButton', 'apiTestBackendButton'].forEach(function (id) {
-      var button = byId(id);
-      if (button) button.disabled = busy;
-    });
-    var reasoning = byId('apiReasoningMode');
-    if (reasoning) reasoning.disabled = busy;
-    var backendInput = byId('apiBackendBaseUrl');
-    if (backendInput) backendInput.disabled = busy;
-  }
+  var PROJECT_URL_STORAGE_KEY = 'pv2JohnDoeChatGPTProjectUrl';
+  var manualWorkflowLog = [];
 
   function copyText(text) {
     if (navigator.clipboard && window.isSecureContext) {
@@ -2038,520 +1733,15 @@ Do not create a different face when the patrol cap is worn.</pre>
   }
 
   function safeFilename(name) {
-    return (name || 'pv2-john-doe-api-output')
+    return (name || 'pv2-john-doe-scene-package')
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
-      .slice(0, 90) || 'pv2-john-doe-api-output';
+      .slice(0, 90) || 'pv2-john-doe-scene-package';
   }
 
-  function getBuiltPrompt() {
-    /*
-      Use the existing Prompt Builder output. The click refreshes the prompt from
-      the current master prompt, selected Scene Preset, and editable scene fields.
-    */
-    var buildButton = byId('builderBuildButton');
-    if (buildButton && !buildButton.disabled) buildButton.click();
-
-    var output = byId('builderOutput');
-    var prompt = output ? output.value.trim() : '';
-
-    if (!prompt) {
-      throw new Error('No prompt was generated. Build a prompt first.');
-    }
-    if (prompt.indexOf('[INSERT SCENE DESCRIPTION HERE]') !== -1 || prompt.indexOf('[INSERT COMPOSITION HERE]') !== -1) {
-      throw new Error('The prompt still contains scene/composition placeholders. Select a scene preset or add custom scene text first.');
-    }
-    return prompt;
-  }
-
-  function getReasoningEffort() {
-    var select = byId('apiReasoningMode');
-    return select && select.value ? select.value : 'xhigh';
-  }
-
-  function appendResponseText(text) {
-    var output = byId('apiResponseOutput');
-    if (!output || !text) return;
-    output.value += text;
-    output.scrollTop = output.scrollHeight;
-  }
-
-  function setResponseText(text) {
-    var output = byId('apiResponseOutput');
-    if (output) output.value = text || '';
-  }
-
-  function collectKnownText(data, includeDelta) {
-    var seen = [];
-    var parts = [];
-
-    function hasSeen(obj) {
-      for (var i = 0; i < seen.length; i++) {
-        if (seen[i] === obj) return true;
-      }
-      return false;
-    }
-
-    function walk(value) {
-      if (!value) return;
-      if (typeof value === 'string') return;
-      if (typeof value !== 'object') return;
-      if (hasSeen(value)) return;
-      seen.push(value);
-
-      if (includeDelta && typeof value.delta === 'string') parts.push(value.delta);
-      if (typeof value.output_text === 'string') parts.push(value.output_text);
-      if (typeof value.text === 'string') parts.push(value.text);
-      if (typeof value.response === 'string') parts.push(value.response);
-      if (typeof value.content === 'string') parts.push(value.content);
-      if (typeof value.message === 'string') parts.push(value.message);
-      if (value.message && typeof value.message.content === 'string') parts.push(value.message.content);
-
-      if (Array.isArray(value)) {
-        value.forEach(walk);
-        return;
-      }
-      if (Array.isArray(value.output)) walk(value.output);
-      if (Array.isArray(value.content)) walk(value.content);
-      if (Array.isArray(value.data)) walk(value.data);
-      if (value.item) walk(value.item);
-      if (value.response && typeof value.response === 'object') walk(value.response);
-      if (value.message && typeof value.message === 'object') walk(value.message);
-      if (value.choice) walk(value.choice);
-      if (Array.isArray(value.choices)) walk(value.choices);
-    }
-
-    walk(data);
-    return parts.join('');
-  }
-
-  function extractTextFromJson(data) {
-    if (!data) return '';
-    if (typeof data === 'string') return data;
-    return collectKnownText(data, true);
-  }
-
-  function extractTextFromSseData(dataText) {
-    if (!dataText || dataText === '[DONE]') return '';
-    try {
-      var data = JSON.parse(dataText);
-      return extractTextFromJson(data);
-    } catch (error) {
-      return dataText;
-    }
-  }
-
-  async function fetchWithTimeout(url, options, timeoutMs) {
-    var controller = new AbortController();
-    var timer = setTimeout(function () { controller.abort(); }, timeoutMs || 120000);
-    options = options || {};
-    options.signal = controller.signal;
-    try {
-      return await fetch(url, options);
-    } finally {
-      clearTimeout(timer);
-    }
-  }
-
-
-  async function readErrorResponseForDiagnostics(response, contentType) {
-    var bodyText = '';
-    var parsed = null;
-    try {
-      bodyText = await response.text();
-    } catch (readError) {
-      bodyText = '[unable to read error response body: ' + (readError.message || String(readError)) + ']';
-    }
-
-    if (bodyText && contentType.indexOf('application/json') !== -1) {
-      try {
-        parsed = JSON.parse(bodyText);
-      } catch (parseError) {
-        parsed = null;
-      }
-    }
-
-    return {
-      bodyText: bodyText,
-      parsed: parsed,
-      bodyPreview: truncateDiagnosticString(bodyText, 4000)
-    };
-  }
-
-  function flattenBackendErrorDetails(value) {
-    if (!value) return '';
-    if (typeof value === 'string') return value;
-
-    var pieces = [];
-    if (typeof value.error === 'string') pieces.push(value.error);
-    if (typeof value.message === 'string') pieces.push(value.message);
-    if (value.error && typeof value.error.message === 'string') pieces.push(value.error.message);
-    if (value.error && typeof value.error.code === 'string') pieces.push('Code: ' + value.error.code);
-    if (value.details) {
-      var detailText = flattenBackendErrorDetails(value.details);
-      if (detailText) pieces.push(detailText);
-    }
-
-    if (pieces.length) {
-      var unique = [];
-      pieces.forEach(function (piece) {
-        piece = String(piece || '').trim();
-        if (piece && unique.indexOf(piece) === -1) unique.push(piece);
-      });
-      return unique.join(' ');
-    }
-
-    try {
-      return JSON.stringify(value);
-    } catch (error) {
-      return String(value);
-    }
-  }
-
-  function buildBackendHttpErrorMessage(response, errorInfo) {
-    var parsed = errorInfo && errorInfo.parsed ? errorInfo.parsed : null;
-    var message = parsed ? flattenBackendErrorDetails(parsed) : (errorInfo && errorInfo.bodyText ? errorInfo.bodyText : '');
-    var requestId = parsed && parsed.requestId ? ' Request ID: ' + parsed.requestId + '.' : '';
-    if (message && /billing_hard_limit_reached|Billing hard limit has been reached/i.test(message)) {
-      message += ' Fix: raise or reset the billing hard limit in the OpenAI Platform billing settings, then try again.';
-    }
-    if (message) {
-      return 'Backend returned HTTP ' + response.status + ': ' + truncateDiagnosticString(message, 1200) + requestId;
-    }
-    return 'Backend returned HTTP ' + response.status + '.' + requestId;
-  }
-
-  async function testBackendHealth() {
-    if (isApiBusy) return;
-    setBusy(true);
-    updateEndpointPreview();
-    recordDiagnostic('backend_health_check_prepared', { endpoint: API_ENDPOINTS.health });
-    addActivity('Testing backend health endpoint…');
-    try {
-      var response = await fetchWithTimeout(API_ENDPOINTS.health, {
-        method: 'GET',
-        headers: { 'Accept': 'application/json, text/plain' }
-      }, 15000);
-      var contentType = (response.headers.get('content-type') || '').toLowerCase();
-      var bodyPreview = '';
-      try {
-        bodyPreview = contentType.indexOf('application/json') !== -1 ? JSON.stringify(await response.json()) : await response.text();
-      } catch (readError) {
-        bodyPreview = '[unable to read health response body]';
-      }
-      recordDiagnostic('backend_health_check_response', {
-        endpoint: API_ENDPOINTS.health,
-        ok: response.ok,
-        status: response.status,
-        statusText: response.statusText,
-        contentType: contentType,
-        bodyPreview: truncateDiagnosticString(bodyPreview, 1000)
-      });
-      if (!response.ok) throw new Error('Backend health check returned HTTP ' + response.status + '.');
-      addActivity('Backend health check succeeded.');
-    } catch (error) {
-      recordDiagnostic('backend_health_check_error', { endpoint: API_ENDPOINTS.health, error: errorToDiagnostic(error) });
-      addActivity(explainRequestError(error, API_ENDPOINTS.health, 'health check'), true);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function sendPromptToChat() {
-    if (isApiBusy) return;
-    var prompt;
-    try {
-      prompt = getBuiltPrompt();
-    } catch (error) {
-      addActivity('Error: ' + error.message, true);
-      return;
-    }
-
-    setBusy(true);
-    setResponseText('');
-    recordDiagnostic('chat_request_prepared', {
-      endpoint: API_ENDPOINTS.chat,
-      promptLength: prompt.length,
-      reasoningEffort: getReasoningEffort(),
-      streamRequested: true
-    });
-    addActivity('Thinking…');
-    addActivity('Sending prompt to backend…');
-
-    try {
-      /*
-        Chat request body sent to the backend.
-        reasoningEffort is metadata for the backend to map to the strongest
-        reasoning-capable model/settings available. No API key is sent here.
-      */
-      var response = await fetchWithTimeout(API_ENDPOINTS.chat, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json, text/event-stream, text/plain'
-        },
-        body: JSON.stringify({
-          prompt: prompt,
-          reasoningEffort: getReasoningEffort(),
-          mode: 'text',
-          stream: true
-        })
-      }, 180000);
-
-      var contentType = (response.headers.get('content-type') || '').toLowerCase();
-      recordDiagnostic('chat_response_received', {
-        endpoint: API_ENDPOINTS.chat,
-        ok: response.ok,
-        status: response.status,
-        statusText: response.statusText,
-        contentType: contentType,
-        headers: responseHeadersToObject(response.headers)
-      });
-
-      if (!response.ok) {
-        var chatErrorInfo = await readErrorResponseForDiagnostics(response, contentType);
-        recordDiagnostic('chat_error_response_body', {
-          endpoint: API_ENDPOINTS.chat,
-          status: response.status,
-          contentType: contentType,
-          parsed: chatErrorInfo.parsed,
-          bodyPreview: chatErrorInfo.bodyPreview
-        });
-        throw new Error(buildBackendHttpErrorMessage(response, chatErrorInfo));
-      }
-
-      addActivity('Building response…');
-
-      if (contentType.indexOf('application/json') !== -1) {
-        var data = await response.json();
-        var text = extractTextFromJson(data);
-        if (!text) throw new Error('Invalid backend response: no text field was found.');
-        setResponseText(text);
-      } else if (response.body && window.TextDecoder) {
-        addActivity('Waiting for model output…');
-        var reader = response.body.getReader();
-        var decoder = new TextDecoder();
-        var buffer = '';
-
-        while (true) {
-          var read = await reader.read();
-          if (read.done) break;
-          var chunk = decoder.decode(read.value, { stream: true });
-
-          if (contentType.indexOf('text/event-stream') !== -1) {
-            buffer += chunk;
-            var lines = buffer.split(/\r?\n/);
-            buffer = lines.pop() || '';
-            lines.forEach(function (line) {
-              var trimmed = line.trim();
-              if (!trimmed || trimmed.indexOf(':') === 0) return;
-              if (trimmed.indexOf('data:') === 0) {
-                appendResponseText(extractTextFromSseData(trimmed.replace(/^data:\s*/, '')));
-              }
-            });
-          } else {
-            appendResponseText(chunk);
-          }
-        }
-
-        if (buffer && contentType.indexOf('text/event-stream') !== -1) {
-          appendResponseText(extractTextFromSseData(buffer.replace(/^data:\s*/, '').trim()));
-        }
-      } else {
-        var fallbackText = await response.text();
-        if (!fallbackText) throw new Error('Backend returned an empty response.');
-        setResponseText(fallbackText);
-      }
-
-      if (byId('apiResponseOutput') && !byId('apiResponseOutput').value.trim()) {
-        addActivity('Warning: the backend finished the chat request but no displayable text was returned. Try Reasoning Mode: High or Medium, or update backend/server.js to the v3 stream parser.', true);
-      }
-
-      recordDiagnostic('chat_response_completed', {
-        responseLength: byId('apiResponseOutput') && byId('apiResponseOutput').value ? byId('apiResponseOutput').value.length : 0
-      });
-      addActivity('Response received.');
-    } catch (error) {
-      recordDiagnostic('chat_request_error', {
-        endpoint: API_ENDPOINTS.chat,
-        error: errorToDiagnostic(error)
-      });
-      addActivity(explainRequestError(error, API_ENDPOINTS.chat, 'chat'), true);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  function extractImageFromJson(data) {
-    if (!data) return '';
-    if (typeof data.imageUrl === 'string') return data.imageUrl;
-    if (typeof data.imageBase64 === 'string') return data.imageBase64;
-    if (typeof data.url === 'string') return data.url;
-    if (typeof data.b64_json === 'string') return 'data:image/png;base64,' + data.b64_json;
-    if (Array.isArray(data.images) && data.images[0]) {
-      return extractImageFromJson(data.images[0]);
-    }
-    if (Array.isArray(data.data) && data.data[0]) {
-      return extractImageFromJson(data.data[0]);
-    }
-    return '';
-  }
-
-  function displayGeneratedImage(src) {
-    var img = byId('apiImagePreview');
-    var placeholder = byId('apiImagePlaceholder');
-    var caption = byId('apiImageCaption');
-    var download = byId('apiDownloadImageLink');
-
-    currentImageSrc = src || '';
-
-    if (!src) {
-      if (img) {
-        img.hidden = true;
-        img.removeAttribute('src');
-      }
-      if (placeholder) placeholder.hidden = false;
-      if (caption) caption.textContent = '';
-      if (download) {
-        download.hidden = true;
-        download.href = '#';
-      }
-      return;
-    }
-
-    if (img) {
-      img.src = src;
-      img.hidden = false;
-    }
-    if (placeholder) placeholder.hidden = true;
-    if (caption) caption.textContent = 'Generated image returned by backend.';
-    if (download) {
-      download.href = src;
-      download.hidden = false;
-      download.download = safeFilename(byId('builderSceneTitle') ? byId('builderSceneTitle').value : '') + '-generated-image.png';
-    }
-    addImageToGallery(src);
-  }
-
-  function addImageToGallery(src) {
-    var gallery = byId('apiImageGallery');
-    if (!gallery || !src) return;
-    var button = document.createElement('button');
-    button.type = 'button';
-    button.title = 'Open this generated image result';
-    var thumb = document.createElement('img');
-    thumb.src = src;
-    thumb.alt = 'Recent generated image thumbnail';
-    button.appendChild(thumb);
-    button.addEventListener('click', function () { displayGeneratedImage(src); });
-    gallery.insertBefore(button, gallery.firstChild);
-    while (gallery.children.length > 8) gallery.removeChild(gallery.lastElementChild);
-  }
-
-  async function generateImage() {
-    if (isApiBusy) return;
-    var prompt;
-    try {
-      prompt = getBuiltPrompt();
-    } catch (error) {
-      addActivity('Error: ' + error.message, true);
-      return;
-    }
-
-    setBusy(true);
-    recordDiagnostic('image_request_prepared', {
-      endpoint: API_ENDPOINTS.image,
-      promptLength: prompt.length
-    });
-    addActivity('Image request submitted…');
-    addActivity('Generating image…');
-
-    try {
-      /*
-        Image request body sent to the backend.
-        The backend should call the image generation API and return either:
-        { imageUrl: "https://..." } or { imageBase64: "data:image/png;base64,..." }.
-      */
-      var response = await fetchWithTimeout(API_ENDPOINTS.image, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          prompt: prompt,
-          mode: 'image'
-        })
-      }, 240000);
-
-      var contentType = (response.headers.get('content-type') || '').toLowerCase();
-      recordDiagnostic('image_response_received', {
-        endpoint: API_ENDPOINTS.image,
-        ok: response.ok,
-        status: response.status,
-        statusText: response.statusText,
-        contentType: contentType,
-        headers: responseHeadersToObject(response.headers)
-      });
-
-      if (!response.ok) {
-        var imageErrorInfo = await readErrorResponseForDiagnostics(response, contentType);
-        recordDiagnostic('image_error_response_body', {
-          endpoint: API_ENDPOINTS.image,
-          status: response.status,
-          contentType: contentType,
-          parsed: imageErrorInfo.parsed,
-          bodyPreview: imageErrorInfo.bodyPreview
-        });
-        throw new Error(buildBackendHttpErrorMessage(response, imageErrorInfo));
-      }
-
-      var data = await response.json();
-      var imageSrc = extractImageFromJson(data);
-      if (!imageSrc) {
-        throw new Error('Invalid backend response: missing imageUrl or imageBase64.');
-      }
-
-      recordDiagnostic('image_response_completed', {
-        sourceType: imageSrc.indexOf('data:image/') === 0 ? 'base64-data-url' : 'url',
-        sourceLength: imageSrc.length
-      });
-      displayGeneratedImage(imageSrc);
-      addActivity('Image generated successfully.');
-    } catch (error) {
-      recordDiagnostic('image_request_error', {
-        endpoint: API_ENDPOINTS.image,
-        error: errorToDiagnostic(error)
-      });
-      addActivity(explainRequestError(error, API_ENDPOINTS.image, 'image'), true);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  function copyApiResponse() {
-    var output = byId('apiResponseOutput');
-    if (!output || !output.value.trim()) {
-      addActivity('Error: no response text to copy.', true);
-      return;
-    }
-    copyText(output.value).then(function () {
-      recordDiagnostic('api_response_copied', { responseLength: output.value.length });
-      addActivity('Response copied.');
-    }).catch(function () {
-      addActivity('Error: response copy failed.', true);
-    });
-  }
-
-  function downloadApiResponse() {
-    var output = byId('apiResponseOutput');
-    if (!output || !output.value.trim()) {
-      addActivity('Error: no response text to download.', true);
-      return;
-    }
-    var filename = safeFilename(byId('builderSceneTitle') ? byId('builderSceneTitle').value : '') + '-api-response.txt';
-    var blob = new Blob([output.value], { type: 'text/plain;charset=utf-8' });
+  function downloadText(filename, text) {
+    var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url;
@@ -2560,80 +1750,326 @@ Do not create a different face when the patrol cap is worn.</pre>
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
-    recordDiagnostic('api_response_downloaded', { filename: filename, responseLength: output.value.length });
-    addActivity('Response downloaded.');
   }
 
-  function clearApiOutput() {
-    recordDiagnostic('api_output_cleared', {});
-    setResponseText('');
-    displayGeneratedImage('');
-    var gallery = byId('apiImageGallery');
-    if (gallery) gallery.innerHTML = '';
-    var log = byId('apiActivityLog');
-    if (log) log.innerHTML = '<div>Ready. Build a prompt, then send it to the secure backend.</div>';
-    setApiStatus('API output cleared.');
+  function setManualStatus(message, isError) {
+    var status = byId('manualStatus');
+    if (!status) return;
+    status.textContent = message || '';
+    status.classList.toggle('error', !!isError);
+    if (message) {
+      setTimeout(function () {
+        if (status.textContent === message) status.textContent = '';
+      }, 3500);
+    }
   }
 
-  function initApiGeneration() {
-    if (!byId('api-generation')) return;
-    var chatButton = byId('apiChatButton');
-    var imageButton = byId('apiImageButton');
-    var clearButton = byId('apiClearButton');
-    var copyButton = byId('apiCopyResponseButton');
-    var downloadButton = byId('apiDownloadResponseButton');
-    var clearImageButton = byId('apiClearImageButton');
-    var downloadDiagnosticsButton = byId('apiDownloadDiagnosticsButton');
-    var copyDiagnosticsButton = byId('apiCopyDiagnosticsButton');
-    var clearDiagnosticsButton = byId('apiClearDiagnosticsButton');
-    var saveBackendButton = byId('apiSaveBackendButton');
-    var testBackendButton = byId('apiTestBackendButton');
-
-    initBackendBaseUrlControl();
-
-    if (chatButton) chatButton.addEventListener('click', sendPromptToChat);
-    if (imageButton) imageButton.addEventListener('click', generateImage);
-    if (clearButton) clearButton.addEventListener('click', clearApiOutput);
-    if (copyButton) copyButton.addEventListener('click', copyApiResponse);
-    if (downloadButton) downloadButton.addEventListener('click', downloadApiResponse);
-    if (downloadDiagnosticsButton) downloadDiagnosticsButton.addEventListener('click', downloadDiagnosticsLog);
-    if (copyDiagnosticsButton) copyDiagnosticsButton.addEventListener('click', copyDiagnosticsLog);
-    if (clearDiagnosticsButton) clearDiagnosticsButton.addEventListener('click', clearDiagnosticsLog);
-    if (saveBackendButton) saveBackendButton.addEventListener('click', saveBackendBaseUrl);
-    if (testBackendButton) testBackendButton.addEventListener('click', testBackendHealth);
-    if (clearImageButton) clearImageButton.addEventListener('click', function () {
-      displayGeneratedImage('');
-      recordDiagnostic('image_preview_cleared', {});
-      addActivity('Image preview cleared.');
+  function addManualActivity(message, isError) {
+    var log = byId('manualActivityLog');
+    if (!log) return;
+    var row = document.createElement('div');
+    row.textContent = message;
+    if (isError) row.className = 'error';
+    if (!isError && /copied|saved|downloaded|ready|opened/i.test(message)) row.className = 'success';
+    log.appendChild(row);
+    while (log.children.length > 12) log.removeChild(log.firstElementChild);
+    log.scrollTop = log.scrollHeight;
+    manualWorkflowLog.push({
+      timestamp: new Date().toISOString(),
+      message: message,
+      isError: !!isError,
+      sceneTitle: getSceneTitle()
     });
+  }
 
-    recordDiagnostic('api_panel_initialized', collectBrowserDiagnostics());
-    updateDiagnosticCount();
+  function getSceneTitle() {
+    var title = byId('builderSceneTitle');
+    return title && title.value ? title.value.trim() : 'Untitled PV2 DOE scene';
+  }
 
-    window.addEventListener('error', function (event) {
-      recordDiagnostic('window_error', {
-        message: event.message,
-        source: event.filename,
-        line: event.lineno,
-        column: event.colno,
-        error: event.error ? errorToDiagnostic(event.error) : null
-      });
+  function refreshBuiltPrompt() {
+    var buildButton = byId('builderBuildButton');
+    if (buildButton) buildButton.click();
+  }
+
+  function getBuiltPrompt() {
+    refreshBuiltPrompt();
+    var output = byId('builderOutput');
+    return output && output.value ? output.value.trim() : '';
+  }
+
+  function getSceneFields() {
+    return {
+      title: getSceneTitle(),
+      scene: byId('builderScene') && byId('builderScene').value ? byId('builderScene').value.trim() : '',
+      composition: byId('builderComposition') && byId('builderComposition').value ? byId('builderComposition').value.trim() : '',
+      prompt: getBuiltPrompt(),
+      resultFilename: byId('manualResultFilename') && byId('manualResultFilename').value ? byId('manualResultFilename').value.trim() : '',
+      notes: byId('manualResultNotes') && byId('manualResultNotes').value ? byId('manualResultNotes').value.trim() : ''
+    };
+  }
+
+  function getReferenceChecklistText() {
+    return [
+      'PV2 DOE Reference Upload Checklist',
+      '',
+      'Upload the required reference images into the same ChatGPT conversation before pasting the final prompt.',
+      '',
+      'Core scene-generation references:',
+      '[ ] Image A - Primary character reference sheet. Controls PV2 DOE identity, full-body appearance, OCP uniform layout, patrol cap appearance, DOE tape, U.S. ARMY tape, PV2 rank, U.S. flag patch, and corrected 19th ESC patch placement.',
+      '[ ] Image B - Final close-up portrait reference. Controls close-up face fidelity, haircut, skin tone, youthful appearance, and portrait realism.',
+      '[ ] Image C - Pose reference sheet. Use only for loose posture/body-language guidance. Do not copy the pose-sheet layout.',
+      '',
+      'Patch/rank backup references, when generating or troubleshooting uniform details:',
+      '[ ] Image F - Exact 19th ESC subdued shoulder patch reference. Use for patch shape, tan fill, black border, internal curved line, embroidery texture, and centered left-shoulder placement.',
+      '[ ] Image G - PV2 rank reference. Use for one subdued black chevron on the center chest rank tab and patrol cap if visible.',
+      '[ ] Image H - U.S. flag patch reference. Use for the full-color reverse U.S. flag patch on the right shoulder, star field facing forward.',
+      '',
+      'Recommended upload order:',
+      '1. Image A',
+      '2. Image B',
+      '3. Image C',
+      '4. Image F',
+      '5. Image G',
+      '6. Image H',
+      '',
+      'After upload, paste the final prompt exactly as copied from this page.'
+    ].join('\n');
+  }
+
+  function getManualInstructionsText() {
+    return [
+      'Manual ChatGPT Plus Generation Workflow',
+      '',
+      '1. In this HTML page, select a Scene Preset and build the final prompt.',
+      '2. Click “Copy Final Prompt.”',
+      '3. Open ChatGPT or your PV2 DOE ChatGPT Project.',
+      '4. Upload the required reference images using the checklist.',
+      '5. Paste the copied final prompt into ChatGPT.',
+      '6. Generate the image using your normal ChatGPT account.',
+      '7. Save the generated image from ChatGPT.',
+      '8. Record the filename and notes in this page so you can track scene results.',
+      '',
+      'Important: This manual workflow does not call the OpenAI API, does not use API billing, and does not store an API key.'
+    ].join('\n');
+  }
+
+  function buildScenePackageText() {
+    var fields = getSceneFields();
+    return [
+      'PV2 DOE ChatGPT Manual Scene Package',
+      'Generated: ' + new Date().toISOString(),
+      '',
+      'Scene Title:',
+      fields.title || 'Untitled',
+      '',
+      'Reference Upload Checklist:',
+      getReferenceChecklistText(),
+      '',
+      'Manual Instructions:',
+      getManualInstructionsText(),
+      '',
+      'Final Prompt:',
+      fields.prompt || '[No prompt built yet.]',
+      '',
+      'Result Filename / Scene Label:',
+      fields.resultFilename || '[Not recorded]',
+      '',
+      'Result Notes:',
+      fields.notes || '[No notes recorded]'
+    ].join('\n');
+  }
+
+  function buildNotesText() {
+    var fields = getSceneFields();
+    return [
+      'PV2 DOE Scene Notes',
+      'Generated: ' + new Date().toISOString(),
+      '',
+      'Scene Title:',
+      fields.title || 'Untitled',
+      '',
+      'Result Filename / Scene Label:',
+      fields.resultFilename || '[Not recorded]',
+      '',
+      'Notes:',
+      fields.notes || '[No notes recorded]'
+    ].join('\n');
+  }
+
+  function copyFinalPrompt() {
+    var prompt = getBuiltPrompt();
+    if (!prompt) {
+      setManualStatus('No built prompt found. Build a prompt first.', true);
+      addManualActivity('No built prompt found. Build a prompt first.', true);
+      return;
+    }
+    copyText(prompt).then(function () {
+      setManualStatus('Final prompt copied.');
+      addManualActivity('Final prompt copied. Open ChatGPT, upload references, then paste it.');
+    }).catch(function () {
+      setManualStatus('Copy failed.', true);
+      addManualActivity('Copy failed.', true);
     });
+  }
 
-    window.addEventListener('unhandledrejection', function (event) {
-      recordDiagnostic('unhandled_promise_rejection', {
-        reason: event.reason instanceof Error ? errorToDiagnostic(event.reason) : sanitizeDiagnosticValue(event.reason)
-      });
+  function copyChecklist() {
+    copyText(getReferenceChecklistText()).then(function () {
+      setManualStatus('Reference checklist copied.');
+      addManualActivity('Reference checklist copied.');
+    }).catch(function () {
+      setManualStatus('Checklist copy failed.', true);
+      addManualActivity('Checklist copy failed.', true);
     });
+  }
+
+  function copyInstructions() {
+    copyText(getManualInstructionsText()).then(function () {
+      setManualStatus('Manual instructions copied.');
+      addManualActivity('Manual instructions copied.');
+    }).catch(function () {
+      setManualStatus('Instruction copy failed.', true);
+      addManualActivity('Instruction copy failed.', true);
+    });
+  }
+
+  function copyScenePackage() {
+    copyText(buildScenePackageText()).then(function () {
+      setManualStatus('Scene package copied.');
+      addManualActivity('Scene package copied.');
+    }).catch(function () {
+      setManualStatus('Scene package copy failed.', true);
+      addManualActivity('Scene package copy failed.', true);
+    });
+  }
+
+  function downloadScenePackage() {
+    var fields = getSceneFields();
+    downloadText(safeFilename(fields.title) + '-manual-scene-package.txt', buildScenePackageText());
+    setManualStatus('Scene package downloaded.');
+    addManualActivity('Scene package downloaded.');
+  }
+
+  function copyNotes() {
+    copyText(buildNotesText()).then(function () {
+      setManualStatus('Notes copied.');
+      addManualActivity('Notes copied.');
+    }).catch(function () {
+      setManualStatus('Notes copy failed.', true);
+      addManualActivity('Notes copy failed.', true);
+    });
+  }
+
+  function downloadNotes() {
+    var fields = getSceneFields();
+    downloadText(safeFilename(fields.title) + '-notes.txt', buildNotesText());
+    setManualStatus('Notes downloaded.');
+    addManualActivity('Notes downloaded.');
+  }
+
+  function downloadWorkflowLog() {
+    var fields = getSceneFields();
+    var payload = {
+      logType: 'PV2 DOE Manual ChatGPT Workflow Log',
+      generatedAt: new Date().toISOString(),
+      pageUrl: window.location.href,
+      noApiMode: true,
+      note: 'This log is for manual ChatGPT Plus workflow tracking. It does not contain API keys and does not represent any automated OpenAI API request.',
+      scene: {
+        title: fields.title,
+        promptLength: fields.prompt.length,
+        resultFilename: fields.resultFilename,
+        notes: fields.notes
+      },
+      activity: manualWorkflowLog
+    };
+    downloadText('pv2-doe-manual-workflow-log-' + new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19) + '.json', JSON.stringify(payload, null, 2));
+    setManualStatus('Workflow log downloaded.');
+    addManualActivity('Workflow log downloaded.');
+  }
+
+  function saveProjectUrl() {
+    var input = byId('manualProjectUrl');
+    var value = input && input.value ? input.value.trim() : '';
+    if (!value) {
+      setManualStatus('Paste a ChatGPT Project URL first.', true);
+      addManualActivity('Project URL was not saved because the field was empty.', true);
+      return;
+    }
+    localStorage.setItem(PROJECT_URL_STORAGE_KEY, value);
+    setManualStatus('Project URL saved.');
+    addManualActivity('Project URL saved in this browser.');
+  }
+
+  function openSavedProject() {
+    var value = localStorage.getItem(PROJECT_URL_STORAGE_KEY) || (byId('manualProjectUrl') && byId('manualProjectUrl').value ? byId('manualProjectUrl').value.trim() : '');
+    if (!value) {
+      setManualStatus('No Project URL saved. Use Open ChatGPT or paste a Project URL first.', true);
+      addManualActivity('No Project URL saved.', true);
+      return;
+    }
+    window.open(value, '_blank', 'noopener,noreferrer');
+    addManualActivity('Opened saved ChatGPT Project link.');
+  }
+
+  function clearProjectUrl() {
+    localStorage.removeItem(PROJECT_URL_STORAGE_KEY);
+    if (byId('manualProjectUrl')) byId('manualProjectUrl').value = '';
+    setManualStatus('Project URL cleared.');
+    addManualActivity('Project URL cleared.');
+  }
+
+  function clearNotes() {
+    if (byId('manualResultFilename')) byId('manualResultFilename').value = '';
+    if (byId('manualResultNotes')) byId('manualResultNotes').value = '';
+    setManualStatus('Notes cleared.');
+    addManualActivity('Scene tracking notes cleared.');
+  }
+
+  function initManualWorkflow() {
+    if (!byId('chatgpt-workflow')) return;
+
+    var checklist = byId('manualReferenceChecklist');
+    if (checklist) checklist.textContent = getReferenceChecklistText();
+
+    var savedProjectUrl = localStorage.getItem(PROJECT_URL_STORAGE_KEY) || '';
+    if (savedProjectUrl && byId('manualProjectUrl')) byId('manualProjectUrl').value = savedProjectUrl;
+
+    var copyPromptButton = byId('manualCopyPromptButton');
+    var copyChecklistButton = byId('manualCopyChecklistButton');
+    var copyInstructionsButton = byId('manualCopyInstructionsButton');
+    var copyScenePackageButton = byId('manualCopyScenePackageButton');
+    var downloadScenePackageButton = byId('manualDownloadScenePackageButton');
+    var copyNotesButton = byId('manualCopyNotesButton');
+    var downloadNotesButton = byId('manualDownloadNotesButton');
+    var downloadLogButton = byId('manualDownloadLogButton');
+    var clearNotesButton = byId('manualClearNotesButton');
+    var saveProjectButton = byId('manualSaveProjectUrlButton');
+    var openProjectButton = byId('manualOpenProjectButton');
+    var clearProjectButton = byId('manualClearProjectUrlButton');
+
+    if (copyPromptButton) copyPromptButton.addEventListener('click', copyFinalPrompt);
+    if (copyChecklistButton) copyChecklistButton.addEventListener('click', copyChecklist);
+    if (copyInstructionsButton) copyInstructionsButton.addEventListener('click', copyInstructions);
+    if (copyScenePackageButton) copyScenePackageButton.addEventListener('click', copyScenePackage);
+    if (downloadScenePackageButton) downloadScenePackageButton.addEventListener('click', downloadScenePackage);
+    if (copyNotesButton) copyNotesButton.addEventListener('click', copyNotes);
+    if (downloadNotesButton) downloadNotesButton.addEventListener('click', downloadNotes);
+    if (downloadLogButton) downloadLogButton.addEventListener('click', downloadWorkflowLog);
+    if (clearNotesButton) clearNotesButton.addEventListener('click', clearNotes);
+    if (saveProjectButton) saveProjectButton.addEventListener('click', saveProjectUrl);
+    if (openProjectButton) openProjectButton.addEventListener('click', openSavedProject);
+    if (clearProjectButton) clearProjectButton.addEventListener('click', clearProjectUrl);
+
+    addManualActivity('Manual ChatGPT Plus workflow ready. No API calls will be made.');
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initApiGeneration);
+    document.addEventListener('DOMContentLoaded', initManualWorkflow);
   } else {
-    initApiGeneration();
+    initManualWorkflow();
   }
 })();
 </script>
-
 </body>
 </html>

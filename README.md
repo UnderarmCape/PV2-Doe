@@ -1,154 +1,97 @@
-# PV2 John Doe HTML + Local API Backend
+# PV2 John Doe Manual ChatGPT Plus Workflow
 
-This package includes your updated PV2 John Doe HTML project and a small local backend so the API buttons can actually work.
+This package hosts the PV2 John Doe prompt builder as a web page and replaces the API automation panel with a manual ChatGPT Plus workflow.
 
-The HTML does **not** contain an OpenAI API key. The API key is stored only on the backend in a local `.env` file.
+This version does **not** use the OpenAI API, does **not** require OpenAI Platform credits, and does **not** require an API key.
 
-## What changed
+## What changed in v4
 
-- Added a **Backend Base URL** field to the API panel.
-- Added a **Test Backend** button that checks `/api/health`.
-- Updated the HTML so it calls full backend URLs such as:
-  - `http://localhost:3000/api/chat`
-  - `http://localhost:3000/api/generate-image`
-- Added a Node.js/Express backend with:
-  - `GET /api/health`
-  - `POST /api/chat`
-  - `POST /api/generate-image`
-- Kept diagnostics logging in the HTML.
-- Kept API keys out of the browser.
+- Removed the API-calling workflow from the HTML interface.
+- Removed the OpenAI API requirement from the backend.
+- Replaced the API panel with **ChatGPT Plus Manual Workflow**.
+- Added buttons to:
+  - Copy the final generated prompt
+  - Open ChatGPT
+  - Save/open an optional ChatGPT Project URL
+  - Copy the reference image upload checklist
+  - Copy manual generation instructions
+  - Copy/download a complete scene package
+  - Track result filenames and notes
+  - Download a manual workflow log
+- Kept the existing:
+  - PV2 John Doe reference content
+  - Scene Presets
+  - Prompt Builder
+  - Collapsible sections
+  - Copy buttons
+  - Reference image sections
+  - Mobile-friendly layout
 
-## Setup
+## How to use
 
-1. Install Node.js 18 or newer.
+1. Open the hosted page, for example:
 
-2. Open a terminal in this folder.
+```text
+https://pv2-doe.onrender.com/
+```
 
-3. Install dependencies:
+2. Go to **Prompt Builder**.
+
+3. Select a Scene Preset.
+
+4. Click **Build Full Prompt** if needed.
+
+5. Go to **ChatGPT Plus Manual Workflow**.
+
+6. Click **Copy Final Prompt**.
+
+7. Click **Open ChatGPT**, or save/open your ChatGPT Project URL.
+
+8. Upload the required reference images in ChatGPT using the checklist.
+
+9. Paste the copied prompt into ChatGPT and generate the image using your normal ChatGPT account.
+
+10. Save the generated image from ChatGPT and record notes or filenames in the Scene Tracking Notes area.
+
+## Local testing
+
+Install dependencies:
 
 ```bash
 npm install
 ```
 
-4. Create your environment file:
-
-```bash
-copy .env.example .env
-```
-
-On macOS/Linux, use:
-
-```bash
-cp .env.example .env
-```
-
-5. Open `.env` and replace this line:
-
-```text
-OPENAI_API_KEY=sk-your-api-key-here
-```
-
-with your actual OpenAI API key.
-
-6. Start the backend:
+Start the local server:
 
 ```bash
 npm start
 ```
 
-7. Open this address in your browser:
+Open:
 
 ```text
 http://localhost:3000
 ```
 
-8. In the HTML API panel, keep Backend Base URL set to:
+Optional health check:
 
 ```text
-http://localhost:3000
+http://localhost:3000/health
 ```
 
-9. Click **Test Backend** first. Then try **Send Prompt to ChatGPT**.
+## Render deployment
 
-## Model settings
+This package can still be deployed on Render as a Node Web Service.
 
-The `.env.example` file uses these defaults:
+Use these settings:
 
 ```text
-OPENAI_TEXT_MODEL=gpt-5.5
-OPENAI_IMAGE_MODEL=gpt-image-2
-OPENAI_IMAGE_SIZE=1536x1024
-OPENAI_IMAGE_QUALITY=high
-OPENAI_IMAGE_FORMAT=png
+Build Command: npm install
+Start Command: npm start
 ```
 
-If your OpenAI account does not have access to those exact models, change the model names in `.env` to models available to your account and restart the server.
+No OpenAI API environment variables are needed for this manual workflow version.
 
-## Troubleshooting
+## Important note
 
-### Error: Failed to fetch
-
-Usually means one of these is true:
-
-- the backend is not running
-- Backend Base URL is wrong
-- the route does not exist
-- a firewall/browser/CORS issue blocked the request
-
-Try:
-
-```text
-http://localhost:3000/api/health
-```
-
-If that page does not load, the backend is not running correctly.
-
-### Error: OPENAI_API_KEY is not configured
-
-Copy `.env.example` to `.env`, add your key, then restart the server.
-
-### Text works but image generation fails
-
-Check that your selected image model is available to your account. You can change `OPENAI_IMAGE_MODEL` in `.env`.
-
-## Security note
-
-Do not paste your OpenAI API key into the HTML file. Do not share your `.env` file. The HTML should only talk to this backend.
-
-## 2026-05-15 v2 troubleshooting update
-
-This package includes a backend fetch timeout fix and improved diagnostics.
-
-What changed:
-- Removed the request-close abort signal that could stop outbound OpenAI requests too early on hosted Express deployments.
-- Added `backendVersion` to `/api/health`.
-- Added backend-side request IDs and Render log messages for `/api/chat` and `/api/generate-image`.
-- Improved browser diagnostics so HTTP error responses include the backend JSON body, request ID, and OpenAI error details when available.
-
-After deploying this update, check:
-
-```text
-https://pv2-doe.onrender.com/api/health
-```
-
-You should see:
-
-```json
-"backendVersion": "2026-05-15-v2-openai-fetch-timeout-fix"
-```
-
-If `/api/chat` or `/api/generate-image` still fails, download the diagnostics log again and check the Render logs using the requestId shown in the error response.
-
-## v3 troubleshooting notes
-
-### Chat returns status 200 but output box is blank
-The v3 backend normalizes OpenAI Responses API streaming events into simple SSE `delta` events for the HTML. It also records upstream event types in Render logs using the request ID.
-
-After deployment, confirm the health endpoint shows:
-
-```json
-"backendVersion": "2026-05-15-v3-chat-stream-parser-image-billing-diagnostics"
-```
-
-### Image generation returns HTTP 400: billing hard limit
-This is not an HTML or Render routing issue. It means the OpenAI project/account connected to `OPENAI_API_KEY` has reached its billing hard limit. Raise or reset the billing hard limit in OpenAI Platform billing settings, then retry image generation.
+ChatGPT Plus and OpenAI API Platform billing are separate. This manual version avoids OpenAI API billing by preparing the prompt and workflow for you to use manually inside ChatGPT Plus.
