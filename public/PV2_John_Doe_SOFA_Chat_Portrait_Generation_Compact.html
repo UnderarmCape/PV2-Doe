@@ -909,6 +909,269 @@ main {
   max-height: 460px;
 }
 
+
+
+/* Theme Studio v8: user-friendly visual controls with pro-level CSS variable tuning */
+:root {
+  --app-max-width: 1800px;
+  --body-font-size: 16px;
+  --prompt-font-size: .88rem;
+  --card-radius: 14px;
+  --card-padding: 18px;
+  --card-spacing: 12px;
+  --shadow-alpha: .18;
+  --nav-font-size: .82rem;
+  --nav-padding-y: 7px;
+  --nav-padding-x: 10px;
+  --reference-grid-columns: 3;
+  --textarea-min-height: 180px;
+  --output-min-height: 560px;
+}
+
+body {
+  font-size: var(--body-font-size) !important;
+}
+
+main {
+  width: min(calc(100% - 40px), var(--app-max-width)) !important;
+  max-width: var(--app-max-width) !important;
+}
+
+.card {
+  border-radius: var(--card-radius) !important;
+  padding: var(--card-padding) !important;
+  margin: var(--card-spacing) 0 !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,var(--shadow-alpha)) !important;
+}
+
+details,
+.builder-panel,
+.api-panel,
+.builder-input,
+.builder-select,
+.builder-textarea,
+.api-input,
+.api-textarea,
+.api-activity-log,
+pre,
+img {
+  border-radius: calc(var(--card-radius) - 2px) !important;
+}
+
+pre,
+.builder-textarea,
+.api-textarea,
+#manualReferenceChecklist {
+  font-size: var(--prompt-font-size) !important;
+}
+
+.builder-textarea,
+.api-textarea {
+  min-height: var(--textarea-min-height);
+}
+
+#builderOutput {
+  min-height: var(--output-min-height) !important;
+}
+
+nav a {
+  font-size: var(--nav-font-size) !important;
+  padding: var(--nav-padding-y) var(--nav-padding-x) !important;
+}
+
+#refs .reference-grid,
+.reference-grid.desktop-primary-grid {
+  grid-template-columns: repeat(var(--reference-grid-columns), minmax(0, 1fr)) !important;
+}
+
+.theme-studio-card {
+  scroll-margin-top: 18px;
+}
+
+.theme-studio {
+  background: var(--card);
+}
+
+.theme-studio > summary {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  list-style: none;
+}
+
+.theme-studio > summary::-webkit-details-marker {
+  display: none;
+}
+
+.theme-studio-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.theme-studio-title::before {
+  content: "⚙";
+  color: var(--accent);
+}
+
+.theme-studio-note {
+  color: var(--muted);
+  font-size: .85rem;
+  font-weight: 700;
+}
+
+.theme-controls {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.theme-panel {
+  grid-column: span 6;
+  background: rgba(15, 23, 42, .42);
+  border: 1px solid var(--line);
+  border-radius: calc(var(--card-radius) - 2px);
+  padding: 14px;
+  min-width: 0;
+}
+
+.theme-panel.full {
+  grid-column: 1 / -1;
+}
+
+.theme-panel h3 {
+  margin-top: 0;
+}
+
+.theme-control {
+  margin: 10px 0;
+}
+
+.theme-control label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: .82rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.theme-control output {
+  color: var(--accent);
+  font-weight: 900;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.theme-control input,
+.theme-control select,
+.theme-control textarea {
+  width: 100%;
+  color: var(--text);
+  background: var(--code);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 10px;
+  outline: none;
+}
+
+.theme-control input[type="color"] {
+  min-height: 42px;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.theme-control textarea {
+  min-height: 120px;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: .84rem;
+  resize: vertical;
+}
+
+.theme-preset-grid,
+.theme-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.theme-action-row {
+  margin-top: 12px;
+}
+
+.theme-button {
+  appearance: none;
+  border: 1px solid rgba(214, 180, 93, .55);
+  background: rgba(214, 180, 93, .9);
+  color: #111827;
+  border-radius: 999px;
+  padding: 9px 13px;
+  font-size: .82rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.theme-button.secondary {
+  background: rgba(39, 52, 73, .85);
+  color: var(--text);
+  border-color: var(--line);
+}
+
+.theme-button.danger {
+  background: rgba(127, 29, 29, .55);
+  color: #fecaca;
+  border-color: rgba(248, 113, 113, .55);
+}
+
+.theme-status {
+  color: #86efac;
+  font-size: .9rem;
+  font-weight: 800;
+  min-height: 1.25em;
+  margin-top: 10px;
+}
+
+.theme-status.error {
+  color: #fecaca;
+}
+
+@media (min-width: 1500px) {
+  main {
+    width: min(calc(100% - 56px), var(--app-max-width)) !important;
+  }
+}
+
+@media (max-width: 920px) {
+  .theme-panel {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 720px) {
+  main {
+    width: min(calc(100% - 18px), 100%) !important;
+  }
+
+  #refs .reference-grid,
+  .reference-grid.desktop-primary-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .theme-studio > summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .theme-button {
+    width: 100%;
+  }
+}
 </style>
 </head>
 <body>
@@ -916,7 +1179,7 @@ main {
 <h1>PV2 John Doe / SOFA Video Prompt and Portrait Generation Reference</h1>
 <div class="subtitle">A desktop- and mobile-friendly reference file for generating the PV2 John Doe portrait, preserving the final reference images, scene prompts, and production notes for the SOFA video project.</div>
 <nav>
-<a href="#refs">Refs</a>
+<a href="#refs">Refs</a><a href="#theme-studio">Theme Studio</a>
 <a href="#master">Master</a>
 <a href="#scenes">Scenes</a>
 <a href="#prompt-builder">Builder</a>
@@ -931,13 +1194,134 @@ main {
 <section class="card">
 <h2>Export Note</h2>
 <p>This project is building a consistent set of AI-generated visual references and scene prompts for a SOFA in Korea legal information video. The goal is to use one fictional Soldier, PV2 John Doe, as a recurring example character across the video so the visuals feel connected, professional, and easy to follow. This archive keeps the final reference images, master prompt, scene prompts, and production notes in one place for quick use while editing.</p>
+</section><section class="card theme-studio-card" id="theme-studio">
+<details class="theme-studio">
+<summary>
+<span class="theme-studio-title">Theme Studio / Visual Settings</span>
+<span class="theme-studio-note">Live preview · saved in this browser · export/import</span>
+</summary>
+<p class="small">Customize the site visually without editing code. Use the quick presets for simple changes, or use the pro controls for layout, typography, spacing, colors, and image grid behavior.</p>
+<div class="theme-controls">
+<div class="theme-panel full">
+<h3>Quick Presets</h3>
+<div aria-label="Theme presets" class="theme-preset-grid" role="group">
+<button class="theme-button secondary" data-theme-preset="armyDark" type="button">Army Dark</button>
+<button class="theme-button secondary" data-theme-preset="legalDark" type="button">Legal Office Dark</button>
+<button class="theme-button secondary" data-theme-preset="warmTan" type="button">Warm Tan</button>
+<button class="theme-button secondary" data-theme-preset="highContrast" type="button">High Contrast</button>
+<button class="theme-button secondary" data-theme-preset="lightMode" type="button">Light Mode</button>
+</div>
+</div>
+<div class="theme-panel">
+<h3>Layout</h3>
+<div class="theme-control">
+<label for="themeContentWidth">Main Content Width <output id="themeContentWidthValue"></output></label>
+<input data-theme-key="appMaxWidth" id="themeContentWidth" max="2200" min="1100" step="50" type="range"/>
+</div>
+<div class="theme-control">
+<label for="themeDensity">Layout Density</label>
+<select data-theme-key="density" id="themeDensity">
+<option value="compact">Compact</option>
+<option value="comfortable">Comfortable</option>
+<option value="spacious">Spacious</option>
+</select>
+</div>
+<div class="theme-control">
+<label for="themeReferenceColumns">Reference Image Columns <output id="themeReferenceColumnsValue"></output></label>
+<input data-theme-key="referenceGridColumns" id="themeReferenceColumns" max="4" min="1" step="1" type="range"/>
+</div>
+<div class="theme-control">
+<label for="themePromptHeight">Prompt Box Height</label>
+<select data-theme-key="promptHeight" id="themePromptHeight">
+<option value="short">Short</option>
+<option value="medium">Medium</option>
+<option value="tall">Tall</option>
+<option value="extraTall">Extra Tall</option>
+</select>
+</div>
+</div>
+<div class="theme-panel">
+<h3>Typography and Shape</h3>
+<div class="theme-control">
+<label for="themeBodyFontSize">Body Font Size <output id="themeBodyFontSizeValue"></output></label>
+<input data-theme-key="bodyFontSize" id="themeBodyFontSize" max="20" min="14" step="1" type="range"/>
+</div>
+<div class="theme-control">
+<label for="themePromptFontSize">Prompt Font Size <output id="themePromptFontSizeValue"></output></label>
+<input data-theme-key="promptFontSize" id="themePromptFontSize" max="18" min="12" step="1" type="range"/>
+</div>
+<div class="theme-control">
+<label for="themeBorderRadius">Border Radius <output id="themeBorderRadiusValue"></output></label>
+<input data-theme-key="borderRadius" id="themeBorderRadius" max="28" min="4" step="1" type="range"/>
+</div>
+<div class="theme-control">
+<label for="themeShadowStrength">Shadow Strength <output id="themeShadowStrengthValue"></output></label>
+<input data-theme-key="shadowStrength" id="themeShadowStrength" max="40" min="0" step="1" type="range"/>
+</div>
+</div>
+<div class="theme-panel">
+<h3>Colors</h3>
+<div class="theme-control">
+<label for="themeBg">Background</label>
+<input data-theme-key="bg" id="themeBg" type="color"/>
+</div>
+<div class="theme-control">
+<label for="themeCard">Card</label>
+<input data-theme-key="card" id="themeCard" type="color"/>
+</div>
+<div class="theme-control">
+<label for="themeCard2">Secondary Panel</label>
+<input data-theme-key="card2" id="themeCard2" type="color"/>
+</div>
+<div class="theme-control">
+<label for="themeCode">Prompt Box Background</label>
+<input data-theme-key="code" id="themeCode" type="color"/>
+</div>
+</div>
+<div class="theme-panel">
+<h3>Accent and Text</h3>
+<div class="theme-control">
+<label for="themeAccent">Accent</label>
+<input data-theme-key="accent" id="themeAccent" type="color"/>
+</div>
+<div class="theme-control">
+<label for="themeText">Text</label>
+<input data-theme-key="text" id="themeText" type="color"/>
+</div>
+<div class="theme-control">
+<label for="themeMuted">Muted Text</label>
+<input data-theme-key="muted" id="themeMuted" type="color"/>
+</div>
+<div class="theme-control">
+<label for="themeLine">Border Line</label>
+<input data-theme-key="line" id="themeLine" type="color"/>
+</div>
+</div>
+<div class="theme-panel full">
+<h3>Save, Export, and Import</h3>
+<div class="theme-action-row">
+<button class="theme-button" id="themeSaveButton" type="button">Save Settings</button>
+<button class="theme-button secondary" id="themeExportButton" type="button">Download Theme JSON</button>
+<button class="theme-button secondary" id="themeCopyCssButton" type="button">Copy Theme CSS</button>
+<button class="theme-button danger" id="themeResetButton" type="button">Reset Defaults</button>
+</div>
+<div class="theme-control">
+<label for="themeImportText">Import Theme JSON</label>
+<textarea id="themeImportText" placeholder='Paste exported theme JSON here, then click "Apply Imported Theme".'></textarea>
+</div>
+<div class="theme-action-row">
+<button class="theme-button secondary" id="themeApplyImportButton" type="button">Apply Imported Theme</button>
+<button class="theme-button secondary" id="themeClearImportButton" type="button">Clear Import Box</button>
+</div>
+<div aria-live="polite" class="theme-status" id="themeStatus"></div>
+<p class="small">Settings are saved only in this browser with localStorage. Export Theme JSON if you want to reuse the same look on another device or browser.</p>
+</div>
+</div>
+</details>
 </section>
 <section class="card" id="refs">
 <h2>Final 3 Reference Images</h2>
 <p class="small">These are the three final images used to keep PV2 John Doe consistent. Image A shows who he is, what his uniform looks like, and how his patches should appear. Image B is the close-up face reference. Image C shows example body positions, but it is only a guide for natural posture and movement.</p>
-
-
-
 <div class="reference-grid desktop-primary-grid"><figure>
 <img alt="Image A - Primary character reference sheet" loading="lazy" src="images/image_a_primary_character_reference_sheet.png"/>
 <figcaption>Image A - Primary character reference sheet</figcaption>
@@ -1495,7 +1879,6 @@ Do not create a different face when the patrol cap is worn.</pre>
 </div>
 </div>
 </section></div>
-
 <section class="card" id="notes">
 <h2>Key Workflow Decisions</h2>
 <ul>
@@ -2248,5 +2631,325 @@ Do not create a different face when the patrol cap is worn.</pre>
   }
 })();
 </script>
-</body>
+<script>
+(function () {
+  var STORAGE_KEY = 'pv2DoeThemeStudioSettingsV1';
+
+  var DEFAULT_THEME = {
+    bg: '#0f172a',
+    card: '#111827',
+    card2: '#1f2937',
+    text: '#f8fafc',
+    muted: '#cbd5e1',
+    line: '#334155',
+    accent: '#d6b45d',
+    code: '#020617',
+    appMaxWidth: 1800,
+    density: 'comfortable',
+    bodyFontSize: 16,
+    promptFontSize: 14,
+    borderRadius: 14,
+    shadowStrength: 18,
+    referenceGridColumns: 3,
+    promptHeight: 'tall'
+  };
+
+  var PRESETS = {
+    armyDark: {
+      bg: '#0f172a', card: '#111827', card2: '#1f2937', text: '#f8fafc',
+      muted: '#cbd5e1', line: '#334155', accent: '#d6b45d', code: '#020617'
+    },
+    legalDark: {
+      bg: '#101820', card: '#17212f', card2: '#223044', text: '#f8fafc',
+      muted: '#c7d2e0', line: '#3a4a61', accent: '#c9a75f', code: '#07111f'
+    },
+    warmTan: {
+      bg: '#1f1b14', card: '#292317', card2: '#3a2f1d', text: '#fff7ed',
+      muted: '#e7d8bf', line: '#5d4d33', accent: '#e5bd67', code: '#120f0a'
+    },
+    highContrast: {
+      bg: '#000000', card: '#050505', card2: '#111111', text: '#ffffff',
+      muted: '#e5e7eb', line: '#facc15', accent: '#facc15', code: '#000000'
+    },
+    lightMode: {
+      bg: '#f4f6f8', card: '#ffffff', card2: '#e9eef5', text: '#111827',
+      muted: '#475569', line: '#cbd5e1', accent: '#b48625', code: '#f8fafc'
+    }
+  };
+
+  function byId(id) { return document.getElementById(id); }
+
+  function getSavedTheme() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function normalizeTheme(theme) {
+    return Object.assign({}, DEFAULT_THEME, theme || {});
+  }
+
+  function densityValues(density) {
+    if (density === 'compact') {
+      return { cardPadding: 14, cardSpacing: 8, navY: 6, navX: 9 };
+    }
+    if (density === 'spacious') {
+      return { cardPadding: 24, cardSpacing: 18, navY: 9, navX: 13 };
+    }
+    return { cardPadding: 18, cardSpacing: 12, navY: 7, navX: 10 };
+  }
+
+  function promptHeights(value) {
+    if (value === 'short') return { textarea: 130, output: 360 };
+    if (value === 'medium') return { textarea: 160, output: 460 };
+    if (value === 'extraTall') return { textarea: 220, output: 720 };
+    return { textarea: 180, output: 560 };
+  }
+
+  function setCssVar(name, value) {
+    document.documentElement.style.setProperty(name, value);
+  }
+
+  function applyTheme(theme) {
+    var t = normalizeTheme(theme);
+    var density = densityValues(t.density);
+    var heights = promptHeights(t.promptHeight);
+
+    setCssVar('--bg', t.bg);
+    setCssVar('--card', t.card);
+    setCssVar('--card2', t.card2);
+    setCssVar('--text', t.text);
+    setCssVar('--muted', t.muted);
+    setCssVar('--line', t.line);
+    setCssVar('--accent', t.accent);
+    setCssVar('--code', t.code);
+    setCssVar('--app-max-width', t.appMaxWidth + 'px');
+    setCssVar('--body-font-size', t.bodyFontSize + 'px');
+    setCssVar('--prompt-font-size', t.promptFontSize + 'px');
+    setCssVar('--card-radius', t.borderRadius + 'px');
+    setCssVar('--card-padding', density.cardPadding + 'px');
+    setCssVar('--card-spacing', density.cardSpacing + 'px');
+    setCssVar('--shadow-alpha', (Number(t.shadowStrength) / 100).toFixed(2));
+    setCssVar('--nav-font-size', Math.max(11, Number(t.bodyFontSize) - 3) + 'px');
+    setCssVar('--nav-padding-y', density.navY + 'px');
+    setCssVar('--nav-padding-x', density.navX + 'px');
+    setCssVar('--reference-grid-columns', t.referenceGridColumns);
+    setCssVar('--textarea-min-height', heights.textarea + 'px');
+    setCssVar('--output-min-height', heights.output + 'px');
+
+    syncControls(t);
+  }
+
+  function currentThemeFromControls() {
+    var t = normalizeTheme(getSavedTheme());
+    var controls = document.querySelectorAll('[data-theme-key]');
+    controls.forEach(function (el) {
+      var key = el.getAttribute('data-theme-key');
+      if (!key) return;
+      var value = el.value;
+      if (['appMaxWidth','bodyFontSize','promptFontSize','borderRadius','shadowStrength','referenceGridColumns'].indexOf(key) !== -1) {
+        value = Number(value);
+      }
+      t[key] = value;
+    });
+    return normalizeTheme(t);
+  }
+
+  function syncControls(theme) {
+    var t = normalizeTheme(theme);
+    var map = {
+      themeContentWidth: t.appMaxWidth,
+      themeDensity: t.density,
+      themeReferenceColumns: t.referenceGridColumns,
+      themePromptHeight: t.promptHeight,
+      themeBodyFontSize: t.bodyFontSize,
+      themePromptFontSize: t.promptFontSize,
+      themeBorderRadius: t.borderRadius,
+      themeShadowStrength: t.shadowStrength,
+      themeBg: t.bg,
+      themeCard: t.card,
+      themeCard2: t.card2,
+      themeCode: t.code,
+      themeAccent: t.accent,
+      themeText: t.text,
+      themeMuted: t.muted,
+      themeLine: t.line
+    };
+
+    Object.keys(map).forEach(function (id) {
+      var el = byId(id);
+      if (el && String(el.value) !== String(map[id])) el.value = map[id];
+    });
+
+    setOutput('themeContentWidthValue', t.appMaxWidth + 'px');
+    setOutput('themeReferenceColumnsValue', t.referenceGridColumns);
+    setOutput('themeBodyFontSizeValue', t.bodyFontSize + 'px');
+    setOutput('themePromptFontSizeValue', t.promptFontSize + 'px');
+    setOutput('themeBorderRadiusValue', t.borderRadius + 'px');
+    setOutput('themeShadowStrengthValue', t.shadowStrength + '%');
+  }
+
+  function setOutput(id, value) {
+    var el = byId(id);
+    if (el) el.textContent = value;
+  }
+
+  function setStatus(message, isError) {
+    var el = byId('themeStatus');
+    if (!el) return;
+    el.textContent = message || '';
+    el.classList.toggle('error', !!isError);
+    if (message) {
+      setTimeout(function () {
+        if (el.textContent === message) el.textContent = '';
+      }, 3500);
+    }
+  }
+
+  function saveTheme(theme) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizeTheme(theme)));
+    setStatus('Theme settings saved in this browser.');
+  }
+
+  function downloadTheme(theme) {
+    var payload = JSON.stringify(normalizeTheme(theme), null, 2);
+    var blob = new Blob([payload], { type: 'application/json;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'pv2-doe-theme-settings.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    setStatus('Theme JSON downloaded.');
+  }
+
+  async function copyText(text, successMessage) {
+    try {
+      await navigator.clipboard.writeText(text);
+      setStatus(successMessage || 'Copied.');
+    } catch (err) {
+      var temp = document.createElement('textarea');
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      temp.remove();
+      setStatus(successMessage || 'Copied.');
+    }
+  }
+
+  function themeToCss(theme) {
+    var t = normalizeTheme(theme);
+    var density = densityValues(t.density);
+    var heights = promptHeights(t.promptHeight);
+    return [
+      ':root {',
+      '  --bg: ' + t.bg + ';',
+      '  --card: ' + t.card + ';',
+      '  --card2: ' + t.card2 + ';',
+      '  --text: ' + t.text + ';',
+      '  --muted: ' + t.muted + ';',
+      '  --line: ' + t.line + ';',
+      '  --accent: ' + t.accent + ';',
+      '  --code: ' + t.code + ';',
+      '  --app-max-width: ' + t.appMaxWidth + 'px;',
+      '  --body-font-size: ' + t.bodyFontSize + 'px;',
+      '  --prompt-font-size: ' + t.promptFontSize + 'px;',
+      '  --card-radius: ' + t.borderRadius + 'px;',
+      '  --card-padding: ' + density.cardPadding + 'px;',
+      '  --card-spacing: ' + density.cardSpacing + 'px;',
+      '  --shadow-alpha: ' + (Number(t.shadowStrength) / 100).toFixed(2) + ';',
+      '  --reference-grid-columns: ' + t.referenceGridColumns + ';',
+      '  --textarea-min-height: ' + heights.textarea + 'px;',
+      '  --output-min-height: ' + heights.output + 'px;',
+      '}'
+    ].join('\n');
+  }
+
+  function applyPreset(name) {
+    var current = currentThemeFromControls();
+    var preset = PRESETS[name];
+    if (!preset) return;
+    var merged = normalizeTheme(Object.assign({}, current, preset));
+    applyTheme(merged);
+    setStatus('Preset applied. Click Save Settings to keep it.');
+  }
+
+  function applyImport() {
+    var box = byId('themeImportText');
+    if (!box || !box.value.trim()) {
+      setStatus('Paste exported theme JSON first.', true);
+      return;
+    }
+    try {
+      var parsed = JSON.parse(box.value);
+      var theme = normalizeTheme(parsed);
+      applyTheme(theme);
+      saveTheme(theme);
+      setStatus('Imported theme applied and saved.');
+    } catch (err) {
+      setStatus('Import failed. Check that the pasted text is valid JSON.', true);
+    }
+  }
+
+  function resetTheme() {
+    localStorage.removeItem(STORAGE_KEY);
+    applyTheme(DEFAULT_THEME);
+    setStatus('Theme reset to defaults.');
+  }
+
+  function initThemeStudio() {
+    var section = byId('theme-studio');
+    if (!section) return;
+
+    var theme = normalizeTheme(getSavedTheme());
+    applyTheme(theme);
+
+    document.querySelectorAll('[data-theme-key]').forEach(function (el) {
+      el.addEventListener('input', function () {
+        applyTheme(currentThemeFromControls());
+      });
+      el.addEventListener('change', function () {
+        applyTheme(currentThemeFromControls());
+      });
+    });
+
+    document.querySelectorAll('[data-theme-preset]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        applyPreset(button.getAttribute('data-theme-preset'));
+      });
+    });
+
+    var saveButton = byId('themeSaveButton');
+    var exportButton = byId('themeExportButton');
+    var copyCssButton = byId('themeCopyCssButton');
+    var resetButton = byId('themeResetButton');
+    var applyImportButton = byId('themeApplyImportButton');
+    var clearImportButton = byId('themeClearImportButton');
+
+    if (saveButton) saveButton.addEventListener('click', function () { saveTheme(currentThemeFromControls()); });
+    if (exportButton) exportButton.addEventListener('click', function () { downloadTheme(currentThemeFromControls()); });
+    if (copyCssButton) copyCssButton.addEventListener('click', function () { copyText(themeToCss(currentThemeFromControls()), 'Theme CSS copied.'); });
+    if (resetButton) resetButton.addEventListener('click', resetTheme);
+    if (applyImportButton) applyImportButton.addEventListener('click', applyImport);
+    if (clearImportButton) clearImportButton.addEventListener('click', function () {
+      var box = byId('themeImportText');
+      if (box) box.value = '';
+      setStatus('Import box cleared.');
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initThemeStudio);
+  } else {
+    initThemeStudio();
+  }
+})();
+</script></body>
 </html>
