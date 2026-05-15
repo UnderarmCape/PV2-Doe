@@ -1,8 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>PV2 John Doe / SOFA Video Prompt and Portrait Generation Reference</title>
 <style>
 :root {
@@ -669,59 +670,191 @@ nav a {
   color: #bbf7d0;
 }
 
+
+
+/* Desktop-first layout refresh */
+main {
+  width: min(calc(100% - 32px), 1400px);
+  max-width: 1400px;
+  padding: clamp(14px, 2vw, 26px);
+}
+.card {
+  margin: 12px 0;
+}
+section.card > p.small:first-of-type,
+section.card > p:first-of-type {
+  margin-top: 0;
+}
+#refs .reference-grid,
+.reference-grid.desktop-primary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+#refs .reference-grid figure,
+.reference-grid.desktop-primary-grid figure {
+  margin: 0;
+}
+#refs .reference-grid img {
+  max-height: 520px;
+  object-fit: contain;
+}
+.workspace-grid {
+  display: grid;
+  gap: 18px;
+  align-items: start;
+}
+.workspace-grid > .card {
+  margin: 0;
+}
+.prompt-builder-card,
+.api-generation-card {
+  height: 100%;
+}
+.prompt-builder-grid {
+  gap: 18px;
+}
+.builder-panel,
+.api-panel {
+  padding: 16px;
+}
+.builder-textarea {
+  min-height: 150px;
+}
+#builderMasterPreview {
+  min-height: 230px;
+}
+#builderOutput {
+  min-height: 400px;
+}
+.builder-row,
+.api-row {
+  row-gap: 10px;
+}
+@media (min-width: 1100px) {
+  main {
+    width: min(calc(100% - 48px), 1400px);
+    padding: 20px 24px 28px;
+  }
+  header {
+    padding-top: 26px;
+    padding-bottom: 18px;
+  }
+  .card {
+    padding: 18px 20px;
+    margin: 10px 0;
+  }
+  .workspace-grid {
+    grid-template-columns: minmax(720px, 1.2fr) minmax(420px, .8fr);
+  }
+  .builder-textarea {
+    min-height: 180px;
+  }
+  #builderMasterPreview {
+    min-height: 300px;
+  }
+  #builderOutput {
+    min-height: 560px;
+  }
+  .api-textarea {
+    min-height: 260px;
+  }
+  .builder-row,
+  .api-row {
+    flex-wrap: nowrap;
+  }
+  .builder-row > *,
+  .api-row > * {
+    flex: 0 0 auto;
+  }
+}
+@media (max-width: 1099px) {
+  .workspace-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 860px) {
+  .builder-row,
+  .api-row {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 720px) {
+  main {
+    width: min(calc(100% - 18px), 100%);
+    padding: 10px 9px 18px;
+  }
+  .card {
+    padding: 14px 12px;
+  }
+  .builder-row,
+  .api-row,
+  .prompt-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .builder-button,
+  .api-button,
+  .prompt-button,
+  .api-row a.api-button {
+    width: 100%;
+    text-align: center;
+  }
+  #refs .reference-grid,
+  .reference-grid.desktop-primary-grid {
+    grid-template-columns: 1fr;
+  }
+  #refs .reference-grid img {
+    max-height: none;
+  }
+}
+
 </style>
 </head>
 <body>
 <header>
-  <h1>PV2 John Doe / SOFA Video Prompt and Portrait Generation Reference</h1>
-  <div class="subtitle">A desktop- and mobile-friendly reference file for generating the PV2 John Doe portrait, preserving the final reference images, scene prompts, and production notes for the SOFA video project.</div>
-  <nav>
-    <a href="#refs">Refs</a>
-    <a href="#master">Master</a>
-    <a href="#scenes">Scenes</a>
-    <a href="#prompt-builder">Builder</a>
-    <a href="#chatgpt-workflow">ChatGPT Workflow</a>
-    <a href="#image-prompts">Image Prompts</a>
-    <a href="#portrait-generation">Portrait Prompt</a>
-    <a href="#cap">Patrol Cap</a>
-    <a href="#notes">Notes</a>
-  </nav>
+<h1>PV2 John Doe / SOFA Video Prompt and Portrait Generation Reference</h1>
+<div class="subtitle">A desktop- and mobile-friendly reference file for generating the PV2 John Doe portrait, preserving the final reference images, scene prompts, and production notes for the SOFA video project.</div>
+<nav>
+<a href="#refs">Refs</a>
+<a href="#master">Master</a>
+<a href="#scenes">Scenes</a>
+<a href="#prompt-builder">Builder</a>
+<a href="#chatgpt-workflow">ChatGPT Workflow</a>
+<a href="#image-prompts">Image Prompts</a>
+<a href="#portrait-generation">Portrait Prompt</a>
+<a href="#cap">Patrol Cap</a>
+<a href="#notes">Notes</a>
+</nav>
 </header>
 <main>
-  <section class="card">
-    <h2>Export Note</h2>
-    <p>This project is building a consistent set of AI-generated visual references and scene prompts for a SOFA in Korea legal information video. The goal is to use one fictional Soldier, PV2 John Doe, as a recurring example character across the video so the visuals feel connected, professional, and easy to follow. This archive keeps the final reference images, master prompt, scene prompts, and production notes in one place for quick use while editing.</p>
-  </section>
-
-  <section id="refs" class="card">
-    <h2>Final 3 Reference Images</h2>
-    <p class="small">These are the three final images used to keep PV2 John Doe consistent. Image A shows who he is, what his uniform looks like, and how his patches should appear. Image B is the close-up face reference. Image C shows example body positions, but it is only a guide for natural posture and movement.</p>
-    
-        <figure>
-          <img src="images/image_a_primary_character_reference_sheet.png" alt="Image A - Primary character reference sheet" loading="lazy">
-          <figcaption>Image A - Primary character reference sheet</figcaption>
-        </figure>
-        
-        <figure>
-          <img src="images/image_b_final_close_up_portrait_reference.png" alt="Image B - Close-up portrait reference" loading="lazy">
-          <figcaption>Image B - Close-up portrait reference</figcaption>
-        </figure>
-        
-        <figure>
-          <img src="images/image_c_pose_reference_sheet.png" alt="Image C - Pose/body-language reference sheet" loading="lazy">
-          <figcaption>Image C - Pose/body-language reference sheet</figcaption>
-        </figure>
-        
-  </section>
+<section class="card">
+<h2>Export Note</h2>
+<p>This project is building a consistent set of AI-generated visual references and scene prompts for a SOFA in Korea legal information video. The goal is to use one fictional Soldier, PV2 John Doe, as a recurring example character across the video so the visuals feel connected, professional, and easy to follow. This archive keeps the final reference images, master prompt, scene prompts, and production notes in one place for quick use while editing.</p>
+</section>
+<section class="card" id="refs">
+<h2>Final 3 Reference Images</h2>
+<p class="small">These are the three final images used to keep PV2 John Doe consistent. Image A shows who he is, what his uniform looks like, and how his patches should appear. Image B is the close-up face reference. Image C shows example body positions, but it is only a guide for natural posture and movement.</p>
 
 
-  <section id="image-prompts" class="card">
-    <h2>Most Recent Prompts Used to Create Images A, B, and C</h2>
-    <p class="small">These are the final working prompt versions for the three-reference-image system. The Image B prompt below is now written as a fresh portrait-generation prompt, not an edit or cleanup prompt. Image A remains the primary character sheet prompt, and Image C remains the combined 10-pose reference sheet prompt.</p>
 
-    <details open>
-      <summary>Image B Prompt - Close-Up Portrait Generation Prompt</summary>
-      <pre>IMAGE GENERATION TASK — GENERATE THE IMAGE NOW.
+<div class="reference-grid desktop-primary-grid"><figure>
+<img alt="Image A - Primary character reference sheet" loading="lazy" src="images/image_a_primary_character_reference_sheet.png"/>
+<figcaption>Image A - Primary character reference sheet</figcaption>
+</figure><figure>
+<img alt="Image B - Close-up portrait reference" loading="lazy" src="images/image_b_final_close_up_portrait_reference.png"/>
+<figcaption>Image B - Close-up portrait reference</figcaption>
+</figure><figure>
+<img alt="Image C - Pose/body-language reference sheet" loading="lazy" src="images/image_c_pose_reference_sheet.png"/>
+<figcaption>Image C - Pose/body-language reference sheet</figcaption>
+</figure></div></section>
+<section class="card" id="image-prompts">
+<h2>Most Recent Prompts Used to Create Images A, B, and C</h2>
+<p class="small">These are the final working prompt versions for the three-reference-image system. The Image B prompt below is now written as a fresh portrait-generation prompt, not an edit or cleanup prompt. Image A remains the primary character sheet prompt, and Image C remains the combined 10-pose reference sheet prompt.</p>
+<details>
+<summary>Image B Prompt - Close-Up Portrait Generation Prompt</summary>
+<pre>IMAGE GENERATION TASK — GENERATE THE IMAGE NOW.
 
 FINAL OUTPUT REQUIRED:
 Generate one high-resolution photorealistic close-up or medium close-up Army public affairs portrait of PV2 John Doe.
@@ -761,17 +894,16 @@ Only render readable text if it can be clean and accurate. The only visible unif
 
 NEGATIVE INSTRUCTIONS:
 clean-shaven appearance, rank, uniform layout, shoulder patch placement, or overall junior-enlisted appearance. Do not make him older, more muscular, heroic, tactical, or special operations. Do not add weapons, body armor, helmet, sunglasses, gloves, beard, tattoos, ribbons, medals, qualification badges, airborne tabs, combat patches, extra shoulder patches, or awards. Do not use UCP, woodland camouflage, MARPAT, ABU, black boots, or incorrect camouflage. Do not tilt, rotate, shrink, distort, or move the 19th ESC patch. Do not replace the PV2 chevron with another rank. Do not create the incorrect vertical chest pocket/flap shapes below the name tapes.</pre>
-    </details>
-
-    <details>
-      <summary>Image A Prompt - Primary Reference Sheet with Patrol Cap Panels</summary>
-      <pre>IMAGE GENERATION TASK — GENERATE THE IMAGE NOW.
+</details>
+<details>
+<summary>Image A Prompt - Primary Reference Sheet with Patrol Cap Panels</summary>
+<pre>IMAGE GENERATION TASK — GENERATE THE IMAGE NOW.
 
 FINAL OUTPUT REQUIRED:
 Generate one high-resolution photorealistic updated PRIMARY CHARACTER REFERENCE SHEET for PV2 John Doe.
 
 Purpose:
-Create a new Image A that preserves John Doe&#x27;s identity and corrected uniform details while adding patrol cap reference views for future outdoor scene generation.
+Create a new Image A that preserves John Doe's identity and corrected uniform details while adding patrol cap reference views for future outdoor scene generation.
 
 REFERENCE IMAGES TO USE:
 Image A is the current corrected primary character reference sheet. Use it as the primary identity, full-body, and uniform reference. Preserve the same face, age, haircut, skin tone, facial structure, build, youthful junior-enlisted look, OCP uniform layout, DOE tape, U.S. ARMY tape, PV2 rank, corrected 19th ESC patch, U.S. flag, full-body proportions, and uniform realism.
@@ -800,11 +932,10 @@ PATROL CAP PANELS:
 
 NEGATIVE INSTRUCTIONS:
 Do not change his identity, face, age, haircut, build, rank, patch placement, or uniform. Do not create different Soldiers between panels. Do not make the patrol cap incorrect, oversized, malformed, or unnaturally worn.</pre>
-    </details>
-
-    <details>
-      <summary>Image C Prompt - Combined 10-Pose Character Pose Sheet</summary>
-      <pre>IMAGE GENERATION TASK — GENERATE THE IMAGE NOW.
+</details>
+<details>
+<summary>Image C Prompt - Combined 10-Pose Character Pose Sheet</summary>
+<pre>IMAGE GENERATION TASK — GENERATE THE IMAGE NOW.
 
 FINAL OUTPUT REQUIRED:
 Generate one high-resolution photorealistic corrected 10-POSE CHARACTER POSE SHEET for PV2 John Doe.
@@ -834,48 +965,43 @@ Arrange all 10 poses in one clean organized sheet with consistent studio backgro
 
 NEGATIVE INSTRUCTIONS:
 Do not change his identity, face, age, haircut, rank, uniform layout, patch placement, or sleeve placement. Do not make any panel look like a different Soldier. Do not create inconsistent face shapes or patch placement between panels. Do not add extra badges, weapons, tactical gear, helmet, body armor, or wrong camouflage.</pre>
-    </details>
-  </section>
-
-  <section id="portrait-generation" class="card">
-    <h2>Image B Prompt - Close-Up Portrait Generation Prompt</h2>
-    <p class="small">Use this section to generate the finished PV2 John Doe close-up portrait from scratch as closely as possible. The portrait below is the target look. The patch, rank, and flag references are included in a closed dropdown so they are available without taking over the page.</p>
-
-    <div class="two-column">
-      <figure class="portrait-preview">
-        <img src="images/image_b_final_close_up_portrait_reference.png" alt="Final close-up portrait reference for PV2 John Doe" loading="lazy">
-        <figcaption>Final Image B - target close-up portrait look for PV2 John Doe.</figcaption>
-      </figure>
-
-      <div>
-        <div class="prompt-note">
-          <strong>Recommended upload set for best results:</strong> upload the exact 19th ESC patch as Image F, the PV2 rank as Image G, and the U.S. flag patch as Image H when the right shoulder may be visible.
+</details>
+</section>
+<section class="card" id="portrait-generation">
+<h2>Image B Prompt - Close-Up Portrait Generation Prompt</h2>
+<p class="small">Use this section to generate the finished PV2 John Doe close-up portrait from scratch as closely as possible. The portrait below is the target look. The patch, rank, and flag references are included in a closed dropdown so they are available without taking over the page.</p>
+<div class="two-column">
+<figure class="portrait-preview">
+<img alt="Final close-up portrait reference for PV2 John Doe" loading="lazy" src="images/image_b_final_close_up_portrait_reference.png"/>
+<figcaption>Final Image B - target close-up portrait look for PV2 John Doe.</figcaption>
+</figure>
+<div>
+<div class="prompt-note">
+<strong>Recommended upload set for best results:</strong> upload the exact 19th ESC patch as Image F, the PV2 rank as Image G, and the U.S. flag patch as Image H when the right shoulder may be visible.
         </div>
-
-        <details>
-          <summary>Reference Images F, G, and H</summary>
-          <p class="small">These references should stay closed by default. Open them only when you need to confirm patch, rank, or flag details.</p>
-          <div class="reference-grid">
-            <figure>
-              <img src="images/image_f_exact_19th_esc_patch_reference.jpg" alt="Image F - exact 19th ESC subdued shoulder patch reference" loading="lazy">
-              <figcaption>Image F - exact 19th ESC subdued shoulder patch reference and placement.</figcaption>
-            </figure>
-            <figure>
-              <img src="images/image_g_pv2_rank_reference.jpg" alt="Image G - PV2 rank chevron reference" loading="lazy">
-              <figcaption>Image G - PV2 rank reference: one subdued black chevron.</figcaption>
-            </figure>
-            <figure>
-              <img src="images/image_h_us_flag_patch_reference.png" alt="Image H - U.S. flag patch reference" loading="lazy">
-              <figcaption>Image H - full-color embroidered U.S. flag patch reference, if visible.</figcaption>
-            </figure>
-          </div>
-        </details>
-      </div>
-    </div>
-
-    <details open>
-      <summary>Image B Prompt - Close-Up Portrait Generation Prompt</summary>
-      <pre>IMAGE GENERATION TASK — GENERATE THE IMAGE NOW.
+<details>
+<summary>Reference Images F, G, and H</summary>
+<p class="small">These references should stay closed by default. Open them only when you need to confirm patch, rank, or flag details.</p>
+<div class="reference-grid">
+<figure>
+<img alt="Image F - exact 19th ESC subdued shoulder patch reference" loading="lazy" src="images/image_f_exact_19th_esc_patch_reference.jpg"/>
+<figcaption>Image F - exact 19th ESC subdued shoulder patch reference and placement.</figcaption>
+</figure>
+<figure>
+<img alt="Image G - PV2 rank chevron reference" loading="lazy" src="images/image_g_pv2_rank_reference.jpg"/>
+<figcaption>Image G - PV2 rank reference: one subdued black chevron.</figcaption>
+</figure>
+<figure>
+<img alt="Image H - U.S. flag patch reference" loading="lazy" src="images/image_h_us_flag_patch_reference.png"/>
+<figcaption>Image H - full-color embroidered U.S. flag patch reference, if visible.</figcaption>
+</figure>
+</div>
+</details>
+</div>
+</div>
+<details>
+<summary>Image B Prompt - Close-Up Portrait Generation Prompt</summary>
+<pre>IMAGE GENERATION TASK — GENERATE THE IMAGE NOW.
 
 FINAL OUTPUT REQUIRED:
 Generate one high-resolution photorealistic close-up or medium close-up Army public affairs portrait of PV2 John Doe.
@@ -915,11 +1041,11 @@ Only render readable text if it can be clean and accurate. The only visible unif
 
 NEGATIVE INSTRUCTIONS:
 clean-shaven appearance, rank, uniform layout, shoulder patch placement, or overall junior-enlisted appearance. Do not make him older, more muscular, heroic, tactical, or special operations. Do not add weapons, body armor, helmet, sunglasses, gloves, beard, tattoos, ribbons, medals, qualification badges, airborne tabs, combat patches, extra shoulder patches, or awards. Do not use UCP, woodland camouflage, MARPAT, ABU, black boots, or incorrect camouflage. Do not tilt, rotate, shrink, distort, or move the 19th ESC patch. Do not replace the PV2 chevron with another rank. Do not create the incorrect vertical chest pocket/flap shapes below the name tapes.</pre>
-    </details>
-  </section>
-<section id="master" class="card">
-    <h2>Final 3-Image Scene Generation Master Prompt</h2>
-    <pre>IMAGE GENERATION TASK — GENERATE THE IMAGE NOW.
+</details>
+</section>
+<section class="card" id="master">
+<h2>Final 3-Image Scene Generation Master Prompt</h2>
+<pre>IMAGE GENERATION TASK — GENERATE THE IMAGE NOW.
 
 Use the attached reference images to create one high-resolution photorealistic image of PV2 John Doe, a fictional 18-year-old U.S. Army Soldier assigned to the 19th Expeditionary Sustainment Command.
 
@@ -1045,292 +1171,248 @@ Do not create a character sheet unless specifically requested.
 Do not copy the pose-sheet layout from Image C.
 Do not make the patrol cap incorrect, oversized, malformed, or unnaturally worn.
 Do not create a different face when the patrol cap is worn.</pre>
-  </section>
+</section>
+<section class="card scene-presets-card" id="scenes">
+<details class="scene-presets-collapse">
+<summary>
+<span class="scene-summary-title">Scene Presets</span>
+<span class="summary-note">18 scenes</span>
+</summary>
+<div class="scene-presets-content">
+<p class="small">Use these inside the master prompt by replacing SCENE and COMPOSITION.</p>
+<details>
+<summary>Scene 1: SOFA Intro / Legal Office Brief</summary>
+<h4>Scene</h4>
+<pre>PV2 John Doe is seated in a professional U.S. Army legal office conference room in South Korea, receiving a SOFA information brief. A military legal advisor is visible in the room, slightly out of focus, standing near a blank presentation screen. On the conference table are a notepad, pen, legal folder, and small U.S. and Republic of Korea desk flags. The environment should feel official, calm, educational, and reassuring. This is not a crime scene, not an interrogation, and not a courtroom.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. Medium shot of PV2 John Doe seated at the conference table, facing slightly toward the legal advisor while his face remains visible to the viewer. Keep PV2 John Doe in sharp focus and the background softly blurred. Leave clean empty space on the left side of the frame for video text overlay.</pre>
+</details>
+<details>
+<summary>Scene 2: Who SOFA Applies To</summary>
+<h4>Scene</h4>
+<pre>PV2 John Doe walks on a clean U.S. military installation in South Korea with a small group representing different SOFA-covered personnel: one DoD civilian in business casual clothing, one invited contractor with a laptop bag, and one family member. The scene should feel inclusive, calm, and informational.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. PV2 John Doe should be the visual anchor in the foreground or middle of the group. Leave space on one side for text overlay.</pre>
+</details>
+<details>
+<summary>Scene 3: If an Incident Happens</summary>
+<h4>Scene</h4>
+<pre>PV2 John Doe stands calmly outside a modern Korean police station with a U.S. military representative nearby. The scene should suggest the beginning of a legal administrative process after an alleged incident. He is not arrested, not handcuffed, not distressed, and not being treated like a criminal.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. Medium-wide shot with PV2 John Doe and the representative in the foreground. Avoid readable signs. Leave space on one side for text overlay.</pre>
+</details>
+<details>
+<summary>Scene 4: KNP Report or Subpoena</summary>
+<h4>Scene</h4>
+<pre>PV2 John Doe is seated at a professional office desk in South Korea while an official-looking document is handed to him across the table. The document represents an incident report or subpoena, but all document text must be blurred or unreadable.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. Close-up or medium close-up focused on the document handoff, with PV2 John Doe's uniform and hands visible. Leave negative space for text overlay.</pre>
+</details>
+<details>
+<summary>Scene 5: PMO Notification</summary>
+<h4>Scene</h4>
+<pre>PV2 John Doe receives a professional notification in a U.S. military administrative office. A desk, phone, computer monitor, calendar, and official-looking folder are visible. The tone should be calm and procedural.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. Medium shot of PV2 John Doe seated or standing at a desk, listening professionally to another U.S. military or civilian staff member.</pre>
+</details>
+<details>
+<summary>Scene 6: SOFA Brief Preparation</summary>
+<h4>Scene</h4>
+<pre>PV2 John Doe receives a SOFA brief from a legal advisor in a clean U.S. Army legal office. The legal advisor is pointing toward a blank whiteboard or blank presentation screen.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. Medium shot from across the conference table. Leave blank screen or wall space where video text can be added later.</pre>
+</details>
+<details>
+<summary>Scene 7: International Hold</summary>
+<h4>Scene</h4>
+<pre>Create a clean visual metaphor for travel restriction involving PV2 John Doe. Show a passport, military ID-style card with no readable personal information, airline ticket with no readable text, calendar, and official folder on a desk. PV2 John Doe's OCP sleeve or hand may be visible near the documents.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. Close-up tabletop composition. The official folder partially covers the passport and airline ticket. Leave room for overlay text.</pre>
+</details>
+<details>
+<summary>Scene 8: U.S. Representative</summary>
+<h4>Scene</h4>
+<pre>PV2 John Doe sits beside a U.S. Representative during a formal meeting in a Korean office environment. The representative is taking notes calmly while observing the conversation.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. Medium shot across the table. Keep the scene calm, balanced, and professional.</pre>
+</details>
+<details>
+<summary>Scene 9: Defense Attorney</summary>
+<h4>Scene</h4>
+<pre>PV2 John Doe meets with an English-speaking Korean defense attorney in a professional legal office in South Korea. The attorney is dressed in business attire and calmly explains paperwork.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. Medium shot from the side of the conference table. PV2 John Doe should be clearly visible and listening attentively.</pre>
+</details>
+<details>
+<summary>Scene 10: Interpreter</summary>
+<h4>Scene</h4>
+<pre>PV2 John Doe participates in a formal legal meeting in South Korea with an interpreter assisting communication. Three adults are seated at a conference table: PV2 John Doe, a Korean official or attorney, and an interpreter positioned between them.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. Medium-wide conference table shot. Avoid tense interrogation-room lighting.</pre>
+</details>
+<details>
+<summary>Scene 11: Trial Observer</summary>
+<h4>Scene</h4>
+<pre>Create a respectful South Korean courtroom observation scene connected to PV2 John Doe's legal process. A U.S. military attorney is seated quietly in the observer area taking notes. PV2 John Doe may be visible from behind or from a distance, but he should not be the dramatic focus.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. Wide courtroom shot from a respectful distance. No handcuffs, no jail imagery, no dramatic defendant close-up.</pre>
+</details>
+<details>
+<summary>Scene 12: Right to Remain Silent</summary>
+<h4>Scene</h4>
+<pre>PV2 John Doe sits calmly at a conference table with his hands folded, listening during a formal legal meeting. The image should suggest restraint, silence, and careful decision-making.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. Close medium shot of PV2 John Doe from the chest up. Leave space for text overlay.</pre>
+</details>
+<details>
+<summary>Scene 13: Do Not Sign What You Cannot Read</summary>
+<h4>Scene</h4>
+<pre>PV2 John Doe holds a pen above a document but pauses before signing. The document appears official and may appear to contain Korean-language text, but all text must be blurred or unreadable. A legal advisor or interpreter is visible in the background.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. Close-up on the pen, document, and PV2 John Doe's OCP sleeve or partial torso.</pre>
+</details>
+<details>
+<summary>Scene 14: Korean Legal System</summary>
+<h4>Scene</h4>
+<pre>PV2 John Doe is present in a respectful South Korean courtroom environment, shown as a neutral participant in the legal process. The courtroom should include a judge's bench, prosecutor area, and legal seating, but the scene should not look dramatic or frightening.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. Wide or medium-wide courtroom view. Avoid making him look guilty, trapped, or distressed.</pre>
+</details>
+<details>
+<summary>Scene 15: Settlement / Mediation</summary>
+<h4>Scene</h4>
+<pre>PV2 John Doe is seated in a neutral professional mediation-style meeting in South Korea with attorneys or advisors present. The scene should suggest a calm discussion about resolution or settlement.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. Medium-wide shot across a conference table. Advisors and attorneys should appear calm and professional.</pre>
+</details>
+<details>
+<summary>Scene 16: Possible Outcomes</summary>
+<h4>Scene</h4>
+<pre>PV2 John Doe sits in a legal office while a legal advisor explains possible outcomes using a blank flowchart on a whiteboard or presentation screen. The board should contain no readable generated text.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. PV2 John Doe should be seated in the foreground or midground, listening. The blank flowchart board should be visible with enough empty space for custom text overlays.</pre>
+</details>
+<details>
+<summary>Scene 17: ROK-U.S. Legal Cooperation</summary>
+<h4>Scene</h4>
+<pre>PV2 John Doe stands in the background of a professional U.S.-Korean legal cooperation setting. In the foreground, small U.S. and Republic of Korea desk flags sit on a conference table. Two professional representatives are shaking hands or speaking respectfully in the background.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. Focus on the desk flags in the foreground with PV2 John Doe and the representatives softly visible in the background.</pre>
+</details>
+<details>
+<summary>Scene 18: Closing / Stay Safe</summary>
+<h4>Scene</h4>
+<pre>PV2 John Doe walks safely through a clean public area in South Korea during the day with other U.S. personnel nearby. The setting should show responsible off-duty or transit behavior in a Korean city environment. No alcohol, no nightlife, no police, no conflict.</pre>
+<h4>Composition</h4>
+<pre>16:9 horizontal image. Medium-wide shot of PV2 John Doe walking calmly and professionally through the environment. Leave space for final text overlay.</pre>
+</details>
+</div>
+</details>
+</section>
+<div class="workspace-grid" id="workspace"><section class="card prompt-builder-card" id="prompt-builder">
+<h2>Prompt Builder</h2>
+<p class="small">Build a complete scene prompt from the master prompt and the existing Scene Presets on this page. The builder reads those sections directly, so edits to the master prompt or scene preset text in this HTML automatically carry into the builder without duplicating prompt text.</p>
+<div class="prompt-builder-grid">
+<div class="builder-panel">
+<h3>1. Select Scene Preset</h3>
+<label class="builder-label" for="builderSceneSelect">Scene Preset Source</label>
+<select class="builder-select" id="builderSceneSelect"></select>
+<label class="builder-label" for="builderSceneTitle">Scene Title / File Label</label>
+<input class="builder-input" id="builderSceneTitle" placeholder="Example: Scene 01 - SOFA Intro"/>
+<label class="builder-label" for="builderScene">Scene</label>
+<textarea class="builder-textarea" id="builderScene" placeholder="Choose a scene preset above, or paste a custom SCENE section here."></textarea>
+<label class="builder-label" for="builderComposition">Composition</label>
+<textarea class="builder-textarea" id="builderComposition" placeholder="Choose a scene preset above, or paste a custom COMPOSITION section here."></textarea>
+<div class="builder-row">
+<button class="builder-button" id="builderBuildButton" type="button">Build Full Prompt</button>
+<button class="builder-button secondary" id="builderRefreshButton" type="button">Refresh From Selected Preset</button>
+<button class="builder-button secondary" id="builderClearButton" type="button">Clear Scene Fields</button>
+</div>
+<p class="builder-note">The scene and composition fields are loaded from the selected preset as editable working copies.</p>
+</div>
+<div class="builder-panel">
+<h3>2. Complete Output Prompt</h3>
+<label class="builder-label" for="builderMasterPreview">Master Prompt Source</label>
+<textarea class="builder-textarea" id="builderMasterPreview" readonly=""></textarea>
+<label class="builder-label" for="builderOutput">Output</label>
+<textarea class="builder-textarea" id="builderOutput" readonly=""></textarea>
+<div class="builder-row">
+<button class="builder-button" id="builderCopyButton" type="button">Copy Output Prompt</button>
+<button class="builder-button secondary" id="builderDownloadButton" type="button">Download .txt</button>
+</div>
+<div aria-live="polite" class="builder-status" id="builderStatus"></div>
+</div>
+</div>
+</section><section class="card api-generation-card" id="chatgpt-workflow">
+<h2>ChatGPT Plus Manual Workflow</h2>
+<p class="small">Use this section when you want to use your normal ChatGPT account instead of the OpenAI API. This page does not send requests to OpenAI, does not use API billing, and does not store any API keys. It prepares the prompt, checklist, and scene package so you can copy them into ChatGPT manually.</p>
+<div class="api-grid">
+<div class="api-panel">
+<h3>1. Copy and Launch</h3>
+<p class="api-note">Build the prompt in the Prompt Builder above, then copy it here and paste it into ChatGPT with the required reference images.</p>
+<div class="api-row">
+<button class="api-button" id="manualCopyPromptButton" type="button">Copy Final Prompt</button>
+<a class="api-button secondary" href="https://chatgpt.com/" id="manualOpenChatGPTButton" rel="noopener noreferrer" target="_blank">Open ChatGPT</a>
+<button class="api-button secondary" id="manualCopyScenePackageButton" type="button">Copy Scene Package</button>
+<button class="api-button secondary" id="manualDownloadScenePackageButton" type="button">Download Scene Package .txt</button>
+</div>
+<label class="api-label" for="manualProjectUrl">Optional ChatGPT Project URL</label>
+<input autocomplete="off" class="api-input" id="manualProjectUrl" inputmode="url" placeholder="Paste your ChatGPT project link here, then save it." type="url"/>
+<p class="api-backend-help">Optional. Save a direct link to your PV2 DOE ChatGPT Project so this page can open it quickly. The link is saved only in this browser.</p>
+<div class="api-row">
+<button class="api-button secondary" id="manualSaveProjectUrlButton" type="button">Save Project URL</button>
+<button class="api-button secondary" id="manualOpenProjectButton" type="button">Open Saved Project</button>
+<button class="api-button danger" id="manualClearProjectUrlButton" type="button">Clear Project URL</button>
+</div>
+<div aria-live="polite" class="api-status" id="manualStatus"></div>
+<label class="api-label" for="manualActivityLog">Activity / Status</label>
+<div aria-live="polite" class="api-activity-log" id="manualActivityLog">
+<div>Ready. Build a prompt, copy it, upload references in ChatGPT, then paste the prompt.</div>
+</div>
+</div>
+<div class="api-panel">
+<h3>2. Reference Upload Checklist</h3>
+<p class="api-note">Use this checklist before pasting a scene prompt into ChatGPT. Upload the images in the same chat where you paste the prompt.</p>
+<div aria-label="Reference upload checklist" class="api-textarea" id="manualReferenceChecklist" style="min-height: 320px; overflow: auto; white-space: pre-wrap;"></div>
+<div class="api-row">
+<button class="api-button" id="manualCopyChecklistButton" type="button">Copy Reference Checklist</button>
+<button class="api-button secondary" id="manualCopyInstructionsButton" type="button">Copy Manual Instructions</button>
+</div>
+</div>
+<div class="api-panel" style="grid-column: 1 / -1;">
+<h3>3. Scene Tracking Notes</h3>
+<p class="api-note">Track what you generated in ChatGPT. These notes stay in your browser unless you copy or download them.</p>
+<label class="api-label" for="manualResultFilename">Result Filename / Scene Label</label>
+<input class="api-input" id="manualResultFilename" placeholder="Example: scene-18-closing-stay-safe-v01.png"/>
+<label class="api-label" for="manualResultNotes">Result Notes</label>
+<textarea class="api-textarea" id="manualResultNotes" placeholder="Paste notes about the ChatGPT result here, such as what worked, what failed, which references were uploaded, or what needs to be regenerated."></textarea>
+<div class="api-row">
+<button class="api-button secondary" id="manualCopyNotesButton" type="button">Copy Notes</button>
+<button class="api-button secondary" id="manualDownloadNotesButton" type="button">Download Notes .txt</button>
+<button class="api-button secondary" id="manualDownloadLogButton" type="button">Download Workflow Log</button>
+<button class="api-button danger" id="manualClearNotesButton" type="button">Clear Notes</button>
+</div>
+<p class="api-note">No image is generated inside this page in manual mode. After ChatGPT creates an image, save the image from ChatGPT and record the filename or notes here.</p>
+</div>
+</div>
+</section></div>
 
-  <section id="scenes" class="card scene-presets-card">
-    <details class="scene-presets-collapse">
-      <summary>
-        <span class="scene-summary-title">Scene Presets</span>
-        <span class="summary-note">18 scenes</span>
-      </summary>
-      <div class="scene-presets-content">
-        <p class="small">Use these inside the master prompt by replacing SCENE and COMPOSITION.</p>
-    
-    <details>
-      <summary>Scene 1: SOFA Intro / Legal Office Brief</summary>
-      <h4>Scene</h4>
-      <pre>PV2 John Doe is seated in a professional U.S. Army legal office conference room in South Korea, receiving a SOFA information brief. A military legal advisor is visible in the room, slightly out of focus, standing near a blank presentation screen. On the conference table are a notepad, pen, legal folder, and small U.S. and Republic of Korea desk flags. The environment should feel official, calm, educational, and reassuring. This is not a crime scene, not an interrogation, and not a courtroom.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. Medium shot of PV2 John Doe seated at the conference table, facing slightly toward the legal advisor while his face remains visible to the viewer. Keep PV2 John Doe in sharp focus and the background softly blurred. Leave clean empty space on the left side of the frame for video text overlay.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 2: Who SOFA Applies To</summary>
-      <h4>Scene</h4>
-      <pre>PV2 John Doe walks on a clean U.S. military installation in South Korea with a small group representing different SOFA-covered personnel: one DoD civilian in business casual clothing, one invited contractor with a laptop bag, and one family member. The scene should feel inclusive, calm, and informational.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. PV2 John Doe should be the visual anchor in the foreground or middle of the group. Leave space on one side for text overlay.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 3: If an Incident Happens</summary>
-      <h4>Scene</h4>
-      <pre>PV2 John Doe stands calmly outside a modern Korean police station with a U.S. military representative nearby. The scene should suggest the beginning of a legal administrative process after an alleged incident. He is not arrested, not handcuffed, not distressed, and not being treated like a criminal.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. Medium-wide shot with PV2 John Doe and the representative in the foreground. Avoid readable signs. Leave space on one side for text overlay.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 4: KNP Report or Subpoena</summary>
-      <h4>Scene</h4>
-      <pre>PV2 John Doe is seated at a professional office desk in South Korea while an official-looking document is handed to him across the table. The document represents an incident report or subpoena, but all document text must be blurred or unreadable.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. Close-up or medium close-up focused on the document handoff, with PV2 John Doe&#x27;s uniform and hands visible. Leave negative space for text overlay.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 5: PMO Notification</summary>
-      <h4>Scene</h4>
-      <pre>PV2 John Doe receives a professional notification in a U.S. military administrative office. A desk, phone, computer monitor, calendar, and official-looking folder are visible. The tone should be calm and procedural.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. Medium shot of PV2 John Doe seated or standing at a desk, listening professionally to another U.S. military or civilian staff member.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 6: SOFA Brief Preparation</summary>
-      <h4>Scene</h4>
-      <pre>PV2 John Doe receives a SOFA brief from a legal advisor in a clean U.S. Army legal office. The legal advisor is pointing toward a blank whiteboard or blank presentation screen.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. Medium shot from across the conference table. Leave blank screen or wall space where video text can be added later.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 7: International Hold</summary>
-      <h4>Scene</h4>
-      <pre>Create a clean visual metaphor for travel restriction involving PV2 John Doe. Show a passport, military ID-style card with no readable personal information, airline ticket with no readable text, calendar, and official folder on a desk. PV2 John Doe&#x27;s OCP sleeve or hand may be visible near the documents.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. Close-up tabletop composition. The official folder partially covers the passport and airline ticket. Leave room for overlay text.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 8: U.S. Representative</summary>
-      <h4>Scene</h4>
-      <pre>PV2 John Doe sits beside a U.S. Representative during a formal meeting in a Korean office environment. The representative is taking notes calmly while observing the conversation.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. Medium shot across the table. Keep the scene calm, balanced, and professional.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 9: Defense Attorney</summary>
-      <h4>Scene</h4>
-      <pre>PV2 John Doe meets with an English-speaking Korean defense attorney in a professional legal office in South Korea. The attorney is dressed in business attire and calmly explains paperwork.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. Medium shot from the side of the conference table. PV2 John Doe should be clearly visible and listening attentively.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 10: Interpreter</summary>
-      <h4>Scene</h4>
-      <pre>PV2 John Doe participates in a formal legal meeting in South Korea with an interpreter assisting communication. Three adults are seated at a conference table: PV2 John Doe, a Korean official or attorney, and an interpreter positioned between them.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. Medium-wide conference table shot. Avoid tense interrogation-room lighting.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 11: Trial Observer</summary>
-      <h4>Scene</h4>
-      <pre>Create a respectful South Korean courtroom observation scene connected to PV2 John Doe&#x27;s legal process. A U.S. military attorney is seated quietly in the observer area taking notes. PV2 John Doe may be visible from behind or from a distance, but he should not be the dramatic focus.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. Wide courtroom shot from a respectful distance. No handcuffs, no jail imagery, no dramatic defendant close-up.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 12: Right to Remain Silent</summary>
-      <h4>Scene</h4>
-      <pre>PV2 John Doe sits calmly at a conference table with his hands folded, listening during a formal legal meeting. The image should suggest restraint, silence, and careful decision-making.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. Close medium shot of PV2 John Doe from the chest up. Leave space for text overlay.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 13: Do Not Sign What You Cannot Read</summary>
-      <h4>Scene</h4>
-      <pre>PV2 John Doe holds a pen above a document but pauses before signing. The document appears official and may appear to contain Korean-language text, but all text must be blurred or unreadable. A legal advisor or interpreter is visible in the background.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. Close-up on the pen, document, and PV2 John Doe&#x27;s OCP sleeve or partial torso.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 14: Korean Legal System</summary>
-      <h4>Scene</h4>
-      <pre>PV2 John Doe is present in a respectful South Korean courtroom environment, shown as a neutral participant in the legal process. The courtroom should include a judge&#x27;s bench, prosecutor area, and legal seating, but the scene should not look dramatic or frightening.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. Wide or medium-wide courtroom view. Avoid making him look guilty, trapped, or distressed.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 15: Settlement / Mediation</summary>
-      <h4>Scene</h4>
-      <pre>PV2 John Doe is seated in a neutral professional mediation-style meeting in South Korea with attorneys or advisors present. The scene should suggest a calm discussion about resolution or settlement.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. Medium-wide shot across a conference table. Advisors and attorneys should appear calm and professional.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 16: Possible Outcomes</summary>
-      <h4>Scene</h4>
-      <pre>PV2 John Doe sits in a legal office while a legal advisor explains possible outcomes using a blank flowchart on a whiteboard or presentation screen. The board should contain no readable generated text.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. PV2 John Doe should be seated in the foreground or midground, listening. The blank flowchart board should be visible with enough empty space for custom text overlays.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 17: ROK-U.S. Legal Cooperation</summary>
-      <h4>Scene</h4>
-      <pre>PV2 John Doe stands in the background of a professional U.S.-Korean legal cooperation setting. In the foreground, small U.S. and Republic of Korea desk flags sit on a conference table. Two professional representatives are shaking hands or speaking respectfully in the background.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. Focus on the desk flags in the foreground with PV2 John Doe and the representatives softly visible in the background.</pre>
-    </details>
-    
-    <details>
-      <summary>Scene 18: Closing / Stay Safe</summary>
-      <h4>Scene</h4>
-      <pre>PV2 John Doe walks safely through a clean public area in South Korea during the day with other U.S. personnel nearby. The setting should show responsible off-duty or transit behavior in a Korean city environment. No alcohol, no nightlife, no police, no conflict.</pre>
-      <h4>Composition</h4>
-      <pre>16:9 horizontal image. Medium-wide shot of PV2 John Doe walking calmly and professionally through the environment. Leave space for final text overlay.</pre>
-    </details>
-    
-      </div>
-    </details>
-  </section>
-
-  <section id="prompt-builder" class="card prompt-builder-card">
-    <h2>Prompt Builder</h2>
-    <p class="small">Build a complete scene prompt from the master prompt and the existing Scene Presets on this page. The builder reads those sections directly, so edits to the master prompt or scene preset text in this HTML automatically carry into the builder without duplicating prompt text.</p>
-
-    <div class="prompt-builder-grid">
-      <div class="builder-panel">
-        <h3>1. Select Scene Preset</h3>
-        <label class="builder-label" for="builderSceneSelect">Scene Preset Source</label>
-        <select id="builderSceneSelect" class="builder-select"></select>
-
-        <label class="builder-label" for="builderSceneTitle">Scene Title / File Label</label>
-        <input id="builderSceneTitle" class="builder-input" placeholder="Example: Scene 01 - SOFA Intro" />
-
-        <label class="builder-label" for="builderScene">Scene</label>
-        <textarea id="builderScene" class="builder-textarea" placeholder="Choose a scene preset above, or paste a custom SCENE section here."></textarea>
-
-        <label class="builder-label" for="builderComposition">Composition</label>
-        <textarea id="builderComposition" class="builder-textarea" placeholder="Choose a scene preset above, or paste a custom COMPOSITION section here."></textarea>
-
-        <div class="builder-row">
-          <button type="button" class="builder-button" id="builderBuildButton">Build Full Prompt</button>
-          <button type="button" class="builder-button secondary" id="builderRefreshButton">Refresh From Selected Preset</button>
-          <button type="button" class="builder-button secondary" id="builderClearButton">Clear Scene Fields</button>
-        </div>
-        <p class="builder-note">The scene and composition fields are loaded from the selected preset as editable working copies.</p>
-      </div>
-
-      <div class="builder-panel">
-        <h3>2. Complete Output Prompt</h3>
-        <label class="builder-label" for="builderMasterPreview">Master Prompt Source</label>
-        <textarea id="builderMasterPreview" class="builder-textarea" readonly></textarea>
-
-        <label class="builder-label" for="builderOutput">Output</label>
-        <textarea id="builderOutput" class="builder-textarea" readonly></textarea>
-
-        <div class="builder-row">
-          <button type="button" class="builder-button" id="builderCopyButton">Copy Output Prompt</button>
-          <button type="button" class="builder-button secondary" id="builderDownloadButton">Download .txt</button>
-        </div>
-        <div class="builder-status" id="builderStatus" aria-live="polite"></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="chatgpt-workflow" class="card api-generation-card">
-    <h2>ChatGPT Plus Manual Workflow</h2>
-    <p class="small">Use this section when you want to use your normal ChatGPT account instead of the OpenAI API. This page does not send requests to OpenAI, does not use API billing, and does not store any API keys. It prepares the prompt, checklist, and scene package so you can copy them into ChatGPT manually.</p>
-
-    <div class="api-grid">
-      <div class="api-panel">
-        <h3>1. Copy and Launch</h3>
-        <p class="api-note">Build the prompt in the Prompt Builder above, then copy it here and paste it into ChatGPT with the required reference images.</p>
-
-        <div class="api-row">
-          <button type="button" class="api-button" id="manualCopyPromptButton">Copy Final Prompt</button>
-          <a class="api-button secondary" id="manualOpenChatGPTButton" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT</a>
-          <button type="button" class="api-button secondary" id="manualCopyScenePackageButton">Copy Scene Package</button>
-          <button type="button" class="api-button secondary" id="manualDownloadScenePackageButton">Download Scene Package .txt</button>
-        </div>
-
-        <label class="api-label" for="manualProjectUrl">Optional ChatGPT Project URL</label>
-        <input id="manualProjectUrl" class="api-input" type="url" inputmode="url" placeholder="Paste your ChatGPT project link here, then save it." autocomplete="off">
-        <p class="api-backend-help">Optional. Save a direct link to your PV2 DOE ChatGPT Project so this page can open it quickly. The link is saved only in this browser.</p>
-        <div class="api-row">
-          <button type="button" class="api-button secondary" id="manualSaveProjectUrlButton">Save Project URL</button>
-          <button type="button" class="api-button secondary" id="manualOpenProjectButton">Open Saved Project</button>
-          <button type="button" class="api-button danger" id="manualClearProjectUrlButton">Clear Project URL</button>
-        </div>
-
-        <div class="api-status" id="manualStatus" aria-live="polite"></div>
-
-        <label class="api-label" for="manualActivityLog">Activity / Status</label>
-        <div id="manualActivityLog" class="api-activity-log" aria-live="polite">
-          <div>Ready. Build a prompt, copy it, upload references in ChatGPT, then paste the prompt.</div>
-        </div>
-      </div>
-
-      <div class="api-panel">
-        <h3>2. Reference Upload Checklist</h3>
-        <p class="api-note">Use this checklist before pasting a scene prompt into ChatGPT. Upload the images in the same chat where you paste the prompt.</p>
-        <div class="api-textarea" id="manualReferenceChecklist" style="min-height: 320px; overflow: auto; white-space: pre-wrap;" aria-label="Reference upload checklist"></div>
-        <div class="api-row">
-          <button type="button" class="api-button" id="manualCopyChecklistButton">Copy Reference Checklist</button>
-          <button type="button" class="api-button secondary" id="manualCopyInstructionsButton">Copy Manual Instructions</button>
-        </div>
-      </div>
-
-      <div class="api-panel" style="grid-column: 1 / -1;">
-        <h3>3. Scene Tracking Notes</h3>
-        <p class="api-note">Track what you generated in ChatGPT. These notes stay in your browser unless you copy or download them.</p>
-
-        <label class="api-label" for="manualResultFilename">Result Filename / Scene Label</label>
-        <input id="manualResultFilename" class="api-input" placeholder="Example: scene-18-closing-stay-safe-v01.png">
-
-        <label class="api-label" for="manualResultNotes">Result Notes</label>
-        <textarea id="manualResultNotes" class="api-textarea" placeholder="Paste notes about the ChatGPT result here, such as what worked, what failed, which references were uploaded, or what needs to be regenerated."></textarea>
-
-        <div class="api-row">
-          <button type="button" class="api-button secondary" id="manualCopyNotesButton">Copy Notes</button>
-          <button type="button" class="api-button secondary" id="manualDownloadNotesButton">Download Notes .txt</button>
-          <button type="button" class="api-button secondary" id="manualDownloadLogButton">Download Workflow Log</button>
-          <button type="button" class="api-button danger" id="manualClearNotesButton">Clear Notes</button>
-        </div>
-
-        <p class="api-note">No image is generated inside this page in manual mode. After ChatGPT creates an image, save the image from ChatGPT and record the filename or notes here.</p>
-      </div>
-    </div>
-  </section>
-
-<section id="notes" class="card">
-    <h2>Key Workflow Decisions</h2>
-    <ul>
-      <li>Use PV2 John Doe as the recurring fictional example Soldier for scene consistency.</li>
-      <li>Use only three final references going forward: Image A, Image B, and Image C.</li>
-      <li>Image A controls identity, full body, uniform, corrected patch placement, U.S. flag placement, and patrol cap appearance.</li>
-      <li>Image B controls close-up face fidelity and portrait realism.</li>
-      <li>Image C is loose pose guidance only, not a strict pose lock.</li>
-      <li>For indoor office, classroom, conference room, or briefing scenes, do not use the patrol cap unless instructed.</li>
-      <li>For outdoor, transit, field, or appropriate military outdoor scenes, PV2 John Doe may wear the patrol cap.</li>
-      <li>Generated text on uniforms is unreliable. Keep DOE and U.S. ARMY only if rendered cleanly; otherwise add manually in editing.</li>
-      <li>For public release, treat AI-generated imagery as photo illustrations in the internal workflow and confirm local release guidance if needed.</li>
-      <li>The ChatGPT Workflow section is manual-mode only. It prepares prompts and checklists for ChatGPT Plus and does not call the OpenAI API.</li>
-    </ul>
-  </section>
+<section class="card" id="notes">
+<h2>Key Workflow Decisions</h2>
+<ul>
+<li>Use PV2 John Doe as the recurring fictional example Soldier for scene consistency.</li>
+<li>Use only three final references going forward: Image A, Image B, and Image C.</li>
+<li>Image A controls identity, full body, uniform, corrected patch placement, U.S. flag placement, and patrol cap appearance.</li>
+<li>Image B controls close-up face fidelity and portrait realism.</li>
+<li>Image C is loose pose guidance only, not a strict pose lock.</li>
+<li>For indoor office, classroom, conference room, or briefing scenes, do not use the patrol cap unless instructed.</li>
+<li>For outdoor, transit, field, or appropriate military outdoor scenes, PV2 John Doe may wear the patrol cap.</li>
+<li>Generated text on uniforms is unreliable. Keep DOE and U.S. ARMY only if rendered cleanly; otherwise add manually in editing.</li>
+<li>For public release, treat AI-generated imagery as photo illustrations in the internal workflow and confirm local release guidance if needed.</li>
+<li>The ChatGPT Workflow section is manual-mode only. It prepares prompts and checklists for ChatGPT Plus and does not call the OpenAI API.</li>
+</ul>
+</section>
 </main>
-
-
 <script>
 (function () {
   function copyText(text) {
@@ -1410,8 +1492,6 @@ Do not create a different face when the patrol cap is worn.</pre>
   }
 })();
 </script>
-
-
 <script>
 (function () {
   function byId(id) { return document.getElementById(id); }
@@ -1701,8 +1781,6 @@ Do not create a different face when the patrol cap is worn.</pre>
   }
 })();
 </script>
-
-
 <script>
 (function () {
   function byId(id) { return document.getElementById(id); }
