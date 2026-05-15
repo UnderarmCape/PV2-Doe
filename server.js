@@ -115,6 +115,87 @@ async function fetchOpenAI(url, options, timeoutMs) {
   }
 }
 
+
+function writeSse(res, eventName, data) {
+  if (eventName) res.write(`event: ${eventName}\n`);
+  res.write(`data: ${JSON.stringify(data)}\n\n`);
+}
+
+function parseSseBlock(block) {
+  const lines = String(block || '').split(/\r?\n/);
+  const eventLines = [];
+  const dataLines = [];
+  for (const line of lines) {
+    if (line.startsWith('event:')) eventLines.push(line.slice(6).trim());
+    if (line.startsWith('data:')) dataLines.push(line.slice(5).trimStart());
+  }
+  const event = eventLines[eventLines.length - 1] || '';
+  const dataText = dataLines.join('\n').trim();
+  if (!dataText || dataText === '[DONE]') return { event, done: true, dataText };
+  try {
+    return { event, data: JSON.parse(dataText), dataText };
+  } catch (error) {
+    return { event, data: null, dataText, parseError: error.message || String(error) };
+  }
+}
+
+function extractKnownTextFromObject(value, options = {}) {
+  const includeDelta = !!options.includeDelta;
+  const seen = new Set();
+  const parts = [];
+
+  function walk(node) {
+    if (node == null) return;
+
+    if (typeof node === 'string') {
+      return;
+    }
+
+    if (typeof node !== 'object') return;
+    if (seen.has(node)) return;
+    seen.add(node);
+
+    if (includeDelta && typeof node.delta === 'string') parts.push(node.delta);
+    if (typeof node.output_text === 'string') parts.push(node.output_text);
+    if (typeof node.text === 'string') parts.push(node.text);
+
+    if (node.message && typeof node.message.content === 'string') parts.push(node.message.content);
+
+    if (Array.isArray(node.content)) walk(node.content);
+    if (Array.isArray(node.output)) walk(node.output);
+    if (node.item) walk(node.item);
+    if (node.response) walk(node.response);
+    if (node.message && typeof node.message === 'object') walk(node.message);
+
+    if (Array.isArray(node)) {
+      for (const item of node) walk(item);
+    }
+  }
+
+  walk(value);
+  return parts.join('');
+}
+
+function extractStreamingDeltaFromResponseEvent(eventName, data) {
+  const type = String((data && data.type) || eventName || '').toLowerCase();
+
+  // OpenAI Responses API text events normally arrive as response.output_text.delta.
+  if (type.includes('delta')) {
+    const delta = extractKnownTextFromObject(data, { includeDelta: true });
+    return delta;
+  }
+
+  return '';
+}
+
+function extractFinalTextFromResponseEvent(eventName, data) {
+  const type = String((data && data.type) || eventName || '').toLowerCase();
+  if (type.includes('completed') || type.includes('done') || data && (data.response || data.item || data.output || data.output_text)) {
+    return extractKnownTextFromObject(data, { includeDelta: false });
+  }
+  return '';
+}
+
 app.get('/api/health', (req, res) => {
   res.json({
     ok: true,
@@ -126,7 +207,7 @@ app.get('/api/health', (req, res) => {
     imageSize: OPENAI_IMAGE_SIZE,
     imageQuality: OPENAI_IMAGE_QUALITY,
     imageFormat: OPENAI_IMAGE_FORMAT,
-    backendVersion: '2026-05-15-v2-openai-fetch-timeout-fix',
+    backendVersion: '2026-05-15-v3-chat-stream-parser-image-billing-diagnostics',
     nodeVersion: process.version
   });
 });
@@ -189,15 +270,61 @@ app.post('/api/chat', async (req, res) => {
     res.setHeader('Connection', 'keep-alive');
     res.flushHeaders && res.flushHeaders();
 
+    writeSse(res, 'meta', { requestId, normalized: true });
+
     const reader = openaiResponse.body.getReader();
+    const decoder = new TextDecoder();
+    let sseBuffer = '';
+    let streamedLength = 0;
+    let latestFinalText = '';
+    const seenEventTypes = new Set();
+
+    function handleUpstreamBlock(block) {
+      const parsed = parseSseBlock(block);
+      if (!parsed || parsed.done) return;
+      const eventType = parsed.event || (parsed.data && parsed.data.type) || 'unknown';
+      seenEventTypes.add(eventType);
+
+      const delta = extractStreamingDeltaFromResponseEvent(parsed.event, parsed.data);
+      if (delta) {
+        streamedLength += delta.length;
+        writeSse(res, 'delta', { delta });
+        return;
+      }
+
+      const finalText = extractFinalTextFromResponseEvent(parsed.event, parsed.data);
+      if (finalText) latestFinalText = finalText;
+    }
+
     try {
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
-        res.write(Buffer.from(value));
+        sseBuffer += decoder.decode(value, { stream: true });
+
+        const blocks = sseBuffer.split(/\r?\n\r?\n/);
+        sseBuffer = blocks.pop() || '';
+        for (const block of blocks) {
+          if (block.trim()) handleUpstreamBlock(block);
+        }
       }
+
+      const finalChunk = decoder.decode();
+      if (finalChunk) sseBuffer += finalChunk;
+      if (sseBuffer.trim()) handleUpstreamBlock(sseBuffer);
+
+      if (streamedLength === 0 && latestFinalText) {
+        streamedLength = latestFinalText.length;
+        writeSse(res, 'delta', { delta: latestFinalText, fallbackFromFinalEvent: true });
+      }
+
+      writeSse(res, 'done', { requestId, responseLength: streamedLength });
       res.end();
-      logBackendEvent('chat_stream_completed', { requestId });
+      logBackendEvent('chat_stream_completed', {
+        requestId,
+        streamedLength,
+        eventTypes: Array.from(seenEventTypes).slice(0, 30)
+      });
     } finally {
       reader.releaseLock();
     }

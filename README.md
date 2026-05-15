@@ -138,3 +138,17 @@ You should see:
 ```
 
 If `/api/chat` or `/api/generate-image` still fails, download the diagnostics log again and check the Render logs using the requestId shown in the error response.
+
+## v3 troubleshooting notes
+
+### Chat returns status 200 but output box is blank
+The v3 backend normalizes OpenAI Responses API streaming events into simple SSE `delta` events for the HTML. It also records upstream event types in Render logs using the request ID.
+
+After deployment, confirm the health endpoint shows:
+
+```json
+"backendVersion": "2026-05-15-v3-chat-stream-parser-image-billing-diagnostics"
+```
+
+### Image generation returns HTTP 400: billing hard limit
+This is not an HTML or Render routing issue. It means the OpenAI project/account connected to `OPENAI_API_KEY` has reached its billing hard limit. Raise or reset the billing hard limit in OpenAI Platform billing settings, then retry image generation.

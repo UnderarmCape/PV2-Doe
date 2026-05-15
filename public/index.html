@@ -2082,33 +2082,61 @@ Do not create a different face when the patrol cap is worn.</pre>
     if (output) output.value = text || '';
   }
 
+  function collectKnownText(data, includeDelta) {
+    var seen = [];
+    var parts = [];
+
+    function hasSeen(obj) {
+      for (var i = 0; i < seen.length; i++) {
+        if (seen[i] === obj) return true;
+      }
+      return false;
+    }
+
+    function walk(value) {
+      if (!value) return;
+      if (typeof value === 'string') return;
+      if (typeof value !== 'object') return;
+      if (hasSeen(value)) return;
+      seen.push(value);
+
+      if (includeDelta && typeof value.delta === 'string') parts.push(value.delta);
+      if (typeof value.output_text === 'string') parts.push(value.output_text);
+      if (typeof value.text === 'string') parts.push(value.text);
+      if (typeof value.response === 'string') parts.push(value.response);
+      if (typeof value.content === 'string') parts.push(value.content);
+      if (typeof value.message === 'string') parts.push(value.message);
+      if (value.message && typeof value.message.content === 'string') parts.push(value.message.content);
+
+      if (Array.isArray(value)) {
+        value.forEach(walk);
+        return;
+      }
+      if (Array.isArray(value.output)) walk(value.output);
+      if (Array.isArray(value.content)) walk(value.content);
+      if (Array.isArray(value.data)) walk(value.data);
+      if (value.item) walk(value.item);
+      if (value.response && typeof value.response === 'object') walk(value.response);
+      if (value.message && typeof value.message === 'object') walk(value.message);
+      if (value.choice) walk(value.choice);
+      if (Array.isArray(value.choices)) walk(value.choices);
+    }
+
+    walk(data);
+    return parts.join('');
+  }
+
   function extractTextFromJson(data) {
     if (!data) return '';
     if (typeof data === 'string') return data;
-    if (typeof data.text === 'string') return data.text;
-    if (typeof data.response === 'string') return data.response;
-    if (typeof data.content === 'string') return data.content;
-    if (typeof data.message === 'string') return data.message;
-    if (data.message && typeof data.message.content === 'string') return data.message.content;
-    if (Array.isArray(data.output)) {
-      return data.output.map(function (item) {
-        if (typeof item === 'string') return item;
-        if (item && typeof item.text === 'string') return item.text;
-        if (item && typeof item.content === 'string') return item.content;
-        return '';
-      }).join('');
-    }
-    return '';
+    return collectKnownText(data, true);
   }
 
   function extractTextFromSseData(dataText) {
     if (!dataText || dataText === '[DONE]') return '';
     try {
       var data = JSON.parse(dataText);
-      return extractTextFromJson(data)
-        || data.delta
-        || (data.choices && data.choices[0] && data.choices[0].delta && data.choices[0].delta.content)
-        || '';
+      return extractTextFromJson(data);
     } catch (error) {
       return dataText;
     }
@@ -2154,10 +2182,26 @@ Do not create a different face when the patrol cap is worn.</pre>
   function flattenBackendErrorDetails(value) {
     if (!value) return '';
     if (typeof value === 'string') return value;
-    if (typeof value.message === 'string') return value.message;
-    if (typeof value.error === 'string') return value.error;
-    if (value.error && typeof value.error.message === 'string') return value.error.message;
-    if (value.details) return flattenBackendErrorDetails(value.details);
+
+    var pieces = [];
+    if (typeof value.error === 'string') pieces.push(value.error);
+    if (typeof value.message === 'string') pieces.push(value.message);
+    if (value.error && typeof value.error.message === 'string') pieces.push(value.error.message);
+    if (value.error && typeof value.error.code === 'string') pieces.push('Code: ' + value.error.code);
+    if (value.details) {
+      var detailText = flattenBackendErrorDetails(value.details);
+      if (detailText) pieces.push(detailText);
+    }
+
+    if (pieces.length) {
+      var unique = [];
+      pieces.forEach(function (piece) {
+        piece = String(piece || '').trim();
+        if (piece && unique.indexOf(piece) === -1) unique.push(piece);
+      });
+      return unique.join(' ');
+    }
+
     try {
       return JSON.stringify(value);
     } catch (error) {
@@ -2169,8 +2213,11 @@ Do not create a different face when the patrol cap is worn.</pre>
     var parsed = errorInfo && errorInfo.parsed ? errorInfo.parsed : null;
     var message = parsed ? flattenBackendErrorDetails(parsed) : (errorInfo && errorInfo.bodyText ? errorInfo.bodyText : '');
     var requestId = parsed && parsed.requestId ? ' Request ID: ' + parsed.requestId + '.' : '';
+    if (message && /billing_hard_limit_reached|Billing hard limit has been reached/i.test(message)) {
+      message += ' Fix: raise or reset the billing hard limit in the OpenAI Platform billing settings, then try again.';
+    }
     if (message) {
-      return 'Backend returned HTTP ' + response.status + ': ' + truncateDiagnosticString(message, 900) + requestId;
+      return 'Backend returned HTTP ' + response.status + ': ' + truncateDiagnosticString(message, 1200) + requestId;
     }
     return 'Backend returned HTTP ' + response.status + '.' + requestId;
   }
@@ -2315,6 +2362,10 @@ Do not create a different face when the patrol cap is worn.</pre>
         var fallbackText = await response.text();
         if (!fallbackText) throw new Error('Backend returned an empty response.');
         setResponseText(fallbackText);
+      }
+
+      if (byId('apiResponseOutput') && !byId('apiResponseOutput').value.trim()) {
+        addActivity('Warning: the backend finished the chat request but no displayable text was returned. Try Reasoning Mode: High or Medium, or update backend/server.js to the v3 stream parser.', true);
       }
 
       recordDiagnostic('chat_response_completed', {
