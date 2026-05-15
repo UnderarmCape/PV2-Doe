@@ -877,6 +877,38 @@ main {
   }
 }
 
+
+/* v7 fix: keep ChatGPT Plus Manual Workflow readable in the desktop side column */
+#chatgpt-workflow .api-grid {
+  grid-template-columns: 1fr !important;
+}
+
+#chatgpt-workflow .api-panel {
+  min-width: 0;
+  width: 100%;
+}
+
+#chatgpt-workflow .api-row {
+  flex-wrap: wrap !important;
+}
+
+#chatgpt-workflow .api-row > *,
+#chatgpt-workflow .api-row > a.api-button {
+  flex: 1 1 auto !important;
+  min-width: min(210px, 100%);
+}
+
+#chatgpt-workflow .api-textarea,
+#chatgpt-workflow .api-activity-log,
+#manualReferenceChecklist {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+#manualReferenceChecklist {
+  max-height: 460px;
+}
+
 </style>
 </head>
 <body>
