@@ -1,0 +1,2523 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PV2 John Doe / SOFA Video Prompt and Portrait Generation Reference</title>
+<style>
+:root {
+  --bg: #0f172a;
+  --card: #111827;
+  --card2: #1f2937;
+  --text: #f8fafc;
+  --muted: #cbd5e1;
+  --line: #334155;
+  --accent: #d6b45d;
+  --code: #020617;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  line-height: 1.55;
+  font-size: 16px;
+}
+header {
+  padding: 22px 16px 16px;
+  background: linear-gradient(135deg, #111827, #1e293b);
+  border-bottom: 1px solid var(--line);
+  position: static;
+}
+h1 { font-size: 1.25rem; margin: 0 0 6px; }
+.subtitle { color: var(--muted); font-size: .92rem; }
+main { padding: 14px; max-width: 900px; margin: 0 auto; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  margin: 14px 0;
+  box-shadow: 0 10px 30px rgba(0,0,0,.18);
+}
+h2 { font-size: 1.1rem; margin: 0 0 10px; color: #fff; }
+h3 { font-size: 1rem; margin: 16px 0 8px; color: var(--accent); }
+h4 { margin: 14px 0 6px; color: #e5e7eb; }
+p, li { color: var(--text); }
+.small { color: var(--muted); font-size: .9rem; }
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background: var(--code);
+  color: #e5e7eb;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  font-size: .88rem;
+  line-height: 1.45;
+  overflow-x: auto;
+}
+details {
+  background: var(--card2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin: 10px 0;
+}
+summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: #fff;
+}
+img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  display: block;
+  background: #0b1220;
+}
+figure { margin: 12px 0; }
+figcaption { color: var(--muted); font-size: .85rem; margin-top: 6px; }
+nav {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-top: 10px;
+}
+nav a {
+  flex: 0 0 auto;
+  color: #111827;
+  background: var(--accent);
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 7px 10px;
+  font-weight: 700;
+  font-size: .82rem;
+}
+hr { border: none; border-top: 1px solid var(--line); margin: 16px 0; }
+
+/* Responsive layout enhancements added for the portrait-generation update */
+header {
+  padding-left: clamp(14px, 3vw, 28px);
+  padding-right: clamp(14px, 3vw, 28px);
+}
+h1 {
+  font-size: clamp(1.25rem, 2.5vw, 2rem);
+  line-height: 1.15;
+}
+.subtitle {
+  max-width: 950px;
+}
+main {
+  width: min(100%, 1120px);
+  padding: clamp(12px, 2.6vw, 28px);
+}
+.card {
+  overflow: hidden;
+  padding: clamp(14px, 2.4vw, 24px);
+}
+nav {
+  flex-wrap: wrap;
+  overflow-x: visible;
+}
+nav a {
+  white-space: nowrap;
+}
+.img-wrap,
+.figure-wrap {
+  width: 100%;
+}
+.portrait-preview {
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.portrait-preview img {
+  max-height: 78vh;
+  object-fit: contain;
+}
+.reference-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+.reference-grid figure {
+  margin: 0;
+}
+.reference-grid img {
+  max-height: 420px;
+  object-fit: contain;
+}
+.prompt-note {
+  background: rgba(214, 180, 93, .10);
+  border: 1px solid rgba(214, 180, 93, .35);
+  border-radius: 12px;
+  padding: 12px;
+  color: var(--text);
+  margin: 12px 0;
+}
+@media (min-width: 900px) {
+  .two-column {
+    display: grid;
+    grid-template-columns: minmax(300px, 0.9fr) minmax(420px, 1.1fr);
+    gap: 18px;
+    align-items: start;
+  }
+}
+@media (max-width: 640px) {
+  body { font-size: 15px; }
+  nav { gap: 6px; }
+  nav a { font-size: .78rem; padding: 6px 9px; }
+  pre { font-size: .82rem; padding: 10px; }
+  details { padding: 9px 10px; }
+  .reference-grid { grid-template-columns: 1fr; }
+  .portrait-preview img { max-height: none; }
+}
+
+
+
+/* Compact prompt blocks with copy and expand controls */
+.prompt-block {
+  margin: 10px 0;
+}
+.prompt-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+.prompt-button {
+  appearance: none;
+  border: 1px solid rgba(214, 180, 93, .55);
+  background: rgba(214, 180, 93, .16);
+  color: #fff;
+  border-radius: 999px;
+  padding: 7px 11px;
+  font-size: .78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.prompt-button:hover,
+.prompt-button:focus {
+  background: rgba(214, 180, 93, .28);
+  outline: none;
+}
+.prompt-block pre {
+  margin: 0;
+  max-height: 220px;
+  overflow: hidden;
+  position: relative;
+}
+.prompt-block pre.is-expanded {
+  max-height: none;
+  overflow: auto;
+}
+.prompt-block pre:not(.is-expanded)::after {
+  content: "";
+  position: sticky;
+  left: 0;
+  bottom: -12px;
+  display: block;
+  height: 54px;
+  margin-top: -54px;
+  background: linear-gradient(to bottom, rgba(2, 6, 23, 0), var(--code));
+  pointer-events: none;
+}
+@media (max-width: 640px) {
+  .prompt-toolbar {
+    justify-content: stretch;
+  }
+  .prompt-button {
+    flex: 1 1 auto;
+  }
+  .prompt-block pre {
+    max-height: 180px;
+  }
+}
+
+
+/* Collapsible Scene Presets wrapper */
+.scene-presets-card {
+  padding: 0;
+}
+.scene-presets-collapse {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: var(--card);
+}
+.scene-presets-collapse > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: clamp(14px, 2.2vw, 22px) clamp(16px, 2.4vw, 24px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+.scene-presets-collapse > summary::-webkit-details-marker {
+  display: none;
+}
+.scene-summary-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.scene-summary-title::before {
+  content: "▶";
+  font-size: .85rem;
+  line-height: 1;
+}
+.scene-presets-collapse[open] > summary .scene-summary-title::before {
+  content: "▼";
+}
+.summary-note {
+  color: var(--muted);
+  font-size: .85rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.scene-presets-content {
+  padding: 0 clamp(16px, 2.4vw, 24px) clamp(16px, 2.4vw, 24px);
+}
+.scene-presets-content > .small {
+  margin-top: 0;
+}
+@media (max-width: 640px) {
+  .scene-presets-collapse > summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .summary-note {
+    margin-left: 1.45rem;
+  }
+}
+
+
+/* Prompt Builder section */
+.prompt-builder-card {
+  scroll-margin-top: 18px;
+}
+.prompt-builder-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.95fr) minmax(320px, 1.05fr);
+  gap: 16px;
+  align-items: start;
+}
+.builder-panel {
+  background: rgba(15, 23, 42, .42);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+}
+.builder-label {
+  display: block;
+  color: var(--muted);
+  font-weight: 800;
+  font-size: .78rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin: 12px 0 7px;
+}
+.builder-input,
+.builder-select,
+.builder-textarea {
+  width: 100%;
+  color: var(--text);
+  background: var(--code);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 11px 12px;
+  font: .88rem/1.45 Consolas, "Courier New", monospace;
+  outline: none;
+}
+.builder-input,
+.builder-select {
+  font-family: inherit;
+}
+.builder-input:focus,
+.builder-select:focus,
+.builder-textarea:focus {
+  border-color: rgba(214, 180, 93, .75);
+  box-shadow: 0 0 0 2px rgba(214, 180, 93, .18);
+}
+.builder-textarea {
+  min-height: 132px;
+  resize: vertical;
+}
+#builderMasterPreview {
+  min-height: 190px;
+}
+#builderOutput {
+  min-height: 340px;
+}
+.builder-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+}
+.builder-button {
+  appearance: none;
+  border: 1px solid rgba(214, 180, 93, .55);
+  background: rgba(214, 180, 93, .9);
+  color: #111827;
+  border-radius: 999px;
+  padding: 9px 13px;
+  font-size: .82rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.builder-button.secondary {
+  background: rgba(39, 52, 73, .85);
+  color: var(--text);
+  border-color: var(--line);
+}
+.builder-button:hover,
+.builder-button:focus {
+  filter: brightness(1.08);
+  outline: none;
+}
+.builder-status {
+  color: #86efac;
+  font-size: .86rem;
+  font-weight: 800;
+  min-height: 1.2em;
+  margin-top: 10px;
+}
+.builder-status.error {
+  color: #fecaca;
+}
+.builder-note {
+  color: var(--muted);
+  font-size: .86rem;
+  margin: 8px 0 0;
+}
+@media (max-width: 860px) {
+  .prompt-builder-grid {
+    grid-template-columns: 1fr;
+  }
+  #builderMasterPreview,
+  #builderOutput {
+    min-height: 220px;
+  }
+  .builder-button {
+    flex: 1 1 auto;
+  }
+}
+
+
+/* API-enabled generation panel */
+.api-generation-card {
+  scroll-margin-top: 18px;
+}
+.api-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(320px, 1.1fr);
+  gap: 16px;
+  align-items: start;
+}
+.api-panel {
+  background: rgba(15, 23, 42, .42);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+}
+.api-label {
+  display: block;
+  color: var(--muted);
+  font-weight: 800;
+  font-size: .78rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin: 12px 0 7px;
+}
+.api-select,
+.api-input,
+.api-textarea {
+  width: 100%;
+  color: var(--text);
+  background: var(--code);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 11px 12px;
+  font: .88rem/1.45 Consolas, "Courier New", monospace;
+  outline: none;
+}
+.api-select {
+  font-family: inherit;
+}
+.api-input {
+  font-family: Consolas, "Courier New", monospace;
+}
+.api-endpoint-preview {
+  color: var(--muted);
+  background: rgba(2, 6, 23, .36);
+  border: 1px solid rgba(148, 163, 184, .16);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font: .78rem/1.45 Consolas, "Courier New", monospace;
+  overflow-wrap: anywhere;
+}
+.api-backend-help {
+  color: var(--muted);
+  font-size: .83rem;
+  margin: 6px 0 0;
+}
+.api-select:focus,
+.api-input:focus,
+.api-textarea:focus {
+  border-color: rgba(214, 180, 93, .75);
+  box-shadow: 0 0 0 2px rgba(214, 180, 93, .18);
+}
+.api-textarea {
+  min-height: 230px;
+  resize: vertical;
+}
+.api-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+}
+.api-button {
+  appearance: none;
+  border: 1px solid rgba(214, 180, 93, .55);
+  background: rgba(214, 180, 93, .9);
+  color: #111827;
+  border-radius: 999px;
+  padding: 9px 13px;
+  font-size: .82rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.api-button.secondary {
+  background: rgba(39, 52, 73, .85);
+  color: var(--text);
+  border-color: var(--line);
+}
+.api-button.danger {
+  background: rgba(127, 29, 29, .55);
+  color: #fecaca;
+  border-color: rgba(248, 113, 113, .55);
+}
+.api-button:hover,
+.api-button:focus {
+  filter: brightness(1.08);
+  outline: none;
+}
+.api-button:disabled,
+.api-select:disabled,
+.api-input:disabled {
+  cursor: not-allowed;
+  opacity: .62;
+  filter: grayscale(.2);
+}
+.api-status {
+  color: #86efac;
+  font-size: .9rem;
+  font-weight: 800;
+  min-height: 1.25em;
+  margin-top: 10px;
+}
+.api-status.error {
+  color: #fecaca;
+}
+.api-activity-log {
+  background: var(--code);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  min-height: 90px;
+  max-height: 170px;
+  overflow: auto;
+  color: var(--muted);
+  font-size: .84rem;
+}
+.api-activity-log div {
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(148, 163, 184, .12);
+}
+.api-activity-log div:last-child {
+  border-bottom: 0;
+}
+.api-activity-log .error {
+  color: #fecaca;
+}
+.api-image-frame {
+  background: var(--code);
+  border: 1px dashed var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  min-height: 160px;
+  display: grid;
+  place-items: center;
+}
+.api-image-placeholder {
+  color: var(--muted);
+  font-size: .9rem;
+  text-align: center;
+  padding: 18px;
+}
+.api-image-preview {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+.api-image-caption {
+  color: var(--muted);
+  font-size: .86rem;
+  margin-top: 8px;
+}
+.api-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+.api-gallery button {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 4px;
+  cursor: pointer;
+}
+.api-gallery img {
+  width: 100%;
+  height: 72px;
+  object-fit: cover;
+  border: 0;
+  border-radius: 8px;
+}
+.api-note {
+  color: var(--muted);
+  font-size: .86rem;
+  margin: 8px 0 0;
+}
+
+.api-diagnostics {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(148, 163, 184, .18);
+}
+.api-checkline {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  color: var(--muted);
+  font-size: .84rem;
+  line-height: 1.35;
+  margin-top: 8px;
+}
+.api-checkline input {
+  margin-top: 2px;
+  accent-color: var(--accent);
+}
+.api-diagnostic-count {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.2em;
+  color: var(--muted);
+  font-size: .8rem;
+  font-weight: 700;
+  margin-left: 2px;
+}
+@media (max-width: 860px) {
+  .api-grid {
+    grid-template-columns: 1fr;
+  }
+  .api-textarea {
+    min-height: 200px;
+  }
+  .api-button {
+    flex: 1 1 auto;
+  }
+}
+
+@media print {
+  header { position: static; }
+  body { background: #fff; color: #000; }
+  .card, details { break-inside: avoid; background: #fff; color: #000; border-color: #ccc; }
+  pre { background: #f5f5f5; color: #000; border-color: #ddd; }
+  nav { display: none; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>PV2 John Doe / SOFA Video Prompt and Portrait Generation Reference</h1>
+  <div class="subtitle">A desktop- and mobile-friendly reference file for generating the PV2 John Doe portrait, preserving the final reference images, scene prompts, and production notes for the SOFA video project.</div>
+  <nav>
+    <a href="#refs">Refs</a>
+    <a href="#master">Master</a>
+    <a href="#scenes">Scenes</a>
+    <a href="#prompt-builder">Builder</a>
+    <a href="#api-generation">API</a>
+    <a href="#image-prompts">Image Prompts</a>
+    <a href="#portrait-generation">Portrait Prompt</a>
+    <a href="#cap">Patrol Cap</a>
+    <a href="#notes">Notes</a>
+  </nav>
+</header>
+<main>
+  <section class="card">
+    <h2>Export Note</h2>
+    <p>This project is building a consistent set of AI-generated visual references and scene prompts for a SOFA in Korea legal information video. The goal is to use one fictional Soldier, PV2 John Doe, as a recurring example character across the video so the visuals feel connected, professional, and easy to follow. This archive keeps the final reference images, master prompt, scene prompts, and production notes in one place for quick use while editing.</p>
+  </section>
+
+  <section id="refs" class="card">
+    <h2>Final 3 Reference Images</h2>
+    <p class="small">These are the three final images used to keep PV2 John Doe consistent. Image A shows who he is, what his uniform looks like, and how his patches should appear. Image B is the close-up face reference. Image C shows example body positions, but it is only a guide for natural posture and movement.</p>
+    
+        <figure>
+          <img src="images/image_a_primary_character_reference_sheet.png" alt="Image A - Primary character reference sheet" loading="lazy">
+          <figcaption>Image A - Primary character reference sheet</figcaption>
+        </figure>
+        
+        <figure>
+          <img src="images/image_b_final_close_up_portrait_reference.png" alt="Image B - Close-up portrait reference" loading="lazy">
+          <figcaption>Image B - Close-up portrait reference</figcaption>
+        </figure>
+        
+        <figure>
+          <img src="images/image_c_pose_reference_sheet.png" alt="Image C - Pose/body-language reference sheet" loading="lazy">
+          <figcaption>Image C - Pose/body-language reference sheet</figcaption>
+        </figure>
+        
+  </section>
+
+
+  <section id="image-prompts" class="card">
+    <h2>Most Recent Prompts Used to Create Images A, B, and C</h2>
+    <p class="small">These are the final working prompt versions for the three-reference-image system. The Image B prompt below is now written as a fresh portrait-generation prompt, not an edit or cleanup prompt. Image A remains the primary character sheet prompt, and Image C remains the combined 10-pose reference sheet prompt.</p>
+
+    <details open>
+      <summary>Image B Prompt - Close-Up Portrait Generation Prompt</summary>
+      <pre>IMAGE GENERATION TASK — GENERATE THE IMAGE NOW.
+
+FINAL OUTPUT REQUIRED:
+Generate one high-resolution photorealistic close-up or medium close-up Army public affairs portrait of PV2 John Doe.
+
+Purpose:
+Create a portrait that matches the established PV2 DOE character as closely as possible. This is a new image-generation prompt, not an edit prompt. The result should look like a natural official U.S. Army portrait taken indoors, with realistic lighting, fabric, stitching, patches, and name tapes.
+
+REFERENCE IMAGES TO USE:
+Image F is the exact 19th ESC shoulder patch reference. Use Image F to recreate the subdued 19th ESC patch design, patch shape, tan fill, black embroidered outer border, black internal curved line, embroidery texture, patch thickness, and correct centered placement on the left shoulder Velcro panel.
+
+Image G is the PV2 rank reference. Use Image G to create one subdued black PV2 chevron on the center chest rank tab. The chevron must be simple, accurate, centered, and not confused with another rank.
+
+Image H is the U.S. flag patch reference. Use Image H only for the right shoulder flag patch if the flag is visible in the portrait. The flag should be full color, embroidered, bordered in gold, and positioned on the Soldier’s right shoulder with the star field facing forward.
+
+CHARACTER DESCRIPTION:
+PV2 John Doe is a fictional young white male U.S. Army Soldier, approximately 18 years old, assigned to the 19th Expeditionary Sustainment Command. He has short brown hair in a conservative tapered military haircut, a clean-shaven face, a realistic junior-enlisted build, and a calm neutral professional expression. He should look like a normal young Soldier, not a model, not special operations, and not a cinematic action character.
+
+UNIFORM REQUIREMENTS:
+PV2 John Doe wears the current U.S. Army ACU in OCP camouflage. Preserve a realistic Army blouse layout:
+- wearer’s right chest: DOE name tape
+- wearer’s left chest: U.S. ARMY tape
+- center chest: PV2 rank tab with one subdued black chevron
+- left shoulder: subdued 19th ESC patch, centered and upright on the rectangular Velcro panel
+- right shoulder: full-color reverse U.S. flag patch, if visible
+- tan 499/coyote undershirt
+- realistic OCP fabric weave, stitching, Velcro, collar, seams, and shoulder pockets
+- clean front blouse area below the name tapes without incorrect vertical nipple-area pocket flaps
+
+COMPOSITION:
+Create a close-up or medium close-up portrait from roughly upper chest to head, similar to a professional Army public affairs portrait. PV2 John Doe faces the camera directly or with a very slight natural angle. Keep the face clear and sharp. The image should be wide enough, when possible, to show the DOE name tape, U.S. ARMY tape, PV2 rank tab, right shoulder U.S. flag, and left shoulder 19th ESC patch.
+
+BACKGROUND AND STYLE:
+Use a realistic indoor military facility background with soft blur, neutral colors, and natural lighting. The image should feel like an official but natural public affairs portrait. Use realistic depth of field. Avoid dramatic cinematic lighting, exaggerated contrast, stylized color grading, or artificial hero posing.
+
+TEXT ACCURACY:
+Only render readable text if it can be clean and accurate. The only visible uniform text should be DOE and U.S. ARMY. Do not generate random text, misspelled name tapes, fake badges, fake signs, or extra unit labels.
+
+NEGATIVE INSTRUCTIONS:
+clean-shaven appearance, rank, uniform layout, shoulder patch placement, or overall junior-enlisted appearance. Do not make him older, more muscular, heroic, tactical, or special operations. Do not add weapons, body armor, helmet, sunglasses, gloves, beard, tattoos, ribbons, medals, qualification badges, airborne tabs, combat patches, extra shoulder patches, or awards. Do not use UCP, woodland camouflage, MARPAT, ABU, black boots, or incorrect camouflage. Do not tilt, rotate, shrink, distort, or move the 19th ESC patch. Do not replace the PV2 chevron with another rank. Do not create the incorrect vertical chest pocket/flap shapes below the name tapes.</pre>
+    </details>
+
+    <details>
+      <summary>Image A Prompt - Primary Reference Sheet with Patrol Cap Panels</summary>
+      <pre>IMAGE GENERATION TASK — GENERATE THE IMAGE NOW.
+
+FINAL OUTPUT REQUIRED:
+Generate one high-resolution photorealistic updated PRIMARY CHARACTER REFERENCE SHEET for PV2 John Doe.
+
+Purpose:
+Create a new Image A that preserves John Doe&#x27;s identity and corrected uniform details while adding patrol cap reference views for future outdoor scene generation.
+
+REFERENCE IMAGES TO USE:
+Image A is the current corrected primary character reference sheet. Use it as the primary identity, full-body, and uniform reference. Preserve the same face, age, haircut, skin tone, facial structure, build, youthful junior-enlisted look, OCP uniform layout, DOE tape, U.S. ARMY tape, PV2 rank, corrected 19th ESC patch, U.S. flag, full-body proportions, and uniform realism.
+
+Image B is the corrected close-up portrait reference. Use it as a secondary face and portrait realism reference. Preserve the same face, expression style, haircut, skin texture, youthful appearance, professional neutral bearing, and corrected 19th ESC patch visible on the left shoulder.
+
+PATROL CAP:
+Add reference panels showing PV2 John Doe wearing the standard U.S. Army patrol cap. The patrol cap must be OCP pattern, properly fitted, naturally worn, not oversized, not tilted, and not stylized. If the cap rank is visible, show one subdued black PV2 chevron centered on the front rank tab.
+
+OUTPUT FORMAT:
+Create one clean photorealistic character reference sheet on a neutral light gray studio background. Maximum of 10 panels total.
+
+NO HEADGEAR PANELS:
+1. Full-body front standing view without patrol cap
+2. Full-body left three-quarter standing view without patrol cap
+3. Full-body right three-quarter standing view without patrol cap
+4. Left profile standing view without patrol cap
+5. Chest / upper torso detail without patrol cap showing DOE, U.S. ARMY, and PV2 rank
+
+PATROL CAP PANELS:
+6. Full-body front standing view wearing patrol cap
+7. Full-body left three-quarter standing view wearing patrol cap
+8. Full-body right three-quarter standing view wearing patrol cap
+9. Close-up front portrait wearing patrol cap
+10. Slight three-quarter close-up portrait wearing patrol cap
+
+NEGATIVE INSTRUCTIONS:
+Do not change his identity, face, age, haircut, build, rank, patch placement, or uniform. Do not create different Soldiers between panels. Do not make the patrol cap incorrect, oversized, malformed, or unnaturally worn.</pre>
+    </details>
+
+    <details>
+      <summary>Image C Prompt - Combined 10-Pose Character Pose Sheet</summary>
+      <pre>IMAGE GENERATION TASK — GENERATE THE IMAGE NOW.
+
+FINAL OUTPUT REQUIRED:
+Generate one high-resolution photorealistic corrected 10-POSE CHARACTER POSE SHEET for PV2 John Doe.
+
+REFERENCE IMAGES TO USE:
+Image A is the updated corrected primary character reference sheet. Use it as the main full-body and uniform reference.
+Image B is the updated corrected close-up portrait reference. Use it as the secondary identity and portrait realism reference.
+
+Preserve the same face, age, haircut, skin tone, facial structure, build, OCP uniform, DOE tape, U.S. ARMY tape, PV2 rank, corrected 19th ESC patch, U.S. flag, and overall junior-enlisted appearance.
+
+OUTPUT FORMAT:
+Create one clean photorealistic character pose sheet on a neutral light gray studio background. The sheet must contain 10 panels showing the same Soldier in the following poses:
+
+1. Position of Attention
+2. Parade Rest
+3. Relaxed Standing Pose
+4. Hands Behind Back Informal Waiting Pose
+5. Seated in a Chair, Front View
+6. Seated in a Chair, Three-Quarter View
+7. Casual Conversation Pose
+8. Walking Pose
+9. Side Profile Standing Pose
+10. Arms Crossed Casual Pose
+
+LAYOUT:
+Arrange all 10 poses in one clean organized sheet with consistent studio background and neat spacing. Show full body from head to boots whenever appropriate. For seated poses, include a simple neutral chair. Keep all poses realistic, useful, and clear.
+
+NEGATIVE INSTRUCTIONS:
+Do not change his identity, face, age, haircut, rank, uniform layout, patch placement, or sleeve placement. Do not make any panel look like a different Soldier. Do not create inconsistent face shapes or patch placement between panels. Do not add extra badges, weapons, tactical gear, helmet, body armor, or wrong camouflage.</pre>
+    </details>
+  </section>
+
+  <section id="portrait-generation" class="card">
+    <h2>Image B Prompt - Close-Up Portrait Generation Prompt</h2>
+    <p class="small">Use this section to generate the finished PV2 John Doe close-up portrait from scratch as closely as possible. The portrait below is the target look. The patch, rank, and flag references are included in a closed dropdown so they are available without taking over the page.</p>
+
+    <div class="two-column">
+      <figure class="portrait-preview">
+        <img src="images/image_b_final_close_up_portrait_reference.png" alt="Final close-up portrait reference for PV2 John Doe" loading="lazy">
+        <figcaption>Final Image B - target close-up portrait look for PV2 John Doe.</figcaption>
+      </figure>
+
+      <div>
+        <div class="prompt-note">
+          <strong>Recommended upload set for best results:</strong> upload the exact 19th ESC patch as Image F, the PV2 rank as Image G, and the U.S. flag patch as Image H when the right shoulder may be visible.
+        </div>
+
+        <details>
+          <summary>Reference Images F, G, and H</summary>
+          <p class="small">These references should stay closed by default. Open them only when you need to confirm patch, rank, or flag details.</p>
+          <div class="reference-grid">
+            <figure>
+              <img src="images/image_f_exact_19th_esc_patch_reference.jpg" alt="Image F - exact 19th ESC subdued shoulder patch reference" loading="lazy">
+              <figcaption>Image F - exact 19th ESC subdued shoulder patch reference and placement.</figcaption>
+            </figure>
+            <figure>
+              <img src="images/image_g_pv2_rank_reference.jpg" alt="Image G - PV2 rank chevron reference" loading="lazy">
+              <figcaption>Image G - PV2 rank reference: one subdued black chevron.</figcaption>
+            </figure>
+            <figure>
+              <img src="images/image_h_us_flag_patch_reference.png" alt="Image H - U.S. flag patch reference" loading="lazy">
+              <figcaption>Image H - full-color embroidered U.S. flag patch reference, if visible.</figcaption>
+            </figure>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <details open>
+      <summary>Image B Prompt - Close-Up Portrait Generation Prompt</summary>
+      <pre>IMAGE GENERATION TASK — GENERATE THE IMAGE NOW.
+
+FINAL OUTPUT REQUIRED:
+Generate one high-resolution photorealistic close-up or medium close-up Army public affairs portrait of PV2 John Doe.
+
+Purpose:
+Create a portrait that matches the established PV2 DOE character as closely as possible. This is a new image-generation prompt, not an edit prompt. The result should look like a natural official U.S. Army portrait taken indoors, with realistic lighting, fabric, stitching, patches, and name tapes.
+
+REFERENCE IMAGES TO USE:
+Image F is the exact 19th ESC shoulder patch reference. Use Image F to recreate the subdued 19th ESC patch design, patch shape, tan fill, black embroidered outer border, black internal curved line, embroidery texture, patch thickness, and correct centered placement on the left shoulder Velcro panel.
+
+Image G is the PV2 rank reference. Use Image G to create one subdued black PV2 chevron on the center chest rank tab. The chevron must be simple, accurate, centered, and not confused with another rank.
+
+Image H is the U.S. flag patch reference. Use Image H only for the right shoulder flag patch if the flag is visible in the portrait. The flag should be full color, embroidered, bordered in gold, and positioned on the Soldier’s right shoulder with the star field facing forward.
+
+CHARACTER DESCRIPTION:
+PV2 John Doe is a fictional young white male U.S. Army Soldier, approximately 18 years old, assigned to the 19th Expeditionary Sustainment Command. He has short brown hair in a conservative tapered military haircut, a clean-shaven face, a realistic junior-enlisted build, and a calm neutral professional expression. He should look like a normal young Soldier, not a model, not special operations, and not a cinematic action character.
+
+UNIFORM REQUIREMENTS:
+PV2 John Doe wears the current U.S. Army ACU in OCP camouflage. Preserve a realistic Army blouse layout:
+- wearer’s right chest: DOE name tape
+- wearer’s left chest: U.S. ARMY tape
+- center chest: PV2 rank tab with one subdued black chevron
+- left shoulder: subdued 19th ESC patch, centered and upright on the rectangular Velcro panel
+- right shoulder: full-color reverse U.S. flag patch, if visible
+- tan 499/coyote undershirt
+- realistic OCP fabric weave, stitching, Velcro, collar, seams, and shoulder pockets
+- clean front blouse area below the name tapes without incorrect vertical nipple-area pocket flaps
+
+COMPOSITION:
+Create a close-up or medium close-up portrait from roughly upper chest to head, similar to a professional Army public affairs portrait. PV2 John Doe faces the camera directly or with a very slight natural angle. Keep the face clear and sharp. The image should be wide enough, when possible, to show the DOE name tape, U.S. ARMY tape, PV2 rank tab, right shoulder U.S. flag, and left shoulder 19th ESC patch.
+
+BACKGROUND AND STYLE:
+Use a realistic indoor military facility background with soft blur, neutral colors, and natural lighting. The image should feel like an official but natural public affairs portrait. Use realistic depth of field. Avoid dramatic cinematic lighting, exaggerated contrast, stylized color grading, or artificial hero posing.
+
+TEXT ACCURACY:
+Only render readable text if it can be clean and accurate. The only visible uniform text should be DOE and U.S. ARMY. Do not generate random text, misspelled name tapes, fake badges, fake signs, or extra unit labels.
+
+NEGATIVE INSTRUCTIONS:
+clean-shaven appearance, rank, uniform layout, shoulder patch placement, or overall junior-enlisted appearance. Do not make him older, more muscular, heroic, tactical, or special operations. Do not add weapons, body armor, helmet, sunglasses, gloves, beard, tattoos, ribbons, medals, qualification badges, airborne tabs, combat patches, extra shoulder patches, or awards. Do not use UCP, woodland camouflage, MARPAT, ABU, black boots, or incorrect camouflage. Do not tilt, rotate, shrink, distort, or move the 19th ESC patch. Do not replace the PV2 chevron with another rank. Do not create the incorrect vertical chest pocket/flap shapes below the name tapes.</pre>
+    </details>
+  </section>
+<section id="master" class="card">
+    <h2>Final 3-Image Scene Generation Master Prompt</h2>
+    <pre>IMAGE GENERATION TASK — GENERATE THE IMAGE NOW.
+
+Use the attached reference images to create one high-resolution photorealistic image of PV2 John Doe, a fictional 18-year-old U.S. Army Soldier assigned to the 19th Expeditionary Sustainment Command.
+
+REFERENCE IMAGES:
+
+Image A is the primary identity, full-body, and uniform reference for PV2 John Doe.
+Use Image A to preserve PV2 John Doe’s face, age, haircut, skin tone, build, OCP uniform layout, DOE name tape, U.S. ARMY tape, PV2 rank, corrected 19th ESC patch placement, U.S. flag placement, patrol cap appearance, and overall appearance.
+
+Image A also includes patrol cap reference views.
+Use Image A to preserve how PV2 John Doe looks both:
+- without headgear
+- wearing the patrol cap
+
+Do not redesign him.
+Do not make him look like a different person.
+Do not make him look older.
+Do not make him look more muscular.
+Do not make him look like a special operations Soldier or cinematic action hero.
+He must remain recognizably the same fictional Soldier shown in Image A.
+
+Image B is the close-up face and portrait reference.
+Use Image B to preserve his facial structure, haircut, skin texture, youthful appearance, neutral professional expression, and close-up realism.
+Use Image B as a secondary face reference only.
+If there is any conflict, Image A remains the primary identity and uniform reference.
+
+Image C is a loose pose and body-language reference only.
+Use Image C to understand his body proportions, military bearing, seated posture, standing posture, and walking posture.
+
+Do not copy any pose exactly unless the scene specifically requests it.
+Do not copy the numbered layout, panel lines, gray background, or pose-sheet formatting.
+Do not turn the final image into a character sheet.
+Use Image C only as loose pose guidance, not as a strict pose lock.
+
+CHARACTER:
+PV2 John Doe is a young white male Soldier, approximately 18 years old.
+He is clean-shaven.
+He has short brown hair in a conservative military haircut.
+He has a realistic junior enlisted appearance.
+He should look calm, respectful, professional, and approachable.
+He should look like a normal Soldier fresh out of initial training.
+
+UNIFORM:
+He wears the current U.S. Army ACU in OCP.
+Preserve the corrected uniform layout from Images A and B:
+- wearer’s right chest name tape: DOE
+- wearer’s left chest branch tape: U.S. ARMY
+- center chest rank tab: one subdued black PV2 chevron
+- left shoulder: subdued 19th ESC patch, centered and upright on the Velcro panel
+- right shoulder: full-color reverse U.S. flag patch, star field facing forward
+- tan 499/coyote undershirt
+- realistic OCP fabric
+- realistic stitching
+- realistic Velcro
+- slanted chest pockets
+- shoulder pockets
+- natural military fit
+- coyote brown combat boots if visible
+
+HEADGEAR RULE:
+If the scene is outdoors, in transit, in the field, or otherwise appropriate for outdoor military wear, PV2 John Doe may wear his patrol cap.
+If the scene is indoors in a normal office, briefing room, conference room, classroom, hallway, or similar indoor setting, do not put him in the patrol cap unless specifically instructed.
+When headgear is appropriate, use the patrol cap appearance shown in Image A.
+
+PATROL CAP RULE:
+If the patrol cap is shown, it must be:
+- standard U.S. Army patrol cap
+- OCP pattern
+- properly fitted
+- worn naturally and correctly
+- not oversized
+- not tilted unnaturally
+- not stylized
+
+If rank is visible on the patrol cap, it must show:
+- one subdued black PV2 chevron
+- centered correctly on the front rank tab
+- realistic embroidery appearance
+
+SCENE:
+[INSERT SCENE DESCRIPTION HERE]
+
+COMPOSITION:
+[INSERT COMPOSITION HERE]
+
+POSE DIRECTION:
+Choose a natural, realistic pose that fits the situation, environment, and mood of the scene.
+Do not force PV2 John Doe into a pose from Image C unless an exact pose is specifically requested.
+Use Image C only as loose guidance for realistic posture, body proportions, and military bearing.
+
+STYLE:
+Photorealistic official Army public affairs style.
+Natural realistic lighting.
+Believable environment.
+Clean editorial stock-photo look.
+Professional military bearing.
+No dramatic cinematic color grading.
+No exaggerated emotion.
+No fake readable background text.
+
+TEXT ACCURACY:
+Only render DOE and U.S. ARMY if the text can be clean and accurate.
+Do not generate random text, fake signs, fake labels, fake name tapes, or fake unit names.
+
+NEGATIVE INSTRUCTIONS:
+Do not change his identity, face, age, haircut, rank, uniform layout, patch placement, sleeve placement, or overall appearance.
+Do not make him older.
+Do not make him more muscular.
+Do not make him look special operations.
+Do not make him look cinematic.
+Do not make him look scared, guilty, angry, arrested, or distressed unless specifically requested.
+Do not move the 19th ESC patch to the wrong sleeve.
+Do not place the 19th ESC patch off-center.
+Do not tilt or rotate the 19th ESC patch.
+Do not move the U.S. flag to the wrong sleeve.
+Do not add a combat patch.
+Do not add badges, tabs, medals, ribbons, awards, deployment patches, qualification badges, airborne tabs, weapons, body armor, gloves, sunglasses, helmets, or tactical gear unless specifically requested.
+Do not use UCP.
+Do not use woodland camouflage.
+Do not use MARPAT.
+Do not use ABU.
+Do not use black boots.
+Do not create a character sheet unless specifically requested.
+Do not copy the pose-sheet layout from Image C.
+Do not make the patrol cap incorrect, oversized, malformed, or unnaturally worn.
+Do not create a different face when the patrol cap is worn.</pre>
+  </section>
+
+  <section id="scenes" class="card scene-presets-card">
+    <details class="scene-presets-collapse">
+      <summary>
+        <span class="scene-summary-title">Scene Presets</span>
+        <span class="summary-note">18 scenes</span>
+      </summary>
+      <div class="scene-presets-content">
+        <p class="small">Use these inside the master prompt by replacing SCENE and COMPOSITION.</p>
+    
+    <details>
+      <summary>Scene 1: SOFA Intro / Legal Office Brief</summary>
+      <h4>Scene</h4>
+      <pre>PV2 John Doe is seated in a professional U.S. Army legal office conference room in South Korea, receiving a SOFA information brief. A military legal advisor is visible in the room, slightly out of focus, standing near a blank presentation screen. On the conference table are a notepad, pen, legal folder, and small U.S. and Republic of Korea desk flags. The environment should feel official, calm, educational, and reassuring. This is not a crime scene, not an interrogation, and not a courtroom.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. Medium shot of PV2 John Doe seated at the conference table, facing slightly toward the legal advisor while his face remains visible to the viewer. Keep PV2 John Doe in sharp focus and the background softly blurred. Leave clean empty space on the left side of the frame for video text overlay.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 2: Who SOFA Applies To</summary>
+      <h4>Scene</h4>
+      <pre>PV2 John Doe walks on a clean U.S. military installation in South Korea with a small group representing different SOFA-covered personnel: one DoD civilian in business casual clothing, one invited contractor with a laptop bag, and one family member. The scene should feel inclusive, calm, and informational.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. PV2 John Doe should be the visual anchor in the foreground or middle of the group. Leave space on one side for text overlay.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 3: If an Incident Happens</summary>
+      <h4>Scene</h4>
+      <pre>PV2 John Doe stands calmly outside a modern Korean police station with a U.S. military representative nearby. The scene should suggest the beginning of a legal administrative process after an alleged incident. He is not arrested, not handcuffed, not distressed, and not being treated like a criminal.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. Medium-wide shot with PV2 John Doe and the representative in the foreground. Avoid readable signs. Leave space on one side for text overlay.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 4: KNP Report or Subpoena</summary>
+      <h4>Scene</h4>
+      <pre>PV2 John Doe is seated at a professional office desk in South Korea while an official-looking document is handed to him across the table. The document represents an incident report or subpoena, but all document text must be blurred or unreadable.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. Close-up or medium close-up focused on the document handoff, with PV2 John Doe&#x27;s uniform and hands visible. Leave negative space for text overlay.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 5: PMO Notification</summary>
+      <h4>Scene</h4>
+      <pre>PV2 John Doe receives a professional notification in a U.S. military administrative office. A desk, phone, computer monitor, calendar, and official-looking folder are visible. The tone should be calm and procedural.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. Medium shot of PV2 John Doe seated or standing at a desk, listening professionally to another U.S. military or civilian staff member.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 6: SOFA Brief Preparation</summary>
+      <h4>Scene</h4>
+      <pre>PV2 John Doe receives a SOFA brief from a legal advisor in a clean U.S. Army legal office. The legal advisor is pointing toward a blank whiteboard or blank presentation screen.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. Medium shot from across the conference table. Leave blank screen or wall space where video text can be added later.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 7: International Hold</summary>
+      <h4>Scene</h4>
+      <pre>Create a clean visual metaphor for travel restriction involving PV2 John Doe. Show a passport, military ID-style card with no readable personal information, airline ticket with no readable text, calendar, and official folder on a desk. PV2 John Doe&#x27;s OCP sleeve or hand may be visible near the documents.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. Close-up tabletop composition. The official folder partially covers the passport and airline ticket. Leave room for overlay text.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 8: U.S. Representative</summary>
+      <h4>Scene</h4>
+      <pre>PV2 John Doe sits beside a U.S. Representative during a formal meeting in a Korean office environment. The representative is taking notes calmly while observing the conversation.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. Medium shot across the table. Keep the scene calm, balanced, and professional.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 9: Defense Attorney</summary>
+      <h4>Scene</h4>
+      <pre>PV2 John Doe meets with an English-speaking Korean defense attorney in a professional legal office in South Korea. The attorney is dressed in business attire and calmly explains paperwork.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. Medium shot from the side of the conference table. PV2 John Doe should be clearly visible and listening attentively.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 10: Interpreter</summary>
+      <h4>Scene</h4>
+      <pre>PV2 John Doe participates in a formal legal meeting in South Korea with an interpreter assisting communication. Three adults are seated at a conference table: PV2 John Doe, a Korean official or attorney, and an interpreter positioned between them.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. Medium-wide conference table shot. Avoid tense interrogation-room lighting.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 11: Trial Observer</summary>
+      <h4>Scene</h4>
+      <pre>Create a respectful South Korean courtroom observation scene connected to PV2 John Doe&#x27;s legal process. A U.S. military attorney is seated quietly in the observer area taking notes. PV2 John Doe may be visible from behind or from a distance, but he should not be the dramatic focus.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. Wide courtroom shot from a respectful distance. No handcuffs, no jail imagery, no dramatic defendant close-up.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 12: Right to Remain Silent</summary>
+      <h4>Scene</h4>
+      <pre>PV2 John Doe sits calmly at a conference table with his hands folded, listening during a formal legal meeting. The image should suggest restraint, silence, and careful decision-making.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. Close medium shot of PV2 John Doe from the chest up. Leave space for text overlay.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 13: Do Not Sign What You Cannot Read</summary>
+      <h4>Scene</h4>
+      <pre>PV2 John Doe holds a pen above a document but pauses before signing. The document appears official and may appear to contain Korean-language text, but all text must be blurred or unreadable. A legal advisor or interpreter is visible in the background.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. Close-up on the pen, document, and PV2 John Doe&#x27;s OCP sleeve or partial torso.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 14: Korean Legal System</summary>
+      <h4>Scene</h4>
+      <pre>PV2 John Doe is present in a respectful South Korean courtroom environment, shown as a neutral participant in the legal process. The courtroom should include a judge&#x27;s bench, prosecutor area, and legal seating, but the scene should not look dramatic or frightening.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. Wide or medium-wide courtroom view. Avoid making him look guilty, trapped, or distressed.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 15: Settlement / Mediation</summary>
+      <h4>Scene</h4>
+      <pre>PV2 John Doe is seated in a neutral professional mediation-style meeting in South Korea with attorneys or advisors present. The scene should suggest a calm discussion about resolution or settlement.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. Medium-wide shot across a conference table. Advisors and attorneys should appear calm and professional.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 16: Possible Outcomes</summary>
+      <h4>Scene</h4>
+      <pre>PV2 John Doe sits in a legal office while a legal advisor explains possible outcomes using a blank flowchart on a whiteboard or presentation screen. The board should contain no readable generated text.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. PV2 John Doe should be seated in the foreground or midground, listening. The blank flowchart board should be visible with enough empty space for custom text overlays.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 17: ROK-U.S. Legal Cooperation</summary>
+      <h4>Scene</h4>
+      <pre>PV2 John Doe stands in the background of a professional U.S.-Korean legal cooperation setting. In the foreground, small U.S. and Republic of Korea desk flags sit on a conference table. Two professional representatives are shaking hands or speaking respectfully in the background.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. Focus on the desk flags in the foreground with PV2 John Doe and the representatives softly visible in the background.</pre>
+    </details>
+    
+    <details>
+      <summary>Scene 18: Closing / Stay Safe</summary>
+      <h4>Scene</h4>
+      <pre>PV2 John Doe walks safely through a clean public area in South Korea during the day with other U.S. personnel nearby. The setting should show responsible off-duty or transit behavior in a Korean city environment. No alcohol, no nightlife, no police, no conflict.</pre>
+      <h4>Composition</h4>
+      <pre>16:9 horizontal image. Medium-wide shot of PV2 John Doe walking calmly and professionally through the environment. Leave space for final text overlay.</pre>
+    </details>
+    
+      </div>
+    </details>
+  </section>
+
+  <section id="prompt-builder" class="card prompt-builder-card">
+    <h2>Prompt Builder</h2>
+    <p class="small">Build a complete scene prompt from the master prompt and the existing Scene Presets on this page. The builder reads those sections directly, so edits to the master prompt or scene preset text in this HTML automatically carry into the builder without duplicating prompt text.</p>
+
+    <div class="prompt-builder-grid">
+      <div class="builder-panel">
+        <h3>1. Select Scene Preset</h3>
+        <label class="builder-label" for="builderSceneSelect">Scene Preset Source</label>
+        <select id="builderSceneSelect" class="builder-select"></select>
+
+        <label class="builder-label" for="builderSceneTitle">Scene Title / File Label</label>
+        <input id="builderSceneTitle" class="builder-input" placeholder="Example: Scene 01 - SOFA Intro" />
+
+        <label class="builder-label" for="builderScene">Scene</label>
+        <textarea id="builderScene" class="builder-textarea" placeholder="Choose a scene preset above, or paste a custom SCENE section here."></textarea>
+
+        <label class="builder-label" for="builderComposition">Composition</label>
+        <textarea id="builderComposition" class="builder-textarea" placeholder="Choose a scene preset above, or paste a custom COMPOSITION section here."></textarea>
+
+        <div class="builder-row">
+          <button type="button" class="builder-button" id="builderBuildButton">Build Full Prompt</button>
+          <button type="button" class="builder-button secondary" id="builderRefreshButton">Refresh From Selected Preset</button>
+          <button type="button" class="builder-button secondary" id="builderClearButton">Clear Scene Fields</button>
+        </div>
+        <p class="builder-note">The scene and composition fields are loaded from the selected preset as editable working copies.</p>
+      </div>
+
+      <div class="builder-panel">
+        <h3>2. Complete Output Prompt</h3>
+        <label class="builder-label" for="builderMasterPreview">Master Prompt Source</label>
+        <textarea id="builderMasterPreview" class="builder-textarea" readonly></textarea>
+
+        <label class="builder-label" for="builderOutput">Output</label>
+        <textarea id="builderOutput" class="builder-textarea" readonly></textarea>
+
+        <div class="builder-row">
+          <button type="button" class="builder-button" id="builderCopyButton">Copy Output Prompt</button>
+          <button type="button" class="builder-button secondary" id="builderDownloadButton">Download .txt</button>
+        </div>
+        <div class="builder-status" id="builderStatus" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="api-generation" class="card api-generation-card">
+    <h2>API-Enabled Generation</h2>
+    <p class="small">Use the completed prompt from the Prompt Builder, send it to secure backend endpoints, and display returned ChatGPT text responses or generated images here. This page does not store or expose any API keys.</p>
+
+    <div class="api-grid">
+      <div class="api-panel">
+        <h3>1. Send Built Prompt</h3>
+
+        <label class="api-label" for="apiBackendBaseUrl">Backend Base URL</label>
+        <input id="apiBackendBaseUrl" class="api-input" type="url" inputmode="url" placeholder="http://localhost:3000" autocomplete="off">
+        <p class="api-backend-help">Use <code>http://localhost:3000</code> when running the included local backend. No API key is stored in this page.</p>
+        <div class="api-row">
+          <button type="button" class="api-button secondary" id="apiSaveBackendButton">Save Backend URL</button>
+          <button type="button" class="api-button secondary" id="apiTestBackendButton">Test Backend</button>
+        </div>
+        <div class="api-endpoint-preview" id="apiEndpointPreview">Backend endpoints will appear here.</div>
+
+        <label class="api-label" for="apiReasoningMode">Reasoning Mode</label>
+        <select id="apiReasoningMode" class="api-select">
+          <option value="xhigh" selected>Extended / strongest available</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+        <p class="api-note">The selected reasoning mode is sent as metadata to the backend. The backend decides which model/settings to use.</p>
+
+        <div class="api-row">
+          <button type="button" class="api-button" id="apiChatButton">Send Prompt to ChatGPT</button>
+          <button type="button" class="api-button secondary" id="apiImageButton">Generate Image</button>
+          <button type="button" class="api-button danger" id="apiClearButton">Clear API Output</button>
+        </div>
+
+        <div class="api-status" id="apiStatus" aria-live="polite"></div>
+
+        <label class="api-label" for="apiActivityLog">Activity / Status</label>
+        <div id="apiActivityLog" class="api-activity-log" aria-live="polite">
+          <div>Ready. Build a prompt, then send it to the secure backend.</div>
+        </div>
+
+        <div class="api-diagnostics">
+          <label class="api-label">Diagnostics Log</label>
+          <label class="api-checkline" for="apiIncludePromptInDiagnostics">
+            <input type="checkbox" id="apiIncludePromptInDiagnostics">
+            <span>Include full built prompt in diagnostics download/copy. Leave unchecked to log metadata only.</span>
+          </label>
+          <div class="api-row">
+            <button type="button" class="api-button secondary" id="apiDownloadDiagnosticsButton">Download Diagnostics Log</button>
+            <button type="button" class="api-button secondary" id="apiCopyDiagnosticsButton">Copy Diagnostics</button>
+            <button type="button" class="api-button danger" id="apiClearDiagnosticsButton">Clear Diagnostics</button>
+          </div>
+          <div class="api-diagnostic-count" id="apiDiagnosticCount">Diagnostics entries: 0</div>
+          <p class="api-note">Diagnostics are generated in this browser and include timestamps, endpoint paths, browser/page info, request metadata, response status, and error details. No API keys are stored here.</p>
+        </div>
+
+        <p class="api-note">Backend routes used by this page are built from the Backend Base URL plus <code>/api/chat</code> and <code>/api/generate-image</code>. The included local backend implements these routes and keeps the OpenAI API key in a server-side <code>.env</code> file.</p>
+      </div>
+
+      <div class="api-panel">
+        <h3>2. ChatGPT Text Response</h3>
+        <label class="api-label" for="apiResponseOutput">Response Output</label>
+        <textarea id="apiResponseOutput" class="api-textarea" readonly placeholder="ChatGPT/OpenAI text responses from the backend will appear here."></textarea>
+        <div class="api-row">
+          <button type="button" class="api-button" id="apiCopyResponseButton">Copy Response</button>
+          <button type="button" class="api-button secondary" id="apiDownloadResponseButton">Download Response .txt</button>
+        </div>
+      </div>
+
+      <div class="api-panel" style="grid-column: 1 / -1;">
+        <h3>3. Generated Image Result</h3>
+        <div class="api-image-frame">
+          <div id="apiImagePlaceholder" class="api-image-placeholder">Generated image preview will appear here after the backend returns an image URL or base64 image data.</div>
+          <img id="apiImagePreview" class="api-image-preview" alt="Generated image result" hidden>
+        </div>
+        <div id="apiImageCaption" class="api-image-caption"></div>
+        <div class="api-row">
+          <a id="apiDownloadImageLink" class="api-button" href="#" download="pv2-john-doe-generated-image.png" hidden>Download Image</a>
+          <button type="button" class="api-button secondary" id="apiClearImageButton">Clear Image</button>
+        </div>
+        <label class="api-label" for="apiImageGallery">Recent Image Results</label>
+        <div id="apiImageGallery" class="api-gallery" aria-label="Recent generated image results"></div>
+      </div>
+    </div>
+  </section>
+
+<section id="notes" class="card">
+    <h2>Key Workflow Decisions</h2>
+    <ul>
+      <li>Use PV2 John Doe as the recurring fictional example Soldier for scene consistency.</li>
+      <li>Use only three final references going forward: Image A, Image B, and Image C.</li>
+      <li>Image A controls identity, full body, uniform, corrected patch placement, U.S. flag placement, and patrol cap appearance.</li>
+      <li>Image B controls close-up face fidelity and portrait realism.</li>
+      <li>Image C is loose pose guidance only, not a strict pose lock.</li>
+      <li>For indoor office, classroom, conference room, or briefing scenes, do not use the patrol cap unless instructed.</li>
+      <li>For outdoor, transit, field, or appropriate military outdoor scenes, PV2 John Doe may wear the patrol cap.</li>
+      <li>Generated text on uniforms is unreliable. Keep DOE and U.S. ARMY only if rendered cleanly; otherwise add manually in editing.</li>
+      <li>For public release, treat AI-generated imagery as photo illustrations in the internal workflow and confirm local release guidance if needed.</li>
+    </ul>
+  </section>
+</main>
+
+
+<script>
+(function () {
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      try {
+        var textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.setAttribute('readonly', '');
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  function enhancePromptBlocks() {
+    document.querySelectorAll('pre').forEach(function (pre) {
+      if (pre.closest('.prompt-block')) return;
+
+      var wrapper = document.createElement('div');
+      wrapper.className = 'prompt-block';
+
+      var toolbar = document.createElement('div');
+      toolbar.className = 'prompt-toolbar';
+
+      var copyButton = document.createElement('button');
+      copyButton.type = 'button';
+      copyButton.className = 'prompt-button copy-prompt';
+      copyButton.textContent = 'Copy prompt';
+      copyButton.setAttribute('aria-label', 'Copy this prompt to clipboard');
+
+      var expandButton = document.createElement('button');
+      expandButton.type = 'button';
+      expandButton.className = 'prompt-button expand-prompt';
+      expandButton.textContent = 'See more';
+      expandButton.setAttribute('aria-expanded', 'false');
+
+      toolbar.appendChild(copyButton);
+      toolbar.appendChild(expandButton);
+
+      pre.parentNode.insertBefore(wrapper, pre);
+      wrapper.appendChild(toolbar);
+      wrapper.appendChild(pre);
+
+      copyButton.addEventListener('click', function () {
+        copyText(pre.innerText).then(function () {
+          var original = copyButton.textContent;
+          copyButton.textContent = 'Copied';
+          setTimeout(function () { copyButton.textContent = original; }, 1400);
+        }).catch(function () {
+          copyButton.textContent = 'Copy failed';
+          setTimeout(function () { copyButton.textContent = 'Copy prompt'; }, 1600);
+        });
+      });
+
+      expandButton.addEventListener('click', function () {
+        var expanded = pre.classList.toggle('is-expanded');
+        expandButton.textContent = expanded ? 'Show less' : 'See more';
+        expandButton.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', enhancePromptBlocks);
+  } else {
+    enhancePromptBlocks();
+  }
+})();
+</script>
+
+
+<script>
+(function () {
+  function byId(id) { return document.getElementById(id); }
+
+  function getMasterPromptText() {
+    var masterPre = document.querySelector('#master pre');
+    return masterPre ? masterPre.textContent.trim() : '';
+  }
+
+  function getScenePresetData() {
+    var sceneRoot = document.getElementById('scenes');
+    if (!sceneRoot) return [];
+
+    /*
+      Read the existing Scene Presets directly from the page.
+      This intentionally does not duplicate scene text in JavaScript.
+      It first tries the current compact wrapper, then falls back to any
+      details element whose summary begins with “Scene #”. This makes the
+      builder keep working even if the Scene Presets wrapper/classes change.
+    */
+    var details = Array.prototype.slice.call(
+      sceneRoot.querySelectorAll('.scene-presets-content details')
+    );
+
+    if (!details.length) {
+      details = Array.prototype.slice.call(sceneRoot.querySelectorAll('details')).filter(function (detail) {
+        if (detail.classList.contains('scene-presets-collapse')) return false;
+        var summary = detail.querySelector('summary');
+        return summary && /^\s*Scene\s+\d+\s*:/i.test(summary.textContent || '');
+      });
+    }
+
+    return details.map(function (detail, index) {
+      var summary = detail.querySelector('summary');
+      var preBlocks = Array.prototype.slice.call(detail.querySelectorAll('pre'));
+
+      var sceneText = '';
+      var compositionText = '';
+
+      preBlocks.forEach(function (pre) {
+        var heading = '';
+        var previous = pre.parentElement;
+        while (previous && previous !== detail) {
+          previous = previous.previousElementSibling;
+        }
+        var h4 = pre.closest('.prompt-block')
+          ? pre.closest('.prompt-block').previousElementSibling
+          : pre.previousElementSibling;
+
+        while (h4 && !/^H[1-6]$/i.test(h4.tagName || '')) {
+          h4 = h4.previousElementSibling;
+        }
+        heading = h4 ? (h4.textContent || '').trim().toLowerCase() : '';
+
+        if (heading.indexOf('composition') !== -1 && !compositionText) {
+          compositionText = pre.textContent.trim();
+        } else if (heading.indexOf('scene') !== -1 && !sceneText) {
+          sceneText = pre.textContent.trim();
+        }
+      });
+
+      if (!sceneText && preBlocks[0]) sceneText = preBlocks[0].textContent.trim();
+      if (!compositionText && preBlocks[1]) compositionText = preBlocks[1].textContent.trim();
+
+      return {
+        index: index,
+        title: summary ? summary.textContent.trim() : 'Scene ' + (index + 1),
+        scene: sceneText,
+        composition: compositionText
+      };
+    }).filter(function (item) {
+      return item.scene || item.composition;
+    });
+  }
+
+  function normalizeSectionText(text) {
+    return (text || '')
+      .replace(/^\s*SCENE:\s*/i, '')
+      .replace(/^\s*COMPOSITION:\s*/i, '')
+      .trim();
+  }
+
+  function setBuilderStatus(message, isError) {
+    var status = byId('builderStatus');
+    if (!status) return;
+    status.textContent = message || '';
+    status.classList.toggle('error', !!isError);
+    if (message) {
+      setTimeout(function () {
+        if (status.textContent === message) status.textContent = '';
+      }, 3000);
+    }
+  }
+
+  function refreshMasterPreview() {
+    var masterPreview = byId('builderMasterPreview');
+    if (masterPreview) masterPreview.value = getMasterPromptText();
+  }
+
+  function populateSceneSelect() {
+    var select = byId('builderSceneSelect');
+    if (!select) return;
+
+    var presets = getScenePresetData();
+    select.innerHTML = '';
+
+    if (!presets.length) {
+      var empty = document.createElement('option');
+      empty.value = '';
+      empty.textContent = 'No scene presets found';
+      select.appendChild(empty);
+      return;
+    }
+
+    presets.forEach(function (preset) {
+      var option = document.createElement('option');
+      option.value = String(preset.index);
+      option.textContent = preset.title;
+      select.appendChild(option);
+    });
+  }
+
+  function loadSelectedPreset() {
+    var select = byId('builderSceneSelect');
+    var title = byId('builderSceneTitle');
+    var scene = byId('builderScene');
+    var composition = byId('builderComposition');
+    if (!select || !scene || !composition) return;
+
+    var presets = getScenePresetData();
+    var selectedIndex = parseInt(select.value, 10);
+    var preset = presets.find(function (item) { return item.index === selectedIndex; }) || presets[0];
+
+    if (!preset) {
+      setBuilderStatus('No scene preset was found.', true);
+      return;
+    }
+
+    if (title) title.value = preset.title;
+    scene.value = preset.scene;
+    composition.value = preset.composition;
+    buildPrompt(false);
+  }
+
+  function buildPrompt(showStatus) {
+    refreshMasterPreview();
+
+    var master = getMasterPromptText();
+    var scene = normalizeSectionText(byId('builderScene') ? byId('builderScene').value : '');
+    var composition = normalizeSectionText(byId('builderComposition') ? byId('builderComposition').value : '');
+    var output = byId('builderOutput');
+
+    if (!output) return;
+
+    if (!master) {
+      output.value = '';
+      setBuilderStatus('Master prompt source was not found.', true);
+      return;
+    }
+
+    var built = master
+      .replace('[INSERT SCENE DESCRIPTION HERE]', scene || '[INSERT SCENE DESCRIPTION HERE]')
+      .replace('[INSERT COMPOSITION HERE]', composition || '[INSERT COMPOSITION HERE]');
+
+    output.value = built;
+
+    if (showStatus) {
+      if (!scene || !composition) {
+        setBuilderStatus('Add both scene and composition for a complete prompt.', true);
+      } else {
+        setBuilderStatus('Full prompt built.');
+      }
+    }
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      try {
+        var textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.setAttribute('readonly', '');
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  function copyOutput() {
+    buildPrompt(false);
+    var output = byId('builderOutput');
+    if (!output || !output.value.trim()) {
+      setBuilderStatus('Nothing to copy.', true);
+      return;
+    }
+
+    copyText(output.value).then(function () {
+      setBuilderStatus('Output prompt copied.');
+    }).catch(function () {
+      setBuilderStatus('Copy failed.', true);
+    });
+  }
+
+  function safeFilename(name) {
+    return (name || 'pv2-john-doe-prompt')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 90) || 'pv2-john-doe-prompt';
+  }
+
+  function downloadPrompt() {
+    buildPrompt(false);
+    var output = byId('builderOutput');
+    if (!output || !output.value.trim()) {
+      setBuilderStatus('Nothing to download.', true);
+      return;
+    }
+
+    var filename = safeFilename(byId('builderSceneTitle') ? byId('builderSceneTitle').value : '') + '.txt';
+    var blob = new Blob([output.value], { type: 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    setBuilderStatus('Prompt downloaded.');
+  }
+
+  function clearSceneFields() {
+    var title = byId('builderSceneTitle');
+    var scene = byId('builderScene');
+    var composition = byId('builderComposition');
+    if (title) title.value = '';
+    if (scene) scene.value = '';
+    if (composition) composition.value = '';
+    buildPrompt(false);
+    setBuilderStatus('Scene fields cleared.');
+  }
+
+  function initPromptBuilder() {
+    if (!byId('prompt-builder')) return;
+
+    populateSceneSelect();
+    refreshMasterPreview();
+    loadSelectedPreset();
+
+    var select = byId('builderSceneSelect');
+    var buildButton = byId('builderBuildButton');
+    var refreshButton = byId('builderRefreshButton');
+    var clearButton = byId('builderClearButton');
+    var copyButton = byId('builderCopyButton');
+    var downloadButton = byId('builderDownloadButton');
+    var scene = byId('builderScene');
+    var composition = byId('builderComposition');
+
+    if (select) select.addEventListener('change', loadSelectedPreset);
+    if (buildButton) buildButton.addEventListener('click', function () { buildPrompt(true); });
+    if (refreshButton) refreshButton.addEventListener('click', function () {
+      populateSceneSelect();
+      loadSelectedPreset();
+      setBuilderStatus('Selected preset refreshed.');
+    });
+    if (clearButton) clearButton.addEventListener('click', clearSceneFields);
+    if (copyButton) copyButton.addEventListener('click', copyOutput);
+    if (downloadButton) downloadButton.addEventListener('click', downloadPrompt);
+    if (scene) scene.addEventListener('input', function () { buildPrompt(false); });
+    if (composition) composition.addEventListener('input', function () { buildPrompt(false); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPromptBuilder);
+  } else {
+    initPromptBuilder();
+  }
+})();
+</script>
+
+
+<script>
+(function () {
+  function byId(id) { return document.getElementById(id); }
+
+  /*
+    Backend endpoint configuration.
+    These are placeholder routes. They must be implemented on a secure backend server.
+    The backend, not this HTML file, should hold and use the OpenAI API key.
+  */
+  var API_ENDPOINT_PATHS = {
+    chat: '/api/chat',
+    image: '/api/generate-image',
+    health: '/api/health'
+  };
+  var BACKEND_BASE_STORAGE_KEY = 'pv2JohnDoeBackendBaseUrl';
+
+  function getDefaultBackendBaseUrl() {
+    if (window.location.protocol === 'file:') return 'http://localhost:3000';
+    return window.location.origin || 'http://localhost:3000';
+  }
+
+  function normalizeBackendBaseUrl(value) {
+    return (value || '').trim().replace(/\/+$/, '');
+  }
+
+  function getBackendBaseUrl() {
+    var input = byId('apiBackendBaseUrl');
+    var value = input ? input.value : '';
+    return normalizeBackendBaseUrl(value || getDefaultBackendBaseUrl());
+  }
+
+  function buildApiUrl(path) {
+    if (/^https?:\/\//i.test(path)) return path;
+    var base = getBackendBaseUrl();
+    var endpointPath = path.charAt(0) === '/' ? path : '/' + path;
+    return base ? base + endpointPath : endpointPath;
+  }
+
+  var API_ENDPOINTS = {};
+  Object.defineProperties(API_ENDPOINTS, {
+    chat: { enumerable: true, get: function () { return buildApiUrl(API_ENDPOINT_PATHS.chat); } },
+    image: { enumerable: true, get: function () { return buildApiUrl(API_ENDPOINT_PATHS.image); } },
+    health: { enumerable: true, get: function () { return buildApiUrl(API_ENDPOINT_PATHS.health); } }
+  });
+
+  function getEndpointSnapshot() {
+    return {
+      backendBaseUrl: getBackendBaseUrl(),
+      paths: API_ENDPOINT_PATHS,
+      resolved: {
+        chat: API_ENDPOINTS.chat,
+        image: API_ENDPOINTS.image,
+        health: API_ENDPOINTS.health
+      }
+    };
+  }
+
+  function updateEndpointPreview() {
+    var preview = byId('apiEndpointPreview');
+    if (!preview) return;
+    preview.textContent = 'Chat: ' + API_ENDPOINTS.chat + '\nImage: ' + API_ENDPOINTS.image + '\nHealth: ' + API_ENDPOINTS.health;
+  }
+
+  function saveBackendBaseUrl() {
+    var baseUrl = getBackendBaseUrl();
+    try {
+      localStorage.setItem(BACKEND_BASE_STORAGE_KEY, baseUrl);
+      recordDiagnostic('backend_base_url_saved', { backendBaseUrl: baseUrl });
+      addActivity('Backend URL saved: ' + baseUrl);
+    } catch (error) {
+      recordDiagnostic('backend_base_url_save_error', { error: errorToDiagnostic(error) });
+      addActivity('Error: backend URL could not be saved in this browser. ' + error.message, true);
+    }
+    updateEndpointPreview();
+  }
+
+  function initBackendBaseUrlControl() {
+    var input = byId('apiBackendBaseUrl');
+    if (!input) return;
+    var saved = '';
+    try { saved = localStorage.getItem(BACKEND_BASE_STORAGE_KEY) || ''; } catch (error) { saved = ''; }
+    input.value = saved || getDefaultBackendBaseUrl();
+    input.addEventListener('input', updateEndpointPreview);
+    input.addEventListener('change', updateEndpointPreview);
+    updateEndpointPreview();
+  }
+
+  var isApiBusy = false;
+  var currentImageSrc = '';
+  var diagnosticsLog = [];
+  var MAX_DIAGNOSTIC_ENTRIES = 250;
+  var diagnosticSessionId = 'pv2-doe-' + new Date().toISOString().replace(/[^0-9]/g, '').slice(0, 14) + '-' + Math.random().toString(36).slice(2, 8);
+
+  function diagnosticTimestamp() {
+    return new Date().toISOString();
+  }
+
+  function truncateDiagnosticString(value, maxLength) {
+    var limit = maxLength || 1200;
+    if (typeof value !== 'string') return value;
+    if (value.indexOf('data:image/') === 0) {
+      return '[image data URL omitted from diagnostics; length=' + value.length + ']';
+    }
+    if (value.length > limit) {
+      return value.slice(0, limit) + '… [truncated; original length=' + value.length + ']';
+    }
+    return value;
+  }
+
+  function sanitizeDiagnosticValue(value, depth) {
+    depth = depth || 0;
+    if (depth > 4) return '[max depth reached]';
+    if (value === null || value === undefined) return value;
+    if (typeof value === 'string') return truncateDiagnosticString(value);
+    if (typeof value === 'number' || typeof value === 'boolean') return value;
+    if (value instanceof Error) return errorToDiagnostic(value);
+    if (Array.isArray(value)) {
+      return value.slice(0, 25).map(function (item) { return sanitizeDiagnosticValue(item, depth + 1); });
+    }
+    if (typeof value === 'object') {
+      var output = {};
+      Object.keys(value).slice(0, 40).forEach(function (key) {
+        var lowered = key.toLowerCase();
+        if (lowered.indexOf('key') !== -1 || lowered.indexOf('token') !== -1 || lowered.indexOf('secret') !== -1 || lowered.indexOf('authorization') !== -1) {
+          output[key] = '[redacted]';
+        } else {
+          output[key] = sanitizeDiagnosticValue(value[key], depth + 1);
+        }
+      });
+      return output;
+    }
+    return String(value);
+  }
+
+  function errorToDiagnostic(error) {
+    if (!error) return {};
+    return {
+      name: error.name || 'Error',
+      message: error.message || String(error),
+      stack: error.stack ? truncateDiagnosticString(error.stack, 2000) : ''
+    };
+  }
+
+  function responseHeadersToObject(headers) {
+    var output = {};
+    if (!headers || !headers.forEach) return output;
+    headers.forEach(function (value, key) {
+      output[key] = value;
+    });
+    return output;
+  }
+
+  function updateDiagnosticCount() {
+    var count = byId('apiDiagnosticCount');
+    if (count) count.textContent = 'Diagnostics entries: ' + diagnosticsLog.length;
+  }
+
+  function recordDiagnostic(eventType, details) {
+    diagnosticsLog.push({
+      timestamp: diagnosticTimestamp(),
+      sessionId: diagnosticSessionId,
+      eventType: eventType,
+      details: sanitizeDiagnosticValue(details || {})
+    });
+    while (diagnosticsLog.length > MAX_DIAGNOSTIC_ENTRIES) diagnosticsLog.shift();
+    updateDiagnosticCount();
+  }
+
+  function collectBrowserDiagnostics() {
+    return {
+      generatedAt: diagnosticTimestamp(),
+      sessionId: diagnosticSessionId,
+      pageUrl: window.location.href,
+      pageProtocol: window.location.protocol,
+      pageOrigin: window.location.origin,
+      isSecureContext: !!window.isSecureContext,
+      online: navigator.onLine,
+      userAgent: navigator.userAgent,
+      language: navigator.language,
+      platform: navigator.platform,
+      viewport: {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        devicePixelRatio: window.devicePixelRatio || 1
+      },
+      timezone: (Intl.DateTimeFormat && Intl.DateTimeFormat().resolvedOptions) ? Intl.DateTimeFormat().resolvedOptions().timeZone : '',
+      hasFetch: typeof window.fetch === 'function',
+      hasReadableStream: typeof window.ReadableStream !== 'undefined',
+      endpoints: getEndpointSnapshot()
+    };
+  }
+
+  function getPromptDiagnostics(includeFullPrompt) {
+    var output = byId('builderOutput');
+    var prompt = output && output.value ? output.value : '';
+    var sceneTitle = byId('builderSceneTitle') ? byId('builderSceneTitle').value : '';
+    var selectedPreset = byId('builderSceneSelect') ? byId('builderSceneSelect').value : '';
+    var summary = {
+      sceneTitle: sceneTitle,
+      selectedPresetValue: selectedPreset,
+      promptLength: prompt.length,
+      hasScenePlaceholder: prompt.indexOf('[INSERT SCENE DESCRIPTION HERE]') !== -1,
+      hasCompositionPlaceholder: prompt.indexOf('[INSERT COMPOSITION HERE]') !== -1
+    };
+    if (includeFullPrompt) summary.fullBuiltPrompt = prompt;
+    return summary;
+  }
+
+  function buildDiagnosticsPayload(includeFullPrompt) {
+    var response = byId('apiResponseOutput') ? byId('apiResponseOutput').value : '';
+    var activityRows = Array.prototype.slice.call((byId('apiActivityLog') || { children: [] }).children || []).map(function (node) {
+      return node.textContent || '';
+    });
+    return {
+      logType: 'PV2 John Doe HTML API Diagnostics',
+      note: 'This file is generated by the HTML front end for troubleshooting. It does not include API keys. Failed to fetch usually means the local/hosted backend is not running/reachable, the Backend Base URL is wrong, or CORS/origin settings are not configured on the backend.',
+      environment: collectBrowserDiagnostics(),
+      prompt: getPromptDiagnostics(includeFullPrompt),
+      apiState: {
+        isApiBusy: isApiBusy,
+        reasoningEffort: getReasoningEffort(),
+        responseLength: response.length,
+        responsePreview: truncateDiagnosticString(response, 1500),
+        hasCurrentImage: !!currentImageSrc,
+        currentImageSource: currentImageSrc ? truncateDiagnosticString(currentImageSrc, 300) : '',
+        activityVisibleRows: activityRows
+      },
+      events: diagnosticsLog
+    };
+  }
+
+  function downloadDiagnosticsLog() {
+    var includePrompt = !!(byId('apiIncludePromptInDiagnostics') && byId('apiIncludePromptInDiagnostics').checked);
+    var payload = buildDiagnosticsPayload(includePrompt);
+    var filename = 'pv2-john-doe-api-diagnostics-' + new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19) + '.json';
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    recordDiagnostic('diagnostics_downloaded', { filename: filename, includeFullPrompt: includePrompt });
+    addActivity('Diagnostics log downloaded.');
+  }
+
+  function copyDiagnosticsLog() {
+    var includePrompt = !!(byId('apiIncludePromptInDiagnostics') && byId('apiIncludePromptInDiagnostics').checked);
+    var payload = buildDiagnosticsPayload(includePrompt);
+    copyText(JSON.stringify(payload, null, 2)).then(function () {
+      recordDiagnostic('diagnostics_copied', { includeFullPrompt: includePrompt });
+      addActivity('Diagnostics log copied.');
+    }).catch(function (error) {
+      recordDiagnostic('diagnostics_copy_error', { error: errorToDiagnostic(error) });
+      addActivity('Error: diagnostics copy failed. ' + error.message, true);
+    });
+  }
+
+  function clearDiagnosticsLog() {
+    diagnosticsLog = [];
+    updateDiagnosticCount();
+    addActivity('Diagnostics log cleared.');
+  }
+
+  function explainRequestError(error, endpoint, label) {
+    if (error && error.name === 'AbortError') {
+      return 'Error: ' + label + ' request timed out before the backend returned a response.';
+    }
+    var message = error && error.message ? error.message : String(error || 'Unknown error');
+    if (message.indexOf('Failed to fetch') !== -1 || message.indexOf('NetworkError') !== -1) {
+      return 'Error: unable to reach backend endpoint ' + endpoint + '. Confirm the included backend is running, the Backend Base URL is correct, the route exists, and CORS/origin settings allow this page. Browser message: ' + message;
+    }
+    return 'Error: unable to complete ' + label + ' request. ' + message;
+  }
+
+  function setApiStatus(message, isError) {
+    var status = byId('apiStatus');
+    if (!status) return;
+    status.textContent = message || '';
+    status.classList.toggle('error', !!isError);
+  }
+
+  function addActivity(message, isError) {
+    recordDiagnostic('activity', { message: message, isError: !!isError });
+    var log = byId('apiActivityLog');
+    if (!log) return;
+    var row = document.createElement('div');
+    row.textContent = message;
+    if (isError) row.className = 'error';
+    log.appendChild(row);
+    while (log.children.length > 12) log.removeChild(log.firstElementChild);
+    log.scrollTop = log.scrollHeight;
+    setApiStatus(message, isError);
+  }
+
+  function setBusy(busy) {
+    isApiBusy = busy;
+    ['apiChatButton', 'apiImageButton', 'apiSaveBackendButton', 'apiTestBackendButton'].forEach(function (id) {
+      var button = byId(id);
+      if (button) button.disabled = busy;
+    });
+    var reasoning = byId('apiReasoningMode');
+    if (reasoning) reasoning.disabled = busy;
+    var backendInput = byId('apiBackendBaseUrl');
+    if (backendInput) backendInput.disabled = busy;
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise(function (resolve, reject) {
+      try {
+        var textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.setAttribute('readonly', '');
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  function safeFilename(name) {
+    return (name || 'pv2-john-doe-api-output')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 90) || 'pv2-john-doe-api-output';
+  }
+
+  function getBuiltPrompt() {
+    /*
+      Use the existing Prompt Builder output. The click refreshes the prompt from
+      the current master prompt, selected Scene Preset, and editable scene fields.
+    */
+    var buildButton = byId('builderBuildButton');
+    if (buildButton && !buildButton.disabled) buildButton.click();
+
+    var output = byId('builderOutput');
+    var prompt = output ? output.value.trim() : '';
+
+    if (!prompt) {
+      throw new Error('No prompt was generated. Build a prompt first.');
+    }
+    if (prompt.indexOf('[INSERT SCENE DESCRIPTION HERE]') !== -1 || prompt.indexOf('[INSERT COMPOSITION HERE]') !== -1) {
+      throw new Error('The prompt still contains scene/composition placeholders. Select a scene preset or add custom scene text first.');
+    }
+    return prompt;
+  }
+
+  function getReasoningEffort() {
+    var select = byId('apiReasoningMode');
+    return select && select.value ? select.value : 'xhigh';
+  }
+
+  function appendResponseText(text) {
+    var output = byId('apiResponseOutput');
+    if (!output || !text) return;
+    output.value += text;
+    output.scrollTop = output.scrollHeight;
+  }
+
+  function setResponseText(text) {
+    var output = byId('apiResponseOutput');
+    if (output) output.value = text || '';
+  }
+
+  function extractTextFromJson(data) {
+    if (!data) return '';
+    if (typeof data === 'string') return data;
+    if (typeof data.text === 'string') return data.text;
+    if (typeof data.response === 'string') return data.response;
+    if (typeof data.content === 'string') return data.content;
+    if (typeof data.message === 'string') return data.message;
+    if (data.message && typeof data.message.content === 'string') return data.message.content;
+    if (Array.isArray(data.output)) {
+      return data.output.map(function (item) {
+        if (typeof item === 'string') return item;
+        if (item && typeof item.text === 'string') return item.text;
+        if (item && typeof item.content === 'string') return item.content;
+        return '';
+      }).join('');
+    }
+    return '';
+  }
+
+  function extractTextFromSseData(dataText) {
+    if (!dataText || dataText === '[DONE]') return '';
+    try {
+      var data = JSON.parse(dataText);
+      return extractTextFromJson(data)
+        || data.delta
+        || (data.choices && data.choices[0] && data.choices[0].delta && data.choices[0].delta.content)
+        || '';
+    } catch (error) {
+      return dataText;
+    }
+  }
+
+  async function fetchWithTimeout(url, options, timeoutMs) {
+    var controller = new AbortController();
+    var timer = setTimeout(function () { controller.abort(); }, timeoutMs || 120000);
+    options = options || {};
+    options.signal = controller.signal;
+    try {
+      return await fetch(url, options);
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async function testBackendHealth() {
+    if (isApiBusy) return;
+    setBusy(true);
+    updateEndpointPreview();
+    recordDiagnostic('backend_health_check_prepared', { endpoint: API_ENDPOINTS.health });
+    addActivity('Testing backend health endpoint…');
+    try {
+      var response = await fetchWithTimeout(API_ENDPOINTS.health, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json, text/plain' }
+      }, 15000);
+      var contentType = (response.headers.get('content-type') || '').toLowerCase();
+      var bodyPreview = '';
+      try {
+        bodyPreview = contentType.indexOf('application/json') !== -1 ? JSON.stringify(await response.json()) : await response.text();
+      } catch (readError) {
+        bodyPreview = '[unable to read health response body]';
+      }
+      recordDiagnostic('backend_health_check_response', {
+        endpoint: API_ENDPOINTS.health,
+        ok: response.ok,
+        status: response.status,
+        statusText: response.statusText,
+        contentType: contentType,
+        bodyPreview: truncateDiagnosticString(bodyPreview, 1000)
+      });
+      if (!response.ok) throw new Error('Backend health check returned HTTP ' + response.status + '.');
+      addActivity('Backend health check succeeded.');
+    } catch (error) {
+      recordDiagnostic('backend_health_check_error', { endpoint: API_ENDPOINTS.health, error: errorToDiagnostic(error) });
+      addActivity(explainRequestError(error, API_ENDPOINTS.health, 'health check'), true);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function sendPromptToChat() {
+    if (isApiBusy) return;
+    var prompt;
+    try {
+      prompt = getBuiltPrompt();
+    } catch (error) {
+      addActivity('Error: ' + error.message, true);
+      return;
+    }
+
+    setBusy(true);
+    setResponseText('');
+    recordDiagnostic('chat_request_prepared', {
+      endpoint: API_ENDPOINTS.chat,
+      promptLength: prompt.length,
+      reasoningEffort: getReasoningEffort(),
+      streamRequested: true
+    });
+    addActivity('Thinking…');
+    addActivity('Sending prompt to backend…');
+
+    try {
+      /*
+        Chat request body sent to the backend.
+        reasoningEffort is metadata for the backend to map to the strongest
+        reasoning-capable model/settings available. No API key is sent here.
+      */
+      var response = await fetchWithTimeout(API_ENDPOINTS.chat, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json, text/event-stream, text/plain'
+        },
+        body: JSON.stringify({
+          prompt: prompt,
+          reasoningEffort: getReasoningEffort(),
+          mode: 'text',
+          stream: true
+        })
+      }, 180000);
+
+      var contentType = (response.headers.get('content-type') || '').toLowerCase();
+      recordDiagnostic('chat_response_received', {
+        endpoint: API_ENDPOINTS.chat,
+        ok: response.ok,
+        status: response.status,
+        statusText: response.statusText,
+        contentType: contentType,
+        headers: responseHeadersToObject(response.headers)
+      });
+
+      if (!response.ok) {
+        throw new Error('Backend returned HTTP ' + response.status + '.');
+      }
+
+      addActivity('Building response…');
+
+      if (contentType.indexOf('application/json') !== -1) {
+        var data = await response.json();
+        var text = extractTextFromJson(data);
+        if (!text) throw new Error('Invalid backend response: no text field was found.');
+        setResponseText(text);
+      } else if (response.body && window.TextDecoder) {
+        addActivity('Waiting for model output…');
+        var reader = response.body.getReader();
+        var decoder = new TextDecoder();
+        var buffer = '';
+
+        while (true) {
+          var read = await reader.read();
+          if (read.done) break;
+          var chunk = decoder.decode(read.value, { stream: true });
+
+          if (contentType.indexOf('text/event-stream') !== -1) {
+            buffer += chunk;
+            var lines = buffer.split(/\r?\n/);
+            buffer = lines.pop() || '';
+            lines.forEach(function (line) {
+              var trimmed = line.trim();
+              if (!trimmed || trimmed.indexOf(':') === 0) return;
+              if (trimmed.indexOf('data:') === 0) {
+                appendResponseText(extractTextFromSseData(trimmed.replace(/^data:\s*/, '')));
+              }
+            });
+          } else {
+            appendResponseText(chunk);
+          }
+        }
+
+        if (buffer && contentType.indexOf('text/event-stream') !== -1) {
+          appendResponseText(extractTextFromSseData(buffer.replace(/^data:\s*/, '').trim()));
+        }
+      } else {
+        var fallbackText = await response.text();
+        if (!fallbackText) throw new Error('Backend returned an empty response.');
+        setResponseText(fallbackText);
+      }
+
+      recordDiagnostic('chat_response_completed', {
+        responseLength: byId('apiResponseOutput') && byId('apiResponseOutput').value ? byId('apiResponseOutput').value.length : 0
+      });
+      addActivity('Response received.');
+    } catch (error) {
+      recordDiagnostic('chat_request_error', {
+        endpoint: API_ENDPOINTS.chat,
+        error: errorToDiagnostic(error)
+      });
+      addActivity(explainRequestError(error, API_ENDPOINTS.chat, 'chat'), true);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function extractImageFromJson(data) {
+    if (!data) return '';
+    if (typeof data.imageUrl === 'string') return data.imageUrl;
+    if (typeof data.imageBase64 === 'string') return data.imageBase64;
+    if (typeof data.url === 'string') return data.url;
+    if (typeof data.b64_json === 'string') return 'data:image/png;base64,' + data.b64_json;
+    if (Array.isArray(data.images) && data.images[0]) {
+      return extractImageFromJson(data.images[0]);
+    }
+    if (Array.isArray(data.data) && data.data[0]) {
+      return extractImageFromJson(data.data[0]);
+    }
+    return '';
+  }
+
+  function displayGeneratedImage(src) {
+    var img = byId('apiImagePreview');
+    var placeholder = byId('apiImagePlaceholder');
+    var caption = byId('apiImageCaption');
+    var download = byId('apiDownloadImageLink');
+
+    currentImageSrc = src || '';
+
+    if (!src) {
+      if (img) {
+        img.hidden = true;
+        img.removeAttribute('src');
+      }
+      if (placeholder) placeholder.hidden = false;
+      if (caption) caption.textContent = '';
+      if (download) {
+        download.hidden = true;
+        download.href = '#';
+      }
+      return;
+    }
+
+    if (img) {
+      img.src = src;
+      img.hidden = false;
+    }
+    if (placeholder) placeholder.hidden = true;
+    if (caption) caption.textContent = 'Generated image returned by backend.';
+    if (download) {
+      download.href = src;
+      download.hidden = false;
+      download.download = safeFilename(byId('builderSceneTitle') ? byId('builderSceneTitle').value : '') + '-generated-image.png';
+    }
+    addImageToGallery(src);
+  }
+
+  function addImageToGallery(src) {
+    var gallery = byId('apiImageGallery');
+    if (!gallery || !src) return;
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.title = 'Open this generated image result';
+    var thumb = document.createElement('img');
+    thumb.src = src;
+    thumb.alt = 'Recent generated image thumbnail';
+    button.appendChild(thumb);
+    button.addEventListener('click', function () { displayGeneratedImage(src); });
+    gallery.insertBefore(button, gallery.firstChild);
+    while (gallery.children.length > 8) gallery.removeChild(gallery.lastElementChild);
+  }
+
+  async function generateImage() {
+    if (isApiBusy) return;
+    var prompt;
+    try {
+      prompt = getBuiltPrompt();
+    } catch (error) {
+      addActivity('Error: ' + error.message, true);
+      return;
+    }
+
+    setBusy(true);
+    recordDiagnostic('image_request_prepared', {
+      endpoint: API_ENDPOINTS.image,
+      promptLength: prompt.length
+    });
+    addActivity('Image request submitted…');
+    addActivity('Generating image…');
+
+    try {
+      /*
+        Image request body sent to the backend.
+        The backend should call the image generation API and return either:
+        { imageUrl: "https://..." } or { imageBase64: "data:image/png;base64,..." }.
+      */
+      var response = await fetchWithTimeout(API_ENDPOINTS.image, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          prompt: prompt,
+          mode: 'image'
+        })
+      }, 240000);
+
+      var contentType = (response.headers.get('content-type') || '').toLowerCase();
+      recordDiagnostic('image_response_received', {
+        endpoint: API_ENDPOINTS.image,
+        ok: response.ok,
+        status: response.status,
+        statusText: response.statusText,
+        contentType: contentType,
+        headers: responseHeadersToObject(response.headers)
+      });
+
+      if (!response.ok) {
+        throw new Error('Backend returned HTTP ' + response.status + '.');
+      }
+
+      var data = await response.json();
+      var imageSrc = extractImageFromJson(data);
+      if (!imageSrc) {
+        throw new Error('Invalid backend response: missing imageUrl or imageBase64.');
+      }
+
+      recordDiagnostic('image_response_completed', {
+        sourceType: imageSrc.indexOf('data:image/') === 0 ? 'base64-data-url' : 'url',
+        sourceLength: imageSrc.length
+      });
+      displayGeneratedImage(imageSrc);
+      addActivity('Image generated successfully.');
+    } catch (error) {
+      recordDiagnostic('image_request_error', {
+        endpoint: API_ENDPOINTS.image,
+        error: errorToDiagnostic(error)
+      });
+      addActivity(explainRequestError(error, API_ENDPOINTS.image, 'image'), true);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function copyApiResponse() {
+    var output = byId('apiResponseOutput');
+    if (!output || !output.value.trim()) {
+      addActivity('Error: no response text to copy.', true);
+      return;
+    }
+    copyText(output.value).then(function () {
+      recordDiagnostic('api_response_copied', { responseLength: output.value.length });
+      addActivity('Response copied.');
+    }).catch(function () {
+      addActivity('Error: response copy failed.', true);
+    });
+  }
+
+  function downloadApiResponse() {
+    var output = byId('apiResponseOutput');
+    if (!output || !output.value.trim()) {
+      addActivity('Error: no response text to download.', true);
+      return;
+    }
+    var filename = safeFilename(byId('builderSceneTitle') ? byId('builderSceneTitle').value : '') + '-api-response.txt';
+    var blob = new Blob([output.value], { type: 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    recordDiagnostic('api_response_downloaded', { filename: filename, responseLength: output.value.length });
+    addActivity('Response downloaded.');
+  }
+
+  function clearApiOutput() {
+    recordDiagnostic('api_output_cleared', {});
+    setResponseText('');
+    displayGeneratedImage('');
+    var gallery = byId('apiImageGallery');
+    if (gallery) gallery.innerHTML = '';
+    var log = byId('apiActivityLog');
+    if (log) log.innerHTML = '<div>Ready. Build a prompt, then send it to the secure backend.</div>';
+    setApiStatus('API output cleared.');
+  }
+
+  function initApiGeneration() {
+    if (!byId('api-generation')) return;
+    var chatButton = byId('apiChatButton');
+    var imageButton = byId('apiImageButton');
+    var clearButton = byId('apiClearButton');
+    var copyButton = byId('apiCopyResponseButton');
+    var downloadButton = byId('apiDownloadResponseButton');
+    var clearImageButton = byId('apiClearImageButton');
+    var downloadDiagnosticsButton = byId('apiDownloadDiagnosticsButton');
+    var copyDiagnosticsButton = byId('apiCopyDiagnosticsButton');
+    var clearDiagnosticsButton = byId('apiClearDiagnosticsButton');
+    var saveBackendButton = byId('apiSaveBackendButton');
+    var testBackendButton = byId('apiTestBackendButton');
+
+    initBackendBaseUrlControl();
+
+    if (chatButton) chatButton.addEventListener('click', sendPromptToChat);
+    if (imageButton) imageButton.addEventListener('click', generateImage);
+    if (clearButton) clearButton.addEventListener('click', clearApiOutput);
+    if (copyButton) copyButton.addEventListener('click', copyApiResponse);
+    if (downloadButton) downloadButton.addEventListener('click', downloadApiResponse);
+    if (downloadDiagnosticsButton) downloadDiagnosticsButton.addEventListener('click', downloadDiagnosticsLog);
+    if (copyDiagnosticsButton) copyDiagnosticsButton.addEventListener('click', copyDiagnosticsLog);
+    if (clearDiagnosticsButton) clearDiagnosticsButton.addEventListener('click', clearDiagnosticsLog);
+    if (saveBackendButton) saveBackendButton.addEventListener('click', saveBackendBaseUrl);
+    if (testBackendButton) testBackendButton.addEventListener('click', testBackendHealth);
+    if (clearImageButton) clearImageButton.addEventListener('click', function () {
+      displayGeneratedImage('');
+      recordDiagnostic('image_preview_cleared', {});
+      addActivity('Image preview cleared.');
+    });
+
+    recordDiagnostic('api_panel_initialized', collectBrowserDiagnostics());
+    updateDiagnosticCount();
+
+    window.addEventListener('error', function (event) {
+      recordDiagnostic('window_error', {
+        message: event.message,
+        source: event.filename,
+        line: event.lineno,
+        column: event.colno,
+        error: event.error ? errorToDiagnostic(event.error) : null
+      });
+    });
+
+    window.addEventListener('unhandledrejection', function (event) {
+      recordDiagnostic('unhandled_promise_rejection', {
+        reason: event.reason instanceof Error ? errorToDiagnostic(event.reason) : sanitizeDiagnosticValue(event.reason)
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApiGeneration);
+  } else {
+    initApiGeneration();
+  }
+})();
+</script>
+
+</body>
+</html>
